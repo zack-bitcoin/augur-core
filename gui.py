@@ -80,10 +80,12 @@ def home(DB, dic):
     acc = blockchain.db_get(address, DB)
     balance = acc['amount']
     for tx in DB['txs']:
-        if tx['type'] == 'spend' and tx['to'] == address:
-            balance += tx['amount'] - custom.fee
+        if tx['type'] == 'spend' and tx['to'] == address and 'vote_id' not in tx:
+            balance += tx['amount']
         if tx['type'] == 'spend' and tx['pubkeys'][0] == pubkey:
-            balance -= tx['amount']
+            if 'vote_id' not in tx:
+                balance -= tx['amount']                
+            balance -= custom.fee
     out = out.format('<p>current balance is: ' + str(balance/100000.0) + '</p>{}')
     if balance > 0:
         out = out.format(easyForm('/home', 'spend money', '''
