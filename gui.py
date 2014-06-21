@@ -9,7 +9,7 @@ import http
 
 
 def create_jury(pubkey, privkey, jury_id, DB):
-    tx = {'type': 'create_jury', 'pubkeys': [pubkey], 'jury_id': jury_id}
+    tx = {'type': 'create_jury', 'pubkeys': [pubkey], 'vote_id': jury_id}
     easy_add_transaction(tx, privkey, DB)
     
 def spend(amount, pubkey, privkey, to_pubkey, DB):
@@ -21,6 +21,9 @@ def votecoin_spend(amount, pubkey, privkey, to_pubkey, votecoin_id, DB):
     tx = {'type': 'spend', 'pubkeys': [pubkey], 'amount': int(amount), 'to': to_pubkey, 'vote_id':votecoin_id}
     easy_add_transaction(tx, privkey, DB)
 
+def ask_decision(pubkey, privkey, votecoin_id, decision_id, txt, DB):
+    tx={'type':'propose_decision', 'pubkeys':[pubkey], 'vote_id':votecoin_id, 'decision_id':decision_id, 'txt':txt}
+    easy_add_transaction(tx, privkey, DB)
 
 def easy_add_transaction(tx_orig, privkey, DB):
     tx = copy.deepcopy(tx_orig)
@@ -68,6 +71,8 @@ def home(DB, dic):
     pubkey = tools.privtopub(dic['privkey'])
     address = tools.make_address([pubkey], 1)
     if 'do' in dic:
+        if dic['do'] == 'ask_decision':
+            ask_decision(pubkey, privkey, dic['vote_id'], dic['decision_id'], dic['txt'], DB)
         if dic['do'] == 'create_jury':
             create_jury(pubkey, privkey, dic['jury_id'], DB)
         if dic['do'] == 'spend':
@@ -92,6 +97,12 @@ def home(DB, dic):
         <input type="hidden" name="do" value="spend">
         <input type="text" name="to" value="address to give to">
         <input type="text" name="amount" value="amount to spend">
+        <input type="hidden" name="privkey" value="{}">'''.format(privkey)))
+        out = out.format(easyForm('/home', 'ask decision', '''
+        <input type="hidden" name="do" value="ask_decision">
+        <input type="text" name="vote_id" value="name of jury">
+        <input type="text" name="decision_id" value="unique title for decision">
+        <input type="text" name="txt" value="decision txt">
         <input type="hidden" name="privkey" value="{}">'''.format(privkey)))
     if balance > custom.create_jury_fee:
         out = out.format(easyForm('/home', 'create jury', '''

@@ -91,14 +91,13 @@ def total_coins(jury):
     return votecoins
 
 def create_jury_check(tx, txs, DB):
-    print('create jury check')
     address=addr(tx)
-    if not E_check(tx, 'jury_id', [str, unicode]): 
-        print('jury id error')
+    if not E_check(tx, 'vote_id', [str, unicode]): 
+        print('vote id error')
         return False
-    if len(tx['jury_id'])>1000: return False
-    if blockchain.db_existence(tx['jury_id'], DB): 
-        print('this jury_id is already being used')
+    if len(tx['vote_id'])>1000: return False
+    if blockchain.db_existence(tx['vote_id'], DB): 
+        print('this vote_id is already being used')
         return False
     if not blockchain.db_existence(address, DB): 
         print('this address is not used by anyone')
@@ -110,18 +109,14 @@ def create_jury_check(tx, txs, DB):
     if not fee_check(tx, txs, DB): return False
     return True
 def propose_decision_check(tx, txs, DB):
-    if not E_check(tx, 'jury_id', [str, unicode]): return False
+    if not E_check(tx, 'vote_id', [str, unicode]): return False
     if not E_check(tx, 'decision_id', [str, unicode]): return False
-    if len(tx['decision_id'])>1000: return False
-    if not blockchain.db_existence(tx['jury_id'], DB): return False
+    if len(tx['decision_id'])>6**4: return False
+    if not blockchain.db_existence(tx['vote_id'], DB): return False
     if blockchain.db_existence(tx['decision_id'], DB): return False
-    if not E_check(tx, 'amount', int): return False
     if not fee_check(tx, txs, DB): return False
     if not E_check(tx, 'txt', [str, unicode]): return False
-    jury=blockchain.db_get(tx['jury_id'], DB)
-    if len(jury['potential_decisions'])>1000: return False
-    if not E_check(tx, 'expiration', float): return False
-    if not E_check(tx, 'tip', int): return False
+    if len(tx['txt'])>6**5: return False
     return True
 def decision_vote_common(tx, txs, fee, decisions, prop_acce, yes, no, DB):
     if not E_check(tx, 'accept?', bool): return False
@@ -184,7 +179,7 @@ def get_(loc, thing):
 def set_(loc, dic, val):
     get_(loc[:-1], dic)[loc[-1]] = val
     return dic
-def adjust(location, pubkey, DB, f):
+def adjust(location, pubkey, DB, f):#location shouldn't be here.
     acc = blockchain.db_get(pubkey, DB)
     f(acc)
     blockchain.db_put(pubkey, acc, DB)    
@@ -229,53 +224,47 @@ def mint(tx, DB):
 
 def initialize_to_zero(addresses, vote_id, DB):
     for add in addresses:
-        def f(acc, add=add, vote_id=vote_id):
-            #acc=blockchain.db_get(add, DB)
-            print('acc: ' +str(acc))
+        def f(acc, vote_id=vote_id):
+            #print('acc: ' +str(acc))
             if vote_id not in acc['votecoin']:
                 acc['votecoin'][vote_id]=0
-        adjust(['votecoin', vote_id], add, DB, f)
-
+                adjust(42, vote_id, DB, lambda acc: acc['members'].append(add))
+        adjust(42, add, DB, f)
 def memory_leak(addresses, vote_id, DB):
     for add in addresses:
-        acc=blockchain.db_get(add, DB)
-        if acc['votecoin'][vote_id]==0:
-            acc['votecoin'].pop(vote_id)
+        def f(acc):
+            if acc['votecoin'][vote_id]==0:
+                acc['votecoin'].pop(vote_id)
+                adjust(42, vote_id, DB, lambda acc: acc['members'].pop(add))
+        adjust(42, add, DB, f)
 def spend(tx, DB):
     address = addr(tx)
     addresses=[address, tx['to']]
     bool_='vote_id' in tx
     if bool_:
-        initialize_to_zero(addresses, tx['vote_id'], DB)
+        initialize_to_zero(addresses, tx['vote_id'], DB)#this should set numbers in the jury to zero, so we can perform addition.
         adjust_int(['votecoin', tx['vote_id']], address, -tx['amount'], DB)
         adjust_int(['votecoin', tx['vote_id']], tx['to'], tx['amount'], DB)
+        memory_leak(addresses, tx['vote_id'], DB)#this should get rid of any zeros in the jury so we don't leak memory.
     else:
         adjust_int(['amount'], address, -tx['amount'], DB)
         adjust_int(['amount'], tx['to'], tx['amount'], DB)
     adjust_int(['amount'], address, -custom.fee, DB)
     adjust_int(['count'], address, 1, DB)
-    if bool_:
-        memory_leak(addresses, tx['vote_id'], DB)
 def create_jury(tx, DB):
     #specify when voting rounds end.
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
     adjust_int(['amount'], address, -custom.create_jury_fee, DB)
-    adjust_dict(['votecoin'], address, False, {tx['jury_id']: 6**4}, DB)
-    jury={'decisions':{},
-          'potential_decisions':{}}
-    symmetric_put(tx['jury_id'], jury, DB)
+    adjust_dict(['votecoin'], address, False, {tx['vote_id']: 6**4}, DB)
+    jury={'decisions':[], 'members':[]}
+    symmetric_put(tx['vote_id'], jury, DB)
 def propose_decision(tx, DB):
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
-    adjust_list(['potential_decisions'], tx['jury_id'], False, tx['decision_id'], DB)
-    adjust_int(['amount'], address, -custom.propose_decision_fee-tx['amount'], DB)
-    decision={'state':'proposed',#proposed, accepted, denied, yes, no
-              'expiration':tx['experation'],
-              'accept':0,
-              'deny':0,
-              'asker':address,
-              'tip':tx['amount'],
+    adjust_list(['decisions'], tx['vote_id'], False, tx['decision_id'], DB)
+    adjust_int(['amount'], address, -custom.propose_decision_fee, DB)
+    decision={'state':'proposed',#proposed, yes, no
               'txt':tx['txt']}
     symmetric_put(tx['decision_id'], decision, DB)
 '''

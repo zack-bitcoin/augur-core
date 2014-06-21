@@ -12,6 +12,7 @@ version = "VERSION"
 block_reward = 10 ** 5
 premine = 5 * 10 ** 6
 fee = 10 ** 3
+propose_decision_fee = 10 ** 5
 create_jury_fee=10**4
 # Lower limits on what the "time" tag in a block can say.
 mmm = 100
@@ -32,7 +33,7 @@ peers = [['localhost', 8901],
          ['localhost', 8903],
          ['localhost', 8904],
          ['localhost', 8905]]
-hashes_per_check = 10 ** 5
+hashes_per_check = 10 ** 4
 
 def blocktime(length):
     if length * block_reward < premine:

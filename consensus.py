@@ -159,8 +159,7 @@ def miner_controller(reward_address, peers, hashes_till_check, DB):
             txs = []
         else:
             prev_block = blockchain.db_get(length, DB)
-            txs = DB['txs']
-            candidate_block = make_block(prev_block, txs, reward_address, DB)
+            candidate_block = make_block(prev_block, DB['txs'], reward_address, DB)
 
         work = (candidate_block, hashes_till_check)
 

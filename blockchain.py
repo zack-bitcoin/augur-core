@@ -38,12 +38,18 @@ def count(address, DB):
     # Returns the number of transactions that pubkey has broadcast.
 
     def zeroth_confirmation_txs(address, DB):
+        print('zeroth confirmation txs: ' +str(DB['txs']))
         def is_zero_conf(t):
-            address == tools.make_address(t['pubkeys'], len(t['signatures']))
+            other_address=tools.make_address(t['pubkeys'], len(t['signatures']))
+            print('other_address: ' +str(other_address))
+            return address == other_address
         return len(filter(is_zero_conf, DB['txs']))
 
     current = db_get(address, DB)['count']
-    return current+zeroth_confirmation_txs(address, DB)
+    zeroth=zeroth_confirmation_txs(address, DB)
+    print('current: ' +str(current))
+    print('zeroth: ' +str(zeroth))
+    return current+zeroth
 
 
 def add_tx(tx, DB):
@@ -60,6 +66,7 @@ def add_tx(tx, DB):
         if tx['type'] == 'mint':
             return False
         if tx['type'] not in transactions.tx_check:
+            print('bad type')
             return False
         return True
 
@@ -68,12 +75,16 @@ def add_tx(tx, DB):
 
     def verify_tx(tx, txs):
         if not type_check(tx, txs):
+            print('type error')
             return False
         if tx in txs:
+            print('no duplicates')
             return False
         if verify_count(tx, txs):
+            print('count error')
             return False
         if too_big_block(tx, txs):
+            print('too many txs')
             return False
         if not transactions.tx_check[tx['type']](tx, txs, DB):
             print('failed to add tx: ' +str(tx))
