@@ -6,29 +6,45 @@ import tools
 import blockchain
 import custom
 import http
-
+import random
 
 def create_jury(pubkey, privkey, jury_id, DB):
-    tx = {'type': 'create_jury', 'pubkeys': [pubkey], 'vote_id': jury_id}
+    tx = {'type': 'create_jury', 'vote_id': jury_id}
     easy_add_transaction(tx, privkey, DB)
     
 def spend(amount, pubkey, privkey, to_pubkey, DB):
     amount = int(amount * (10 ** 5))
-    tx = {'type': 'spend', 'pubkeys': [pubkey], 'amount': amount, 'to': to_pubkey}
+    tx = {'type': 'spend', 'amount': amount, 'to': to_pubkey}
     easy_add_transaction(tx, privkey, DB)
 
 def votecoin_spend(amount, pubkey, privkey, to_pubkey, votecoin_id, DB):
-    tx = {'type': 'spend', 'pubkeys': [pubkey], 'amount': int(amount), 'to': to_pubkey, 'vote_id':votecoin_id}
+    tx = {'type': 'spend', 'amount': int(amount), 'to': to_pubkey, 'vote_id':votecoin_id}
     easy_add_transaction(tx, privkey, DB)
 
 def ask_decision(pubkey, privkey, votecoin_id, decision_id, txt, DB):
-    tx={'type':'propose_decision', 'pubkeys':[pubkey], 'vote_id':votecoin_id, 'decision_id':decision_id, 'txt':txt}
+    tx={'type':'propose_decision', 'vote_id':votecoin_id, 'decision_id':decision_id, 'txt':txt}
+    easy_add_transaction(tx, privkey, DB)
+
+memoized_votes={}
+
+def vote_on_decision(pubkey, privkey, vote_id, decision_id, answer, DB):
+    address=tools.make_address([pubkey], 1)#this might be wrong
+    acc=blockchain.db_get(address, DB)
+    value=[answer, str(random.random())+str(random.random())]
+    answer_hash=tools.det_hash(value)
+    memoized_votes[answer_hash]=value
+    old_vote='unsure'
+    if decision_id in acc['votes']: #this is always False...
+        old_vote=acc['votes'][decision_id]
+    tx={'type':'jury_vote', 'vote_id':vote_id, 'decision_id':decision_id, 'old_vote':old_vote, 'new_vote':answer_hash}
     easy_add_transaction(tx, privkey, DB)
 
 def easy_add_transaction(tx_orig, privkey, DB):
     tx = copy.deepcopy(tx_orig)
     pubkey = tools.privtopub(privkey)
     address = tools.make_address([pubkey], 1)
+    if 'pubkeys' not in tx:
+        tx['pubkeys']=[pubkey]
     try:
         tx['count'] = blockchain.count(address, DB)
     except:
@@ -71,6 +87,8 @@ def home(DB, dic):
     pubkey = tools.privtopub(dic['privkey'])
     address = tools.make_address([pubkey], 1)
     if 'do' in dic:
+        if dic['do'] == 'vote_on_decision':
+            vote_on_decision(pubkey, privkey, dic['vote_id'], dic['decision_id'], dic['answer'], DB)
         if dic['do'] == 'ask_decision':
             ask_decision(pubkey, privkey, dic['vote_id'], dic['decision_id'], dic['txt'], DB)
         if dic['do'] == 'create_jury':
@@ -117,6 +135,16 @@ def home(DB, dic):
         <input type="text" name="amount" value="amount to spend">
         <input type="hidden" name="votecoin_id" value="{}">
         <input type="hidden" name="privkey" value="{}">'''.format(pool, privkey)))
+        votecoin_pool=blockchain.db_get(pool, DB)
+        for decision in votecoin_pool['decisions']:
+            dec=blockchain.db_get(decision, DB)
+            out = out.format(easyForm('/home', 'vote on decision: '+str(decision)+' : '+(dec['txt']), '''
+            <input type="hidden" name="do" value="vote_on_decision">
+            <input type="text" name="answer" value="yes/no/unsure">
+            <input type="hidden" name="vote_id" value="{}">
+            <input type="hidden" name="decision_id" value="{}">
+            <input type="hidden" name="privkey" value="{}">'''.format(pool, decision, privkey)))
+
     txt='''    <input type="hidden" name="privkey" value="{}">'''
     s = easyForm('/home', 'Refresh', txt.format(privkey))
     return out.format(s)

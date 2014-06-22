@@ -118,6 +118,7 @@ def propose_decision_check(tx, txs, DB):
     if not E_check(tx, 'txt', [str, unicode]): return False
     if len(tx['txt'])>6**5: return False
     return True
+'''
 def decision_vote_common(tx, txs, fee, decisions, prop_acce, yes, no, DB):
     if not E_check(tx, 'accept?', bool): return False
     if not E_check(tx, 'jury_id', [str, unicode]): return False
@@ -135,14 +136,17 @@ def decision_vote_common(tx, txs, fee, decisions, prop_acce, yes, no, DB):
     if address in decision[yes]+decision[no]: return False
     return True
 '''
+'''
 def accept_decision_check(tx, txs, DB):
     if not decision_vote_common(tx, txs, custom.accept_decision_fee, 'potential_decisions', 'proposed', 'accept_list', 'deny_list', DB): return False
     return True
 '''
 def jury_vote_check(tx, txs, DB):
-    decision=blockchain.db_get(tx['decision_id'], DB)
-    if decision['expiration']>time.time(): return False
-    if not decision_vote_common(tx, txs, 0, 'decisions', 'accepted', 'yes_result_list', 'no_result_list', DB): return False
+    if not E_check(tx, 'decision_id', [str, unicode]): return False
+    if not E_check(tx, 'old_vote', [str, unicode]): return False
+    if not E_check(tx, 'new_vote', [str, unicode]): return False
+    if not blockchain.db_existence(tx['decision_id'], DB): return False
+    #make sure we can afford the fee.
     return True
 def reveal_jury_vote_check(tx, txs, DB):
     return False
@@ -225,7 +229,6 @@ def mint(tx, DB):
 def initialize_to_zero(addresses, vote_id, DB):
     for add in addresses:
         def f(acc, vote_id=vote_id):
-            #print('acc: ' +str(acc))
             if vote_id not in acc['votecoin']:
                 acc['votecoin'][vote_id]=0
                 adjust(42, vote_id, DB, lambda acc: acc['members'].append(add))
@@ -267,50 +270,21 @@ def propose_decision(tx, DB):
     decision={'state':'proposed',#proposed, yes, no
               'txt':tx['txt']}
     symmetric_put(tx['decision_id'], decision, DB)
-'''
-def simple_vote(tx, DB, yes, no, pass_continuation, fail_continuation):
-    address=addr(tx)
-    adjust_int(['count'], address, 1, DB)
-    if tx['accept?']: location=[yes]
-    else: location=['no_result']
-    acc=blockchain.db_get(address, DB)
-    adjust_int(location, tx['decision_id'], acc['votecoins'][tx['jury_id']], DB)
-    location=[location[0]+'_list']#so they cannot vote twice
-    adjust_list(location, tx['decision_id'], False, address, DB)
-    decision=blockchain.db_get(tx['decision_id'], DB)
-    difference=decision[yes]-decision[no]
-    jury=blockchain.db_get(tx['jury_id'], DB)
-    gap=jury['total_coins']*jury['consensus_percent']
-    if difference>gap:
-        pass_continuation(tx, DB)
-    elif -difference>gap or decision['deny']>jury['total_coins']*0.4:
-        fail_continuation(tx, DB)
-def accept_decision(tx, DB):
-    address=addr(tx)
-    adjust_int(['amount'], address, -custom.accept_decision_fee, DB)
-    def deny_decision(tx, DB):
-        adjust_list(['potential_decisions'], tx['jury_id'], True, tx['decision_id'], DB)
-        adjust_string(['state'], tx['decision_id'], 'proposed', 'denied', DB)
-        adjust_int(['amount'], decision['address'], decision['tip'], DB)
-    def accept_decision(tx, DB):
-        adjust_list(['decisions'], tx['jury_id'], False, tx['decision_id'], DB)
-        adjust_list(['potential_decisions'], tx['jury_id'], True, tx['decision_id'], DB)
-        adjust_string(['state'], tx['decision_id'], 'proposed', 'accepted', DB)
-        for voter in jury['jury']:#need to update spend to support votecoins in this way
-            voter_=blockchain.db_get(voter, DB)
-            portion=voter['votecoins'][tx['jury_id']]/jury['total_coins']
-            adjust_int(['amount'], voter, portion*decision['tip'], DB)
-    simple_vote(tx, DB, 'accept', 'deny', accept_decision, deny_decision)
-'''
 def jury_vote(tx, DB):
-    def fails(tx, DB):
-        adjust_list(['decisions'], tx['jury_id'], True, tx['decision_id'], DB)
-        adjust_string(['state'], tx['decision_id'], 'accepted', 'no', DB)
-    def passes(tx, DB):
-        adjust_list(['decisions'], tx['jury_id'], True, tx['decision_id'], DB)
-        adjust_string(['state'], tx['decision_id'], 'accepted', 'yes', DB)
-    simple_vote(tx, DB, 'yes_result', 'no_result', passes, fails)
+    address=addr(tx)
+    acc=blockchain.db_get(address, DB)
+    if tx['decision_id'] not in acc['votes']:
+        acc['votes'][tx['decision_id']]='unsure'
+        #this memory leak needs to be cleaned up somewhere else.
+        blockchain.db_put(address, acc, DB)
+    adjust_int(['count'], address, 1, DB)
+    adjust_int(['amount'], address, -custom.jury_vote_fee, DB)
+    print('before adjust: ' +str(blockchain.db_get(address, DB)))
+    adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
+    print('after adjust: ' +str(blockchain.db_get(address, DB)))
+    
 def reveal_jury_vote(tx, DB):
+    address=addr(tx)
     adjust_int(['count'], address, 1, DB)
     pass
 def SVD_consensus(tx, DB):

@@ -14,6 +14,7 @@ premine = 5 * 10 ** 6
 fee = 10 ** 3
 propose_decision_fee = 10 ** 5
 create_jury_fee=10**4
+jury_vote_fee=500
 # Lower limits on what the "time" tag in a block can say.
 mmm = 100
 # Take the median of this many of the blocks.
