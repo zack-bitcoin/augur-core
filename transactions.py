@@ -145,12 +145,23 @@ def jury_vote_check(tx, txs, DB):
     if not E_check(tx, 'decision_id', [str, unicode]): return False
     if not E_check(tx, 'old_vote', [str, unicode]): return False
     if not E_check(tx, 'new_vote', [str, unicode]): return False
-    if not blockchain.db_existence(tx['decision_id'], DB): return False
+    if not blockchain.db_existence(tx['decision_id'], DB): 
+        print('decision error')
+        return False
+    if tools.reveal_time_p(DB): 
+        print('reveal time check')
+        return False
+    #if DB['length']%100<90: return False
     #make sure we can afford the fee.
     return True
 def reveal_jury_vote_check(tx, txs, DB):
-    return False
+    if not E_check(tx, 'decision_id', [str, unicode]): return False
+    if not E_check(tx, 'old_vote', [str, unicode]): return False
+    if not E_check(tx, 'new_vote', [str, unicode]): return False
+    return True
 def SVD_consensus_check(tx, txs, DB):
+    #if DB['length']%100<95: return False
+    if not reveal_time_p(DB, 5): return False
     return False
 def prediction_market_check(tx, txs, DB):
     return False
@@ -163,15 +174,15 @@ def sell_shares_check(tx, txs, DB):
 
 tx_check = {'spend': spend_verify, 
             'mint': mint_verify,
-          'create_jury':create_jury_check,
-          'propose_decision':propose_decision_check,
+            'create_jury':create_jury_check,
+            'propose_decision':propose_decision_check,
             #'accept_decision':accept_decision_check,
-          'jury_vote':jury_vote_check,
+            'jury_vote':jury_vote_check,
             'reveal_jury_vote':reveal_jury_vote_check,
             'SVD_consensus':SVD_consensus_check,
-          'prediction_market':prediction_market_check,
-          'buy_shares':buy_shares_check,
-          'sell_shares':sell_shares_check}####
+            'prediction_market':prediction_market_check,
+            'buy_shares':buy_shares_check,
+            'sell_shares':sell_shares_check}####
             
 #------------------------------------------------------
 #DB['add_block']=True -> adding a block.
@@ -270,6 +281,7 @@ def propose_decision(tx, DB):
     decision={'state':'proposed',#proposed, yes, no
               'txt':tx['txt']}
     symmetric_put(tx['decision_id'], decision, DB)
+
 def jury_vote(tx, DB):
     address=addr(tx)
     acc=blockchain.db_get(address, DB)
@@ -283,24 +295,21 @@ def jury_vote(tx, DB):
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
     print('after adjust: ' +str(blockchain.db_get(address, DB)))
     
-def reveal_jury_vote(tx, DB):
+def reveal_jury_vote(tx, DB):    
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
-    pass
+    adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
+    
 def SVD_consensus(tx, DB):
     adjust_int(['count'], address, 1, DB)
-    pass
 def prediction_market(tx, DB):#also used to increase liquidity of existing market
     adjust_int(['count'], address, 1, DB)
     #liquidity constant
     #has a 'buy_shares' inside of it.
-    pass
 def buy_shares(tx, DB):
     adjust_int(['count'], address, 1, DB)
-    pass
 def sell_shares(tx, DB):
     adjust_int(['count'], address, 1, DB)
-    pass
 
 
 update = {'mint': mint, 

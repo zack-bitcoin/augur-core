@@ -16,6 +16,7 @@ DB = {'db': db,
       'txs': [],
       'suggested_blocks': [],
       'suggested_txs': [],
+      'memoized_votes':{},
       'diffLength': '0'}
 
 worker_tasks = [

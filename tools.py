@@ -66,3 +66,7 @@ def E_check(dic, key, type_):
     else:
         if not dic[key] == type_[0]: return E_check(dic, key, type_[1:])
     return True
+
+def reveal_time_p(DB, n=10):
+    return DB['length']%20>=(20-n)
+

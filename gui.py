@@ -25,18 +25,23 @@ def ask_decision(pubkey, privkey, votecoin_id, decision_id, txt, DB):
     tx={'type':'propose_decision', 'vote_id':votecoin_id, 'decision_id':decision_id, 'txt':txt}
     easy_add_transaction(tx, privkey, DB)
 
-memoized_votes={}
-
 def vote_on_decision(pubkey, privkey, vote_id, decision_id, answer, DB):
     address=tools.make_address([pubkey], 1)#this might be wrong
     acc=blockchain.db_get(address, DB)
     value=[answer, str(random.random())+str(random.random())]
     answer_hash=tools.det_hash(value)
-    memoized_votes[answer_hash]=value
+    DB['memoized_votes'][answer_hash]=value
     old_vote='unsure'
     if decision_id in acc['votes']: #this is always False...
         old_vote=acc['votes'][decision_id]
     tx={'type':'jury_vote', 'vote_id':vote_id, 'decision_id':decision_id, 'old_vote':old_vote, 'new_vote':answer_hash}
+    easy_add_transaction(tx, privkey, DB)
+
+def reveal_vote(pubkey, privkey, vote_id, decision_id, DB):
+    address=tools.make_address([pubkey], 1)#this might be wrong
+    acc=blockchain.db_get(address, DB)
+    answer_hash=acc['votes'][decision_id]
+    tx={'type':'reveal_jury_vote', 'vote_id':vote_id, 'decision_id':decision_id, 'old_vote':answer_hash, 'new_vote':DB['memoized_votes'][answer_hash][0]}
     easy_add_transaction(tx, privkey, DB)
 
 def easy_add_transaction(tx_orig, privkey, DB):
@@ -87,6 +92,8 @@ def home(DB, dic):
     pubkey = tools.privtopub(dic['privkey'])
     address = tools.make_address([pubkey], 1)
     if 'do' in dic:
+        if dic['do'] == 'reveal_vote':
+            reveal_vote(pubkey, privkey, dic['vote_id'], dic['decision_id'], DB)
         if dic['do'] == 'vote_on_decision':
             vote_on_decision(pubkey, privkey, dic['vote_id'], dic['decision_id'], dic['answer'], DB)
         if dic['do'] == 'ask_decision':
@@ -138,12 +145,21 @@ def home(DB, dic):
         votecoin_pool=blockchain.db_get(pool, DB)
         for decision in votecoin_pool['decisions']:
             dec=blockchain.db_get(decision, DB)
-            out = out.format(easyForm('/home', 'vote on decision: '+str(decision)+' : '+(dec['txt']), '''
-            <input type="hidden" name="do" value="vote_on_decision">
-            <input type="text" name="answer" value="yes/no/unsure">
-            <input type="hidden" name="vote_id" value="{}">
-            <input type="hidden" name="decision_id" value="{}">
-            <input type="hidden" name="privkey" value="{}">'''.format(pool, decision, privkey)))
+            if not tools.reveal_time_p(DB):
+                out = out.format(easyForm('/home', 'vote on decision: '+str(decision)+' : '+(dec['txt']), '''
+                <input type="hidden" name="do" value="vote_on_decision">
+                <input type="text" name="answer" value="yes/no/unsure">
+                <input type="hidden" name="vote_id" value="{}">
+                <input type="hidden" name="decision_id" value="{}">
+                <input type="hidden" name="privkey" value="{}">'''.format(pool, decision, privkey)))
+            if tools.reveal_time_p(DB):
+                out = out.format(easyForm('/home', 'reveal vote: '+str(decision)+' : '+(dec['txt']), '''
+                <input type="hidden" name="do" value="reveal_vote">
+                <input type="hidden" name="vote_id" value="{}">
+                <input type="hidden" name="decision_id" value="{}">
+                <input type="hidden" name="privkey" value="{}">'''.format(pool, decision, privkey)))
+                
+
 
     txt='''    <input type="hidden" name="privkey" value="{}">'''
     s = easyForm('/home', 'Refresh', txt.format(privkey))
