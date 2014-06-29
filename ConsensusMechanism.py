@@ -533,20 +533,20 @@ def string_to_vector(number_of_decisions, string, out):
     out.append(float(string[-9:]))
     string_to_vector(number_of_decisions-1, string[:-10], out)
 
+def string_to_vector(number_of_decisions, string):
+    out=string[23:].split('  ')
+    return out
+
 Factory=robjects.globalenv['Factory']
 def main(m):
     #len(m) is the number of decisions.
     a=matrix_to_r(m)
     a=Factory(a)
     a=str(a).splitlines()
-    outcome=[]
-    string_to_vector(len(m), a[-8:-7][0], outcome)
-    author_bonus=[]
-    string_to_vector(len(m), a[-9:-8][0], author_bonus)
-    participationc=[]
-    string_to_vector(len(m), a[-10:-9][0], participationc)
-    certaintyc=[]
-    string_to_vector(len(m), a[-12:-11][0], certaintyc)
+    outcome=string_to_vector(len(m), a[-8:-7][0])
+    author_bonus=string_to_vector(len(m), a[-9:-8][0])
+    participationc=string_to_vector(len(m), a[-10:-9][0])
+    certaintyc=string_to_vector(len(m), a[-12:-11][0])
     agents=[]
     row_bonus=[]
     for i in range(len(m[0])):
@@ -562,5 +562,5 @@ def main(m):
             'votecoin_bonus_for_voters':smoothrep,
             'truthcoin_bonus_for_voters':row_bonus}
 
-m=[['NA',0,0],[0,1,0],[0,0,1],[0,0,0]]
-print(main(m))
+#m=[['NA',0,0],[0,1,0],[0,0,1],[0,0,0]]
+#print(main(m))

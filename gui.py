@@ -44,6 +44,11 @@ def reveal_vote(pubkey, privkey, vote_id, decision_id, DB):
     tx={'type':'reveal_jury_vote', 'vote_id':vote_id, 'decision_id':decision_id, 'old_vote':answer_hash, 'new_vote':DB['memoized_votes'][answer_hash][0]}
     easy_add_transaction(tx, privkey, DB)
 
+def SVD_consensus(pubkey, privkey, vote_id, DB):
+    address=tools.make_address([pubkey], 1)#this might be wrong
+    tx={'type':'SVD_consensus', 'vote_id':vote_id}
+    easy_add_transaction(tx, privkey, DB)
+
 def easy_add_transaction(tx_orig, privkey, DB):
     tx = copy.deepcopy(tx_orig)
     pubkey = tools.privtopub(privkey)
@@ -92,6 +97,8 @@ def home(DB, dic):
     pubkey = tools.privtopub(dic['privkey'])
     address = tools.make_address([pubkey], 1)
     if 'do' in dic:
+        if dic['do'] == 'SVD_consensus':
+            SVD_consensus(pubkey, privkey, dic['vote_id'], DB)
         if dic['do'] == 'reveal_vote':
             reveal_vote(pubkey, privkey, dic['vote_id'], dic['decision_id'], DB)
         if dic['do'] == 'vote_on_decision':
@@ -143,6 +150,11 @@ def home(DB, dic):
         <input type="hidden" name="votecoin_id" value="{}">
         <input type="hidden" name="privkey" value="{}">'''.format(pool, privkey)))
         votecoin_pool=blockchain.db_get(pool, DB)
+        if tools.reveal_time_p(DB, 5):
+            out = out.format(easyForm('/home', 'SVD consensus', '''
+            <input type="hidden" name="do" value="SVD_consensus">
+            <input type="hidden" name="vote_id" value="{}">
+            <input type="hidden" name="privkey" value="{}">'''.format(pool, privkey)))
         for decision in votecoin_pool['decisions']:
             dec=blockchain.db_get(decision, DB)
             if not tools.reveal_time_p(DB):
@@ -152,7 +164,7 @@ def home(DB, dic):
                 <input type="hidden" name="vote_id" value="{}">
                 <input type="hidden" name="decision_id" value="{}">
                 <input type="hidden" name="privkey" value="{}">'''.format(pool, decision, privkey)))
-            if tools.reveal_time_p(DB):
+            if tools.reveal_time_p(DB):#and I have participated in a vote
                 out = out.format(easyForm('/home', 'reveal vote: '+str(decision)+' : '+(dec['txt']), '''
                 <input type="hidden" name="do" value="reveal_vote">
                 <input type="hidden" name="vote_id" value="{}">

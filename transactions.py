@@ -4,7 +4,7 @@ import blockchain
 import custom
 import copy
 import tools
-
+import ConsensusMechanism
 
 def addr(tx):
     return tools.make_address(tx['pubkeys'], len(tx['signatures']))
@@ -54,6 +54,10 @@ def spend_verify(tx, txs, DB):
     tx_copy_2 = copy.deepcopy(tx)
     if not E_check(tx, 'to', [str, unicode]):
         print('no to')
+        return False
+    if len(tx['to'])<=30:
+        #this system supports a maximum of 10^30 blocks.
+        print('that address is too short')
         return False
     if not E_check(tx, 'signatures', list):
         print('no signautres')
@@ -114,6 +118,10 @@ def propose_decision_check(tx, txs, DB):
     if len(tx['decision_id'])>6**4: return False
     if not blockchain.db_existence(tx['vote_id'], DB): return False
     if blockchain.db_existence(tx['decision_id'], DB): return False
+    for t in txs:
+        if 'decision_id' in t:
+            if t['decision_id']==tx['decision_id']:
+                return False
     if not fee_check(tx, txs, DB): return False
     if not E_check(tx, 'txt', [str, unicode]): return False
     if len(tx['txt'])>6**5: return False
@@ -143,6 +151,7 @@ def accept_decision_check(tx, txs, DB):
 '''
 def jury_vote_check(tx, txs, DB):
     if not E_check(tx, 'decision_id', [str, unicode]): return False
+    if not E_check(tx, 'vote_id', [str, unicode]): return False
     if not E_check(tx, 'old_vote', [str, unicode]): return False
     if not E_check(tx, 'new_vote', [str, unicode]): return False
     if not blockchain.db_existence(tx['decision_id'], DB): 
@@ -151,18 +160,35 @@ def jury_vote_check(tx, txs, DB):
     if tools.reveal_time_p(DB): 
         print('reveal time check')
         return False
-    #if DB['length']%100<90: return False
+    #make sure we own the right kind of votecoins
     #make sure we can afford the fee.
     return True
 def reveal_jury_vote_check(tx, txs, DB):
+    address=tools.make_address([custom.pubkey], 1)#this might be wrong
+    acc=blockchain.db_get(address, DB)
     if not E_check(tx, 'decision_id', [str, unicode]): return False
-    if not E_check(tx, 'old_vote', [str, unicode]): return False
     if not E_check(tx, 'new_vote', [str, unicode]): return False
+    if not E_check(tx, 'secret', [str, unicode]): return False
+    if len(tx['secret'])<4: return False
+    if tx['decision_id'] not in acc['votes']:
+        return False
+    answer_hash=acc['votes'][tx['decision_id']]
+    if not answer_hash==tools.det_hash([tx['new_vote'], tx['secret']]):
+        print('hash does not match')
+        return False
+    if not E_check(tx, 'old_vote', [str, unicode]): return False
     return True
 def SVD_consensus_check(tx, txs, DB):
-    #if DB['length']%100<95: return False
-    if not reveal_time_p(DB, 5): return False
-    return False
+    if not E_check(tx, 'vote_id', [str, unicode]): return False    
+    if not tools.reveal_time_p(DB, 5): return False
+    jury=blockchain.db_get(tx['vote_id'], DB)
+    if len(jury['decisions'])<5: 
+        print('need at least 5 decisions to compute SVD')
+        return False
+    if len(jury['members'])<3: 
+        print('need at least 3 voters in order to compute SVD')
+        return False
+    return True
 def prediction_market_check(tx, txs, DB):
     return False
 def buy_shares_check(tx, txs, DB):
@@ -240,16 +266,21 @@ def mint(tx, DB):
 def initialize_to_zero(addresses, vote_id, DB):
     for add in addresses:
         def f(acc, vote_id=vote_id):
+            print('acc: ' +str(acc))
             if vote_id not in acc['votecoin']:
                 acc['votecoin'][vote_id]=0
-                adjust(42, vote_id, DB, lambda acc: acc['members'].append(add))
+                #adjust(42, vote_id, DB, lambda acc: acc['members'].append(add))
+                print('jury: ' +str(blockchain.db_get(vote_id, DB)))
+                adjust_list(['members'], vote_id, False, add, DB)
+                print('jury: ' +str(blockchain.db_get(vote_id, DB)))
         adjust(42, add, DB, f)
 def memory_leak(addresses, vote_id, DB):
     for add in addresses:
         def f(acc):
             if acc['votecoin'][vote_id]==0:
                 acc['votecoin'].pop(vote_id)
-                adjust(42, vote_id, DB, lambda acc: acc['members'].pop(add))
+                #adjust(42, vote_id, DB, lambda acc: acc['members'].pop(add))
+                adjust_list(['members'], vote_id, True, add, DB)
         adjust(42, add, DB, f)
 def spend(tx, DB):
     address = addr(tx)
@@ -259,7 +290,7 @@ def spend(tx, DB):
         initialize_to_zero(addresses, tx['vote_id'], DB)#this should set numbers in the jury to zero, so we can perform addition.
         adjust_int(['votecoin', tx['vote_id']], address, -tx['amount'], DB)
         adjust_int(['votecoin', tx['vote_id']], tx['to'], tx['amount'], DB)
-        memory_leak(addresses, tx['vote_id'], DB)#this should get rid of any zeros in the jury so we don't leak memory.
+        memory_leak(addresses, tx['vote_id'], DB)#this should get rid oof any zeros in the jury so we don't leak memory.
     else:
         adjust_int(['amount'], address, -tx['amount'], DB)
         adjust_int(['amount'], tx['to'], tx['amount'], DB)
@@ -271,7 +302,7 @@ def create_jury(tx, DB):
     adjust_int(['count'], address, 1, DB)
     adjust_int(['amount'], address, -custom.create_jury_fee, DB)
     adjust_dict(['votecoin'], address, False, {tx['vote_id']: 6**4}, DB)
-    jury={'decisions':[], 'members':[]}
+    jury={'decisions':[], 'members':[address]}
     symmetric_put(tx['vote_id'], jury, DB)
 def propose_decision(tx, DB):
     address=addr(tx)
@@ -301,7 +332,38 @@ def reveal_jury_vote(tx, DB):
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
     
 def SVD_consensus(tx, DB):
+    address=addr(tx)
     adjust_int(['count'], address, 1, DB)
+    jury=blockchain.db_get(tx['vote_id'], DB)
+    matrix=[]
+    for decision in jury['decisions']:
+        row=[]
+        for member in jury['members']:#empty
+            acc=blockchain.db_get(member, DB)
+            vote='unsure'
+            try:
+                vote=acc['votes'][decision]
+            except: pass
+            if vote=='yes': 
+                row.append(1)
+            elif vote=='no': 
+                row.append(0)
+            elif vote=='half': 
+                row.append(0.5)
+            else:
+                row.append('NA')
+        matrix.append(row)
+    #grab all the decisions with sufficiently high participation and certainty.
+    #build the matrix
+    print('matrix: ' +str(matrix))
+    result=ConsensusMechanism.main(matrix)
+    participation=result['participation']
+    certainty=result['certainty']
+    def mul(x, y): return float(x)*float(y)
+    part_cert=map(mul, participation, certainty)
+    print('decisions: ' +str(jury['decisions']))
+    print('part_cert: ' +str(part_cert))
+    error('here')
 def prediction_market(tx, DB):#also used to increase liquidity of existing market
     adjust_int(['count'], address, 1, DB)
     #liquidity constant
