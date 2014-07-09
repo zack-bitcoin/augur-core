@@ -7,6 +7,7 @@ import blockchain
 import custom
 import http
 import random
+import transactions
 
 def create_jury(pubkey, privkey, jury_id, DB):
     tx = {'type': 'create_jury', 'vote_id': jury_id}
@@ -40,13 +41,24 @@ def vote_on_decision(pubkey, privkey, vote_id, decision_id, answer, DB):
 def reveal_vote(pubkey, privkey, vote_id, decision_id, DB):
     address=tools.make_address([pubkey], 1)#this might be wrong
     acc=blockchain.db_get(address, DB)
-    answer_hash=acc['votes'][decision_id]
-    tx={'type':'reveal_jury_vote', 'vote_id':vote_id, 'decision_id':decision_id, 'old_vote':answer_hash, 'new_vote':DB['memoized_votes'][answer_hash][0]}
-    easy_add_transaction(tx, privkey, DB)
-
+    if decision_id in acc['votes']:
+        answer_hash=acc['votes'][decision_id]
+        a=DB['memoized_votes'][answer_hash]
+        tx={'type':'reveal_jury_vote', 'vote_id':vote_id, 'decision_id':decision_id, 'old_vote':answer_hash, 'new_vote':a[0], 'secret':a[1]}
+        easy_add_transaction(tx, privkey, DB)
+def decisions_keepers(jury, DB):
+    matrix=transactions.decision_matrix(jury, jury['decisions'], DB)
+    #exclude decisions with insufficient participation*certainty
+    pc=transactions.part_cert(matrix)
+    decisions=[]
+    for i in range(len(pc)):
+        if pc[i]>0.6:
+            decisions.append(jury['decisions'][i])
+    return decisions
 def SVD_consensus(pubkey, privkey, vote_id, DB):
     address=tools.make_address([pubkey], 1)#this might be wrong
-    tx={'type':'SVD_consensus', 'vote_id':vote_id}
+    jury=blockchain.db_get(tx['vote_id'], DB)
+    tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':decisions_keepers(jury, DB)}
     easy_add_transaction(tx, privkey, DB)
 
 def easy_add_transaction(tx_orig, privkey, DB):
@@ -97,20 +109,22 @@ def home(DB, dic):
     pubkey = tools.privtopub(dic['privkey'])
     address = tools.make_address([pubkey], 1)
     if 'do' in dic:
-        if dic['do'] == 'SVD_consensus':
-            SVD_consensus(pubkey, privkey, dic['vote_id'], DB)
-        if dic['do'] == 'reveal_vote':
-            reveal_vote(pubkey, privkey, dic['vote_id'], dic['decision_id'], DB)
-        if dic['do'] == 'vote_on_decision':
-            vote_on_decision(pubkey, privkey, dic['vote_id'], dic['decision_id'], dic['answer'], DB)
-        if dic['do'] == 'ask_decision':
-            ask_decision(pubkey, privkey, dic['vote_id'], dic['decision_id'], dic['txt'], DB)
-        if dic['do'] == 'create_jury':
-            create_jury(pubkey, privkey, dic['jury_id'], DB)
-        if dic['do'] == 'spend':
-            spend(float(dic['amount']), pubkey, privkey, dic['to'], DB)
-        if dic['do'] == 'votecoin_spend':
-            votecoin_spend(float(dic['amount']), pubkey, privkey, dic['to'], dic['votecoin_id'], DB)
+        try:
+            if dic['do'] == 'SVD_consensus':
+                SVD_consensus(pubkey, privkey, dic['vote_id'], DB)
+            if dic['do'] == 'reveal_vote':
+                reveal_vote(pubkey, privkey, dic['vote_id'], dic['decision_id'], DB)
+            if dic['do'] == 'vote_on_decision':
+                vote_on_decision(pubkey, privkey, dic['vote_id'], dic['decision_id'], dic['answer'], DB)
+            if dic['do'] == 'ask_decision':
+                ask_decision(pubkey, privkey, dic['vote_id'], dic['decision_id'], dic['txt'], DB)
+            if dic['do'] == 'create_jury':
+                create_jury(pubkey, privkey, dic['jury_id'], DB)
+            if dic['do'] == 'spend':
+                spend(float(dic['amount']), pubkey, privkey, dic['to'], DB)
+            if dic['do'] == 'votecoin_spend':
+                votecoin_spend(float(dic['amount']), pubkey, privkey, dic['to'], dic['votecoin_id'], DB)
+        except: pass
     out = empty_page
     out = out.format('<p>your address: ' + str(address) + '</p>{}')
     out = out.format('<p>current block: ' + str(DB['length']) + '</p>{}')

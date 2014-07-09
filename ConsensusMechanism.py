@@ -525,16 +525,17 @@ ncol='''+str(num_of_decisions)+''')
 '''
     robjects.r(string)
     return(robjects.globalenv['B'])
-    
+'''
 def string_to_vector(number_of_decisions, string, out):
     if number_of_decisions==0: 
         out.reverse()
         return
     out.append(float(string[-9:]))
     string_to_vector(number_of_decisions-1, string[:-10], out)
-
+'''
 def string_to_vector(number_of_decisions, string):
-    out=string[23:].split('  ')
+    out=string[23:].split(' ')
+    out=filter(lambda s: s!='', out)
     return out
 
 Factory=robjects.globalenv['Factory']

@@ -14,7 +14,7 @@ def db_get(n, DB):
     try:
         return tools.unpackage(DB['db'].Get(n))
     except:
-        db_put(n, {'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}}, DB)  # Everyone defaults with
+        db_put(n, {'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}, DB)  # Everyone defaults with
         # having zero money, and having broadcast zero transcations.
         return db_get(n, DB)
 
