@@ -249,7 +249,7 @@ def prediction_market_check(tx, txs, DB):
             if copies!=1:
                 print(str(comb)+' not mutually exclusive')
                 return False
-    if len(tx['states']p)!=len(tx['states_combinatory'])+1:
+    if len(tx['states'])!=len(tx['states_combinatory'])+1:
         print('wrong number of possible states?')
         return False
     if len(tx['PM_id'])>1000: return False
