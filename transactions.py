@@ -6,24 +6,47 @@ import custom
 import copy
 import tools
 import ConsensusMechanism
+import math
 
 def addr(tx):
     return tools.make_address(tx['pubkeys'], len(tx['signatures']))
 
 E_check=tools.E_check
 
-def fee_check(tx, txs, DB):
-    address = addr(tx)
-    total_cost = 0
+def cost_0(txs, DB):
+    #cost of the zeroth confirmation transactions
+    total_cost = []
     votecoin_cost = {}
-    for Tx in filter(lambda t: address == addr(t), [tx] + txs):
-        if Tx['type'] == 'spend':
-            total_cost += custom.fee
-            if 'votecoin' not in tx:
+    for Tx in filter(lambda t: custom.address == addr(t), txs):
+        def spend_():
+            global total_cost
+            global votecoin_cost
+            total_cost.append(custom.fee)
+            if 'vote_id' not in tx:
                 total_cost += Tx['amount']
             else:
-                if tx['votecoin_id'] not in votecoin_cost: votecoin_cost[tx['votecoin_id']]=0
-                votecoin_cost[tx['votecoin_id']]+=Tx['amount']
+                if Tx['vote_id'] not in votecoin_cost: 
+                    votecoin_cost[Tx['vote_id']]=0
+                votecoin_cost[Tx['vote_id']]+=Tx['amount']
+        def buy_shares_():
+            global total_cost
+            cost = cost_to_buy_shares(Tx, DB)
+            total_cost.append(custom.buy_shares_fee)
+            total_cost.append(cost)
+            total_cost.append(int(abs(cost*0.01))))
+            
+        Do={'spend':spend_,
+            'mint':(lambda: total_cost.append(-custom.block_reward)), 
+            'create_jury':(lambda: total_cost.append(custom.create_jury_fee)), 
+            'propose_decision':(lambda: total_cost.append(custom.propose_decision_fee)), 
+            'jury_vote':(lambda: total_cost.append(custom.jury_vote_fee)),
+            'reveal_jury_vote':(lambda: total_cost.append(custom.reveal_jury_vote_fee)),
+            'SVD_consensus':(lambda: total_cost.append(custom.SVD_consensus_fee)),
+            'collect_winnings':(lambda: total_cost.append(-custom.collect_winnings_reward)),
+            'buy_shares':buy_shares_,
+            'prediction_market':(lambda: total_cost.append(Tx['B']*math.log(len(Tx['states']))))}
+        Do[Tx['type']]()
+        '''
         if Tx['type'] == 'mint':
             total_cost -= custom.block_reward
         if Tx['type'] == 'create_jury':
@@ -31,14 +54,22 @@ def fee_check(tx, txs, DB):
         if Tx['type'] == 'propose_decision':
             total_cost += custom.propose_decision_fee
         if Tx['type'] == 'buy_shares':
-            pm=blockchain.db_get(Tx['PM_id'], DB)
-            cost=cost_to_buy_shares(pm, Tx)
+            cost = cost_to_buy_shares(Tx, DB)
             total_cost += cost
             total_cost += int(abs(cost*0.01))
         if Tx['type'] == 'prediction_market':
-            total_cost += tx['B']*math.log(len(tx['states']))
+            total_cost += Tx['B']*math.log(len(Tx['states']))
+        '''
+    return {'truthcoin_cost':sum(total_cost), 'votecoin_cost':votecoin_cost}
+    
+
+def fee_check(tx, txs, DB):
+    address = addr(tx)
+    cost_=cost_0(txs, DB)
+    truthcoin_cost = cost_['truthcoin_cost']
+    votecoin_cost = cost_['votecoin_cost']
     acc=blockchain.db_get(address, DB)
-    if int(acc['amount']) < total_cost: 
+    if int(acc['amount']) < truthcoin_cost: 
         print('insufficient truthcoin')
         return False
     for v_id in votecoin_cost:
@@ -231,7 +262,12 @@ def prediction_market_check(tx, txs, DB):
     address=addr(tx)
     for l in ['states', 'states_combinatory', 'shares_purchased', 'decisions']:
         if not E_check(tx, l, list): 
+            print('tx: ' +str(tx))
             print(str(l)+ ' error')
+            return False
+    for dec in tx['decisions']:
+        if not blockchain.db_existence(dec, DB): 
+            print('decision is not in the database: ' +str(dec))
             return False
     if len(tx['states'])>200:
         print('too many states')
@@ -252,8 +288,12 @@ def prediction_market_check(tx, txs, DB):
     if len(tx['states'])!=len(tx['states_combinatory'])+1:
         print('wrong number of possible states?')
         return False
+    if not E_check(tx, 'PM_id', [str, unicode]):
+        print('PM_id error')
+        return False        
     if len(tx['PM_id'])>1000: return False
     if blockchain.db_existence(tx['PM_id'], DB): 
+        print('PM: ' +str(blockchain.db_get(tx['PM_id'], DB)))
         print('this PM_id is already being used')
         return False
     for t in txs:
@@ -265,11 +305,12 @@ def prediction_market_check(tx, txs, DB):
     if not fee_check(tx, txs, DB): return False#
     return True
 
-def cost_to_buy_shares(pm, tx):
+def cost_to_buy_shares(tx, DB):
+    pm=blockchain.db_get(tx['PM_id'], DB)
     shares_purchased=pm['shares_purchased']
     buy=tx['buy']
     B=pm['B']
-    def C(shares, B): return B*math.log(sum(map(lambda x: e^(x/B), shares)))
+    def C(shares, B): return B*math.log(sum(map(lambda x: math.e**(x/B), shares)))
     C_old=C(shares_purchased, B)
     def add(a, b): return a+b
     C_new=C(map(add, shares_purchased, buy), B)
@@ -291,12 +332,32 @@ def buy_shares_check(tx, txs, DB):
         if type(purchase)!=int:
             return False
     for i in range(len(tx['buy'])):
-        if tx['buy'][i]+pm['shares_purchased']<0:
+        if tx['buy'][i]+pm['shares_purchased'][i]<0:
             print('PM cannot have negative shares')
             return False
     if not fee_check(tx, txs, DB):
         print('fee check error')
         return False
+    return True
+def collect_winnings_check(tx, txs, DB):
+    if not E_check(tx, 'address', [str, unicode]):
+        print('no address error')
+        return False
+    acc=blockchain.db_get(tx['address'], DB)
+    if not E_check(tx, 'PM_id', [str, unicode]):
+        print('no PM_id error')
+        return False
+    if tx['PM_id'] not in acc['shares']:
+        print('you do not own any shares for this PM')
+        return False
+    if not E_check(tx, 'shares', acc['shares'][tx['PM_id']]):
+        print('that is not how many shares you have error')
+        return False
+    for dec in pm['decisions']:
+        decision = blockchain.db_get(dec, DB)
+        if decisions['state'] not in ['yes', 'no']:
+            print('we have not yet reached consensus on the outcome of this market error')
+            return False
     return True
 
 tx_check = {'spend': spend_verify, 
@@ -308,7 +369,8 @@ tx_check = {'spend': spend_verify,
             'reveal_jury_vote':reveal_jury_vote_check,
             'SVD_consensus':SVD_consensus_check,
             'prediction_market':prediction_market_check,
-            'buy_shares':buy_shares_check}
+            'buy_shares':buy_shares_check,
+            'collect_winnings':collect_winnings_check}
             
 #------------------------------------------------------
 #DB['add_block']=True -> adding a block.
@@ -364,15 +426,17 @@ def mint(tx, DB):
     adjust_int(['count'], address, 1, DB)
 
 def initialize_to_zero_helper(loc, address, DB):
-    if loc[1] not in blockchain.db_get(address, DB)[loc[0]]:
-        adjust(42, address, DB, lambda acc: set(acc, loc, 0))
+    acc=blockchain.db_get(address, DB)
+    if loc[1] not in acc[loc[0]]:
+        acc[loc[0]][loc[1]]=0
+        blockchain.db_put(pubkey, acc, DB)    
 def memory_leak_helper(loc, address, DB):
     acc=blockchain.db_get(address, DB)
     bool_=get_(acc, loc)==0
     if bool_:
         adjust_dict(loc, address, True, {loc[-1]: 0}, DB)
     return bool_
-def initialized_to_zero_votecoin(vote_id, address, DB):
+def initialize_to_zero_votecoin(vote_id, address, DB):
     initialize_to_zero_helper(['votecoin', vote_id], address, DB)
     if address not in blockchain.db_get(vote_id, DB)['members']:
         adjust_list(['members'], vote_id, False, address, DB)
@@ -406,12 +470,13 @@ def spend(tx, DB):#we should have the ability to spend shares eventually.
     #check to see if we won any bets. If so, convert winnings into truthcoins.
     #wait 120 blocks before collecting truthcoin (if we want to copy bitcoin)
     address = addr(tx)
-    addresses=[address, tx['to']]
     if 'vote_id' in tx:
         initialize_to_zero_votecoin(tx['vote_id'], address, DB)
+        initialize_to_zero_votecoin(tx['vote_id'], tx['to'], DB)
         adjust_int(['votecoin', tx['vote_id']], address, -tx['amount'], DB)
         adjust_int(['votecoin', tx['vote_id']], tx['to'], tx['amount'], DB)
         memory_leak_votecoin(tx['vote_id'], addresses, DB)#this should get rid of any zeros in the jury so we don't leak memory.
+        memory_leak_votecoin(tx['vote_id'], tx['to'], DB)#this should get rid of any zeros in the jury so we don't leak memory.
     else:
         adjust_int(['amount'], address, -tx['amount'], DB)
         adjust_int(['amount'], tx['to'], tx['amount'], DB)
@@ -508,15 +573,17 @@ def prediction_market(tx, DB):#also used to increase liquidity of existing marke
         pm[i]=tx[i]
     pm['author']=address
     pm['shares_purchased']=[]
-    for i in len(states): pm['shares_purchased'].append(0)
+    for i in range(len(tx['states'])): pm['shares_purchased'].append(0)
     #pm={'fees':0, 'B':tx['B'], 'states':['not cloudy', 'cloudy', 'cloudy+rain/sleet', 'cloudy+snow'], 'states_combinatory':[[0,0,0],[1,0,0],[1,1,0]], 'shares_puchased':[0,0,0,0],'decisions':[decision_id_cloudy, decision_id_rain, decision_id_snow], 'owner':address}
     symmetric_put(tx['PM_id'], pm, DB)
+    print('created PM: '+str(tx['PM_id']))
     #has a 'buy_shares' inside of it, eventually
 def buy_shares(tx, DB):
     address = addr(tx)
+    acc = blockchain.db_get(address, DB)
     adjust_int(['count'], address, 1, DB)
     #tx={'buy':[10, -5, 0, 0, 0], PM_id:''} this would buy 10 shares of the first state, and sell 5 of the second.
-    cost=cost_to_buy_shares(pm, tx)
+    cost=cost_to_buy_shares(tx, DB)
     fee=int(abs(cost*0.01))
     adjust_int(['fees'], tx['PM_id'], fee, DB)
     adjust_int(['amount'], address, -fee, DB)
@@ -529,10 +596,28 @@ def buy_shares(tx, DB):
     for i in range(len(tx['buy'])):
         adjust_int(['shares_purchased', i], tx['PM_id'], tx['buy'][i], DB)
         adjust_int(['shares', tx['PM_id'], i], address, tx['buy'][i], DB)
+    acc = blockchain.db_get(address, DB)
     if acc['shares'][tx['PM_id']]==all_zeros:
         adjust_dict(['shares'], address, True, dic, DB)
 def collect_winnings(tx, DB):
-    pass
+    address = addr(tx)
+    acc = blockchain.db_get(address, DB)
+    pm = blockchain.db_get(tx['PM_id'], DB)
+    outcome_combination=[]
+    for dec in pm['decisions']:
+        decision = blockchain.db_get(dec, DB)
+        do={'yes':(lambda: outcome_combination.append(1)), 
+            'no':(lambda: outcome_combination.append(0))}
+        do[decision['state']]()
+    decs=len(pm['states_combinatory'])
+    else_=True
+    for i in range(decs):
+        if pm['states_combinatory'][i]==outcome_combination:
+            adjust_int(['amount'], address, acc['shares'][tx['PM_id']][i], DB)
+            else_=False
+    if else_:
+        adjust_int(['amount'], address, acc['shares'][tx['PM_id']][-1], DB)
+    adjust_dict(['shares'], address, True, {tx['PM_id']:tx['shares']}, DB)
 
 update = {'mint': mint, 
           'spend': spend,
@@ -543,5 +628,6 @@ update = {'mint': mint,
           'reveal_jury_vote':reveal_jury_vote,
           'SVD_consensus':SVD_consensus,
         'prediction_market':prediction_market,
-        'buy_shares':buy_shares}
+          'buy_shares':buy_shares,
+          'collect_winnings':collect_winnings}
 #-----------------------------------------

@@ -3,8 +3,6 @@ import tools
 import hashlib
 
 
-def hash_(x):
-    return hashlib.sha256(x).hexdigest()
 database_name = 'DB.db'
 listen_port=8900
 gui_port=8700
@@ -15,6 +13,10 @@ fee = 10 ** 3
 propose_decision_fee = 10 ** 5
 create_jury_fee=10**4
 jury_vote_fee=500
+reveal_jury_vote_fee=500
+SVD_consensus_fee=0
+buy_shares_fee=10**5
+collect_winnings_reward=5*10**4
 # Lower limits on what the "time" tag in a block can say.
 mmm = 100
 # Take the median of this many of the blocks.
@@ -29,6 +31,7 @@ max_download = 50000
 brainwallet = 'brain wallet'
 privkey = tools.det_hash(brainwallet)
 pubkey = tools.privtopub(privkey)
+address = tools.make_address([pubkey], 1)
 peers = [['localhost', 8901],
          ['localhost', 8902],
          ['localhost', 8903],

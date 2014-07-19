@@ -5,7 +5,7 @@ import threading
 import custom
 import leveldb
 import networking
-import gui
+import commandPrompt
 import sys
 
 db = leveldb.LevelDB(custom.database_name)
@@ -33,8 +33,11 @@ worker_tasks = [
     {'target': listener.server,
      'args': (DB,),
      'daemon': True},
-    {'target': gui.main,
-     'args': (custom.gui_port, custom.brainwallet, DB),
+#    {'target': gui.main,
+#     'args': (custom.gui_port, custom.brainwallet, DB),
+#     'daemon': True},
+    {'target': commandPrompt.main,
+     'args': (DB,),
      'daemon': True},
 ]
 networking.kill_processes_using_ports([str(custom.gui_port),

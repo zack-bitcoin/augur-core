@@ -38,17 +38,13 @@ def count(address, DB):
     # Returns the number of transactions that pubkey has broadcast.
 
     def zeroth_confirmation_txs(address, DB):
-        print('zeroth confirmation txs: ' +str(DB['txs']))
         def is_zero_conf(t):
             other_address=tools.make_address(t['pubkeys'], len(t['signatures']))
-            print('other_address: ' +str(other_address))
             return address == other_address
         return len(filter(is_zero_conf, DB['txs']))
 
     current = db_get(address, DB)['count']
     zeroth=zeroth_confirmation_txs(address, DB)
-    print('current: ' +str(current))
-    print('zeroth: ' +str(zeroth))
     return current+zeroth
 
 
@@ -90,7 +86,6 @@ def add_tx(tx, DB):
             print('failed to add tx: ' +str(tx))
             return False
         return True
-
     if verify_tx(tx, DB['txs']):
         DB['txs'].append(tx)
 
@@ -133,7 +128,7 @@ def target(DB, length=0):
         length = DB['length']
     if length < 4:
         return '0' * 4 + 'f' * 60  # Use same difficulty for first few blocks.
-    if length <= DB['length']:
+    if length <= DB['length'] and str(length) in targets:
         return targets[str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
 
     def targetTimesFloat(target, number):

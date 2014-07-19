@@ -111,7 +111,6 @@ def miner_controller(reward_address, peers, hashes_till_check, DB):
                'target': target,
                'diffLength': blockchain.hexInvert(target),
                'txs': [make_mint(pubkey, DB)]}
-        print('out: ' + str(out))
         out = tools.unpackage(tools.package(out))
         return out
 
@@ -130,7 +129,7 @@ def miner_controller(reward_address, peers, hashes_till_check, DB):
         out = tools.unpackage(tools.package(out))
         return out
     def restart_workers():
-        print("Possible solution found, restarting mining workers.")
+        #print("Possible solution found, restarting mining workers.")
         for worker_mailbox in worker_mailboxes:
             worker_mailbox['restart'].set()
 

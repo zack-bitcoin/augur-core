@@ -1,5 +1,5 @@
 import pt
-import custom
+import hashlib
 from json import dumps as package, loads as unpackage
 from collections import OrderedDict
 
@@ -17,6 +17,8 @@ def verify(msg, sig, pubkey):
 def privtopub(privkey):
     return pt.privtopub(privkey)
 
+def hash_(x):
+    return hashlib.sha256(x).hexdigest()
 
 def det_hash(x):
     """Deterministically takes sha256 of dict, list, int, or string."""
@@ -29,7 +31,7 @@ def det_hash(x):
 
     def det(x): return {list: det_list, dict: det_dict}.get(type(x), str)(x)
 
-    return custom.hash_(det(unpackage(package(x))))
+    return hash_(det(unpackage(package(x))))
 
 
 def base58_encode(num):
