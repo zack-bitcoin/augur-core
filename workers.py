@@ -5,7 +5,7 @@ import threading
 import custom
 import leveldb
 import networking
-import commandPrompt
+import command_prompt_advanced
 import sys
 
 db = leveldb.LevelDB(custom.database_name)
@@ -36,7 +36,7 @@ worker_tasks = [
 #    {'target': gui.main,
 #     'args': (custom.gui_port, custom.brainwallet, DB),
 #     'daemon': True},
-    {'target': commandPrompt.main,
+    {'target': command_prompt_advanced.main,
      'args': (DB,),
      'daemon': True},
 ]
@@ -52,6 +52,7 @@ def start_worker_proc(**kwargs):
     proc.start()
     return proc
 
+#print('tasks: ' + str(worker_tasks))
 workers = [start_worker_proc(**task_info) for task_info in worker_tasks]
 try:
     while True:

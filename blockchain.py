@@ -8,29 +8,24 @@ import tools
 import networking
 import transactions
 
+default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
 
 def db_get(n, DB):
     n = str(n)
     try:
         return tools.unpackage(DB['db'].Get(n))
     except:
-        db_put(n, {'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}, DB)  # Everyone defaults with
-        # having zero money, and having broadcast zero transcations.
+        db_put(n, default_entry, DB)
         return db_get(n, DB)
 
-
-def db_put(key, dic, DB):
-    return DB['db'].Put(str(key), tools.package(dic))
-
-
-def db_delete(key, DB):
-    return DB['db'].Delete(str(key))
+def db_put(key, dic, DB): return DB['db'].Put(str(key), tools.package(dic))
+def db_delete(key, DB): return DB['db'].Delete(str(key))
 
 def db_existence(key, DB):
     n=str(key)
     try:
-        tools.unpackage(DB['db'].Get(n))
-        return True
+        a=tools.unpackage(DB['db'].Get(n))
+        return not a==default_entry
     except:
         return False
 
@@ -177,6 +172,7 @@ def add_block(block, DB):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
      hashpower. """
+    print('add block')
     def median(mylist):
         if len(mylist) < 1:
             return 0
@@ -232,7 +228,7 @@ def add_block(block, DB):
         return True
 
     if block_check(block, DB):
-        print('add_block: ' + str(block))
+        #print('add_block: ' + str(block))
         db_put(block['length'], block, DB)
         DB['length'] = block['length']
         DB['diffLength'] = block['diffLength']

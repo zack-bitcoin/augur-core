@@ -134,7 +134,7 @@ def miner_controller(reward_address, peers, hashes_till_check, DB):
             worker_mailbox['restart'].set()
 
     def spawn_worker():
-        print("Spawning worker")
+        #print("Spawning worker")
         restart_signal = multiprocessing.Event()
         work_queue = multiprocessing.Queue()
         worker_proc = multiprocessing.Process(target=miner,
