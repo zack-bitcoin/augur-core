@@ -172,7 +172,7 @@ def add_block(block, DB):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
      hashpower. """
-    print('add block')
+    #print('add block')
     def median(mylist):
         if len(mylist) < 1:
             return 0

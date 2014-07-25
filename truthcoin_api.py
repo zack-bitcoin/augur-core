@@ -9,9 +9,13 @@ import random
 import transactions
 import sys
 import txs_tools
+import time
+import command_prompt_advanced
 
 def create_jury(DB): 
     easy_add_transaction({'type': 'create_jury', 'vote_id': DB['args'][0]}, DB)
+def DB_print(DB):
+    return(str(DB))
 def info(DB): 
     if DB['args']<1:
         print('here')
@@ -115,14 +119,22 @@ def me(DB):
     return(a)
 def my_balance(DB, address=custom.address): 
     return(str(blockchain.db_get(address, DB)['amount']-txs_tools.cost_0(DB['txs'], DB)['truthcoin_cost']))
+def wait_till_block(DB):
+    while True:
+        time.sleep(1)
+        b=blockcount(DB)
+        if int(b)>=int(DB['args'][0]):
+            return str(b)
 def balance(DB): 
     return(str(my_balance(DB, raw_input('address'))))
-Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'h':help_, 'help':help_, '?':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, 'me':me}
+Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'h':help_, 'help':help_, '?':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, 'me':me, 'wait_till_block':wait_till_block, '':(lambda DB: 42), 'DB':DB_print}
 def Do_func(DB): return Do.get(DB['command'], lambda DB: str(DB['command']) + ' is not a command. use "?" for a list of commands')(DB)
-def main(DB):
+def main(DB, script):
+    command_prompt_advanced.run_script(DB, script)
     while True:
-        command=raw_input('>>> ')
+        DB['command']=raw_input('>>> ')
         #if command in Do: Do[command](DB)
-        Do_func(DB)
+        out=Do_func(DB)
+        print(out)
         #else: print(str(command) + ' is not a command. use "?" for a list of commands')
 

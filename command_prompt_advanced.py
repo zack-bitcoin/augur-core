@@ -1,72 +1,62 @@
 import sys
 from getch import getch
 import truthcoin_api
-import os
 import copy
-rows, columns = os.popen('stty size', 'r').read().split()
-previous_commands=[]
-zeroto9=['0','1','2','3','4','5','6','7','8','9']
-atoz=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-AtoZ=map(lambda x: x.capitalize(), atoz)
-def delete_letter():
-    sys.stdout.write('\x08')
-    sys.stdout.write(' ')
-    sys.stdout.write('\x08')
-def delete_to_end_of_line(DB, skip=False):
-    sys_print('\033[K')
-    if not skip:
+import time
+
+def sys_print(txt): return sys.stdout.write(txt)
+def row(DB): return DB['output_lengths']+len(DB['previous_commands'])
+def move_cursor(DB, column, row): return sys_print('\033['+str(column+1)+';'+str(row+1)+'H')
+def set_cursor(DB): return move_cursor(DB, row(DB), DB['string_position'])
+def delete_to_end_of_line(DB): return sys_print('\033[K')
+def change_line(DB, f):
+    move_cursor(DB, row(DB), 0)
+    delete_to_end_of_line(DB)
+    f(DB)
+    sys.stdout.write(DB['command'])
+    if DB['string_position']>=DB['command']:
+        DB['string_position']=len(DB['command'])
+    set_cursor(DB)
+def kill(DB):
+    def f(DB):
         DB['yank']=DB['command'][DB['string_position']:]
         DB['command']=DB['command'][:DB['string_position']]
-def yank(DB):
-    for l in DB['yank']:
-        letter(DB, l)
-def move_left(): return sys_print('\033[1D')
+    return change_line(DB, f)
+def type_letter(l):
+    def g(DB):
+        DB['command']=DB['command'][:DB['string_position']]+l+DB['command'][DB['string_position']:]
+        DB['string_position']+=1
+    return lambda DB: change_line(DB, g)
 def backspace(DB):
+    def g(DB):
+        DB['command']=DB['command'][:DB['string_position']-1]+DB['command'][DB['string_position']:]
+        DB['string_position']-=1        
     if not DB['string_position']==0:
-        c=DB['command']
-        s=DB['string_position']
-        DB['command']=c[:s-1]+c[s:]
-        move_left()
-        delete_to_end_of_line(DB, True)
-        sys.stdout.write(c[s:])
-        DB['string_position']-=1
-        set_cursor(DB)
+        change_line(DB, g)
 def forward_delete(DB):
     if not DB['string_position']>=len(DB['command']):
         DB['string_position']+=1
         backspace(DB)
-def letter(DB, l):
-    DB['command']=DB['command'][:DB['string_position']]+l+DB['command'][DB['string_position']:]
-    word(DB, 0)
-    DB['string_position']+=1
-    set_cursor(DB)
-def sys_print(txt): return sys.stdout.write(txt)
-def set_cursor(DB):
-    sys_print('\033['+str(DB['output_lengths']+len(DB['previous_commands'])+1)+';'+str(DB['string_position']+1)+'H')
-def word(DB, n):
-    for i in range(len(DB['command'])):
-        delete_letter()
-    if n!=0:
+def move_vert(n, DB):
+    def f(DB):
         DB['command_pointer']+=n
         DB['command']=DB['previous_commands'][DB['command_pointer']]
-    sys.stdout.write(DB['command'])
-    if DB['string_position']>=DB['command']:
         DB['string_position']=len(DB['command'])
+    change_line(DB, f)
 def up_arrow(DB):
     if not DB['command_pointer']==0:
-        word(DB, -1)
-    DB['string_position']=len(DB['command'])
+        move_vert(-1, DB)
 def down_arrow(DB):
     if DB['command_pointer']<len(DB['previous_commands'])-1:
-        word(DB, 1)
+        move_vert(1, DB)
 def right_arrow(DB):
     if not DB['string_position']>=len(DB['command']):
         DB['string_position']+=1
-        sys_print('\033[1C')
+        set_cursor(DB)
 def left_arrow(DB):
     if not DB['string_position']==0:
         DB['string_position']-=1
-        move_left()
+        set_cursor(DB)
 def front_of_line(DB):
     DB['string_position']=0
     set_cursor(DB)
@@ -86,7 +76,7 @@ def enter(DB):
         DB['args']=c[1:]
         response=truthcoin_api.Do_func(DB)
         if type(response)==str:
-            response_chunks=chunks_of_width(100, response)
+            response_chunks=chunks_of_width(80, response)
             for r in response_chunks:
                 print(r)
                 DB['output_lengths']+=1
@@ -95,56 +85,65 @@ def enter(DB):
 
     if len(DB['previous_commands'])>1000:
         DB['previous_commands'].remove(DB['previous_commands'][0])
+    front_of_line(DB)
     DB['command']=''
     DB['command_pointer']=len(DB['previous_commands'])
-    DB['string_position']=0
-    set_cursor(DB)
 def special_keys(DB):
     key = ord(getch())
     #print('special key 1: ' +str(key))
-    
     key = ord(getch())
     #print('special key 2: ' +str(key))
-    ignore_undefined(key, {'51':forward_delete,
+    read_letter(key, {'51':forward_delete,
                    '65':up_arrow,
                    '66':down_arrow,
                    '67':right_arrow,
                    '68':left_arrow},
              DB)
-letters={
-    '1':front_of_line,
+keyboard={
+    '1':front_of_line,#ctrl+a
     '5':end_of_line,#ctrl+e
     '6':right_arrow,#ctrl+f
     '14':down_arrow,#ctrl+n
     '2':left_arrow,#ctrl+b
     '16':up_arrow,#ctrl+p
-    '11':delete_to_end_of_line,#ctrl+k
+    '11':kill,#ctrl+k
     '127':backspace,
     '4':forward_delete,#ctrl+d
-    '25':yank,#ctrl+y
     '10': enter,
     '27': special_keys,
-    '46':lambda DB: letter(DB, '.'),
-    '32':lambda DB: letter(DB, ' '),
-    '40':lambda DB: letter(DB, '('),
-    '41':lambda DB: letter(DB, ')'),
-    '44':lambda DB: letter(DB, ','),
-    '93':lambda DB: letter(DB, ']'),
-    '91':lambda DB: letter(DB, '['),
-    '63':lambda DB: letter(DB, '?')}
-def ignore_undefined(key, letters, DB): letters.get(str(key), (lambda DB: 42))(DB)
-def clear_screen(): 
-    sys_print('\033[2J')
-    sys_print('\033[H')
-def helper(DB, l, i, m): return (lambda DB: letter(DB, l[i-m]))
-def main(DB):
-    for i in range(48, 58):
-        letters[str(i)]=helper(DB, zeroto9, i, 48)
-    for i in range(97, 123):
-        letters[str(i)]=helper(DB, atoz, i, 97)
-    for i in range(65, 91):
-        letters[str(i)]=helper(DB, AtoZ, i, 65)
-        letters[str(i)]=lambda DB: letter(DB, AtoZ[i-65])
+    '46':type_letter('.'),
+    '32':type_letter(' '),
+    '40':type_letter('('),
+    '41':type_letter(')'),
+    '44':type_letter(','),
+    '93':type_letter(']'),
+    '91':type_letter('['),
+    '95':type_letter('_'),
+    '63':type_letter('?'),
+}
+letters={'\n':enter}
+for l in ['.', ' ', '(', ')', ',', ']', '[', '_', '?']:
+    letters[l]=type_letter(l)
+atoz=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+for l, start in [[['0','1','2','3','4','5','6','7','8','9'], 48],
+                 [atoz, 97],
+                 [map(lambda x: x.capitalize(), atoz), 65]]:
+    for i in range(start, start+len(l)):
+        n=i-start
+        f=type_letter(l[n])
+        keyboard[str(i)]=f
+        letters[str(l[n])]=f
+def read_letter(key, commands, DB): commands.get(str(key), (lambda DB: 42))(DB)
+def yank(DB):
+    for l in DB['yank']:
+        read_letter(l, letters, DB)
+keyboard['25']=yank#ctrl+y
+def clear_screen(DB): return sys_print('\033[2J')
+def run_script(DB, script):
+    DB['yank']=script
+    yank(DB)
+    DB['yank']=''
+def main(DB, script):
     DB['command']=''
     DB['previous_commands']=[]
     DB['command_pointer']=0
@@ -152,8 +151,10 @@ def main(DB):
     DB['yank']=''
     DB['output_lengths']=0
     DB['args']=[]
-    clear_screen()
+    clear_screen(DB)
+    set_cursor(DB)
+    if script!='':
+        run_script(DB, script)
     while True:
         key = ord(getch())
-        #print('key: ' +str(key))
-        ignore_undefined(key, letters, DB)
+        read_letter(key, keyboard, DB)

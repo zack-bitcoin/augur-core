@@ -28,6 +28,7 @@ history_length = 400
 inflection = 0.985
 download_many = 500  # Max number of blocks to request from a peer at the same time.
 max_download = 50000
+cmd_prompt_advanced=True
 brainwallet = 'brain wallet'
 privkey = tools.det_hash(brainwallet)
 pubkey = tools.privtopub(privkey)

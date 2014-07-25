@@ -7,6 +7,14 @@ import leveldb
 import networking
 import command_prompt_advanced
 import sys
+import truthcoin_api
+
+run_script=''
+try:
+    script_lines=file(sys.argv[1],'r').readlines()
+    for line in script_lines:
+        run_script+=line
+except: pass
 
 db = leveldb.LevelDB(custom.database_name)
 DB = {'db': db,
@@ -18,6 +26,10 @@ DB = {'db': db,
       'suggested_txs': [],
       'memoized_votes':{},
       'diffLength': '0'}
+
+cmd_prompt_func=truthcoin_api.main
+if custom.cmd_prompt_advanced:
+    cmd_prompt_func=command_prompt_advanced.main
 
 worker_tasks = [
     # Keeps track of blockchain database, checks on peers for new blocks and
@@ -36,8 +48,8 @@ worker_tasks = [
 #    {'target': gui.main,
 #     'args': (custom.gui_port, custom.brainwallet, DB),
 #     'daemon': True},
-    {'target': command_prompt_advanced.main,
-     'args': (DB,),
+    {'target': cmd_prompt_func,
+     'args': (DB,run_script),
      'daemon': True},
 ]
 networking.kill_processes_using_ports([str(custom.gui_port),
