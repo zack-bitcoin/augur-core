@@ -18,10 +18,10 @@ def main(dic, DB):
     def blockCount(dic, DB):
         length = DB['length']
         if length >= 0:
-            return {'length': length, 'recentHash': DB['recentHash'],
+            return {'length': length,
                     'diffLength': DB['diffLength']}
         else:
-            return {'length': -1, 'recentHash': 0, 'diffLength': '0'}
+            return {'length': -1, 'diffLength': '0'}
 
     def rangeRequest(dic, DB):
         ran = dic['range']

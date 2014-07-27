@@ -156,5 +156,7 @@ def main(DB, script):
     if script!='':
         run_script(DB, script)
     while True:
+        if DB['stop']:
+            sys.exit(1)
         key = ord(getch())
         read_letter(key, keyboard, DB)

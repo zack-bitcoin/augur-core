@@ -12,7 +12,7 @@ import multiprocessing
 import random
 import time
 import copy
-
+import sys
 
 def peers_check(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
@@ -115,6 +115,8 @@ def miner_controller(reward_address, peers, hashes_till_check, DB):
         return out
 
     def make_block(prev_block, txs, pubkey, DB):
+        #print('DB: ' +str(DB))
+        #print('prev: ' +str(prev_block))
         leng = int(prev_block['length']) + 1
         target = blockchain.target(DB, leng)
         diffLength = blockchain.hexSum(prev_block['diffLength'],
@@ -171,7 +173,8 @@ def miner_controller(reward_address, peers, hashes_till_check, DB):
             continue
         DB['suggested_blocks'].append(solved_block)
         restart_workers()
-
+        if DB['stop']:
+            sys.exit(1)
 
 def miner(block_submit_queue, get_work_queue, restart_signal):
     def POW(block, hashes):

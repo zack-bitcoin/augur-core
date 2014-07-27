@@ -8,6 +8,8 @@ import networking
 import command_prompt_advanced
 import sys
 import truthcoin_api
+import tools
+import blockchain
 
 run_script=''
 try:
@@ -15,18 +17,23 @@ try:
     for line in script_lines:
         run_script+=line
 except: pass
-
 db = leveldb.LevelDB(custom.database_name)
-DB = {'db': db,
-      'recentHash': 0,
-      'length': -1,
-      'sigLength': -1,
+DB = {'stop':False,
+      'db': db,
+      #'sigLength': -1,
       'txs': [],
       'suggested_blocks': [],
       'suggested_txs': [],
       'memoized_votes':{},
       'diffLength': '0'}
-
+def len_f(i, DB):
+    if not blockchain.db_existence(str(i), DB): return i-1
+    return len_f(i+1, DB)
+DB['length']=len_f(0, DB)
+DB['diffLength']='0'
+if DB['length']>-1:
+    print('DB: ' +str(DB))
+    DB['diffLength']=blockchain.db_get(str(DB['length']), DB)['diffLength']
 cmd_prompt_func=truthcoin_api.main
 if custom.cmd_prompt_advanced:
     cmd_prompt_func=command_prompt_advanced.main
@@ -36,10 +43,10 @@ worker_tasks = [
     # transactions.
     {'target': consensus.miner_controller,
      'args': (custom.pubkey, custom.peers, custom.hashes_per_check, DB),
-     'daemon': True},
+     'daemon': False},
     {'target': consensus.mainloop,
      'args': (custom.peers, DB),
-     'daemon': True},
+     'daemon': True},#it makes more threads, so it can't be a daemon.
     # Listens for peers. Peers might ask us for our blocks and our pool of
     # recent transactions, or peers could suggest blocks and transactions to us.
     {'target': listener.server,
@@ -66,9 +73,10 @@ def start_worker_proc(**kwargs):
 
 #print('tasks: ' + str(worker_tasks))
 workers = [start_worker_proc(**task_info) for task_info in worker_tasks]
-try:
-    while True:
-        time.sleep(100)
-except:
-    print("Exiting.")
-    sys.exit(1)
+while not DB['stop']:
+    #print('in loop')
+    time.sleep(0.5)
+print('stopping all threads...')
+time.sleep(5)
+sys.exit(1)
+
