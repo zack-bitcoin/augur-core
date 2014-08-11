@@ -1,3 +1,4 @@
+
 """ gui.py uses this file to display html to browser. """
 from Yashttpd import serve_forever, CONQ, CHUNK
 from urlparse import parse_qs
