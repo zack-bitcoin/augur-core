@@ -2,9 +2,6 @@ import pt
 import hashlib
 from json import dumps as package, loads as unpackage
 from collections import OrderedDict
-def log(tx):
-    with open("log.py", "a") as myfile:
-        myfile.write(tx+'\n')
 def addr(tx): return make_address(tx['pubkeys'], len(tx['signatures']))
 def sign(msg, privkey): return pt.ecdsa_sign(msg, privkey)
 def verify(msg, sig, pubkey): return pt.ecdsa_verify(msg, sig, pubkey)

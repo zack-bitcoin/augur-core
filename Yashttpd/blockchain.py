@@ -45,8 +45,6 @@ def count(address, DB):
 
 def add_tx(tx, DB):
     # Attempt to add a new transaction into the pool.
-    if type(tx) != type({'a':1}): 
-        return False
     address = tools.make_address(tx['pubkeys'], len(tx['signatures']))
 
     def verify_count(tx, txs):

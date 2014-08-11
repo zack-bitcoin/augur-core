@@ -3,8 +3,6 @@ import tools
 import hashlib
 
 
-peers = [['localhost', 8901],
-         ['localhost', 8902]]
 database_name = 'DB.db'
 listen_port=8900
 gui_port=8700
@@ -30,11 +28,16 @@ history_length = 400
 inflection = 0.985
 download_many = 500  # Max number of blocks to request from a peer at the same time.
 max_download = 50000
-#cmd_prompt_advanced=True
+cmd_prompt_advanced=True
 brainwallet = 'brain wallet'
 privkey = tools.det_hash(brainwallet)
 pubkey = tools.privtopub(privkey)
 address = tools.make_address([pubkey], 1)
+peers = [['localhost', 8901],
+         ['localhost', 8902],
+         ['localhost', 8903],
+         ['localhost', 8904],
+         ['localhost', 8905]]
 hashes_per_check = 10 ** 4
 
 '''

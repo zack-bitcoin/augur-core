@@ -16,10 +16,20 @@ INSTALL (for ubuntu)
 To run 1 node
 
     python workers.py
+    and send your browser to: http://localhost:8701
 
-Then send your browser to:
+To quickly run 5 nodes
 
-     http://localhost:8700
+    ./go.sh
+
+Then send your browser to 
+
+    http://localhost:8701
+    http://localhost:8702
+    http://localhost:8703
+    http://localhost:8704
+    http://localhost:8705
+
 
 For now, there is a 20-block cycle.
 1-10: votecoin-holders may give encrypted votes on decisions. (in the final version of truthcoin, this step will take 1000+ blocks)

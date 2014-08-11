@@ -143,8 +143,7 @@ def run_script(DB, script):
     DB['yank']=script
     yank(DB)
     DB['yank']=''
-def main(script):
-    DB={}
+def main(DB, script):
     DB['command']=''
     DB['previous_commands']=[]
     DB['command_pointer']=0
@@ -157,7 +156,6 @@ def main(script):
     if script!='':
         run_script(DB, script)
     while True:
-        time.sleep(0.2)
         if DB['stop']:
             sys.exit(1)
         key = ord(getch())

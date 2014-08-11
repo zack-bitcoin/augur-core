@@ -17,6 +17,7 @@ import sys
 def peers_check(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     def peer_check(peer, DB):
+
         def cmd(x):
             return networking.send_command(peer, x)
 
@@ -61,7 +62,6 @@ def peers_check(peers, DB):
             return []
 
         block_count = cmd({'type': 'blockCount'})
-        tools.log('block count: ' +str(block_count))
         if not isinstance(block_count, dict):
             return
         if 'error' in block_count.keys():
@@ -70,8 +70,6 @@ def peers_check(peers, DB):
         size = max(len(DB['diffLength']), len(block_count['diffLength']))
         us = tools.buffer_(DB['diffLength'], size)
         them = tools.buffer_(block_count['diffLength'], size)
-        tools.log('us: ' +str(us))
-        tools.log('them: ' +str(them))
         if them < us:
             return give_block(peer, DB, block_count)
         if us == them:
@@ -83,7 +81,6 @@ def peers_check(peers, DB):
 
 
 def suggestions(DB):
-    tools.log('in suggestions: ' +str(DB['suggested_txs']))
     [blockchain.add_tx(tx, DB) for tx in DB['suggested_txs']]
     DB['suggested_txs'] = []
     [blockchain.add_block(block, DB) for block in DB['suggested_blocks']]
@@ -175,7 +172,6 @@ def miner_controller(reward_address, peers, hashes_till_check, DB):
         solved_block = submitted_blocks.get()  # TODO(roasbeef): size=1?
         if solved_block['length'] != length + 1:
             continue
-        #tools.log('potential block: '+str(solved_block))
         DB['suggested_blocks'].append(solved_block)
         restart_workers()
         if DB['stop']:

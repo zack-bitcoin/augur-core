@@ -10,7 +10,6 @@ import sys
 import truthcoin_api
 import tools
 import blockchain
-import gui
 
 run_script=''
 try:
@@ -35,9 +34,9 @@ DB['diffLength']='0'
 if DB['length']>-1:
     print('DB: ' +str(DB))
     DB['diffLength']=blockchain.db_get(str(DB['length']), DB)['diffLength']
-#cmd_prompt_func=truthcoin_api.main
-#if custom.cmd_prompt_advanced:
-#    cmd_prompt_func=command_prompt_advanced.main
+cmd_prompt_func=truthcoin_api.main
+if custom.cmd_prompt_advanced:
+    cmd_prompt_func=command_prompt_advanced.main
 
 worker_tasks = [
     # Keeps track of blockchain database, checks on peers for new blocks and
@@ -53,8 +52,11 @@ worker_tasks = [
     {'target': listener.server,
      'args': (DB,),
      'daemon': True},
-    {'target': gui.main,
-     'args': (custom.gui_port, custom.brainwallet, DB),
+#    {'target': gui.main,
+#     'args': (custom.gui_port, custom.brainwallet, DB),
+#     'daemon': True},
+    {'target': cmd_prompt_func,
+     'args': (DB,run_script),
      'daemon': True},
 ]
 networking.kill_processes_using_ports([str(custom.gui_port),

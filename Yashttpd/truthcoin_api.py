@@ -140,7 +140,7 @@ def accumulate_words(l, out=''):
 def main(DB, script):
     command_prompt_advanced.run_script(DB, script)
     while True:
-        time.sleep(1)
+        time.sleep(0.1)
         DB['command']=raw_input('>>> ')
         #if command in Do: Do[command](DB)
         out=Do_func(DB)
