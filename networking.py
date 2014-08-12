@@ -75,7 +75,7 @@ def serve_forever(message_handler_func, PORT, queue):
 def connect(msg, host, port):
     #tools.log('attempting to connect')
     if len(msg) < 1 or len(msg) > MAX_MESSAGE_SIZE:
-        print('wrong sized message')
+        tools.log('wrong sized message')
         return
     s = socket.socket()
     s.setblocking(0)

@@ -152,7 +152,7 @@ def miner_controller(reward_address, peers, hashes_till_check, DB):
 
     submitted_blocks = multiprocessing.Queue()
     num_cores = multiprocessing.cpu_count()
-    print("Creating %d mining workers." % num_cores)
+    tools.log("Creating %d mining workers." % num_cores)
     worker_mailboxes = [spawn_worker() for _ in range(num_cores)]
     candidate_block = None
     length = None

@@ -86,7 +86,7 @@ workers = [start_worker_proc(**task_info) for task_info in worker_tasks]
 while not DB['stop']:
     #print('in loop')
     time.sleep(0.5)
-print('stopping all threads...')
+tools.log('stopping all threads...')
 cmd.join()
 time.sleep(5)
 sys.exit(1)

@@ -59,18 +59,18 @@ def fee_check(tx, txs, DB):
     votecoin_cost = cost_['votecoin_cost']
     acc=blockchain.db_get(address, DB)
     if int(acc['amount']) < truthcoin_cost: 
-        print('insufficient truthcoin')
+        tools.log('insufficient truthcoin')
         return False
     for v_id in votecoin_cost:
         if v_id not in acc['votecoin']: 
-            print('votecoin_cost: ' +str(votecoin_cost))
-            print('acc: ' +str(acc))
-            print('0 votecoin: ' +str(v_id))
+            tools.log('votecoin_cost: ' +str(votecoin_cost))
+            tools.log('acc: ' +str(acc))
+            tools.log('0 votecoin: ' +str(v_id))
             return False
         if acc['votecoin'][v_id]<votecoin_cost[v_id]: 
-            print(acc['votecoin'][v_id])
-            print(votecoin_cost[v_id])
-            print('not enough votecoin: ' +str(v_id))
+            tools.log(acc['votecoin'][v_id])
+            tools.log(votecoin_cost[v_id])
+            tools.log('not enough votecoin: ' +str(v_id))
             return False
     return True
 

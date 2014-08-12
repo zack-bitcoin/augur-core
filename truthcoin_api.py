@@ -139,7 +139,7 @@ def accumulate_words(l, out=''):
 def main(DB, i_queue, o_queue):
     #command_prompt_advanced.run_script(DB, script)
     while True:
-        time.sleep(2)
+        time.sleep(0.4)
         if not(i_queue.empty()):
             command=i_queue.get()
             if command[0] in Do: 

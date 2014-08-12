@@ -3,6 +3,7 @@ from getch import getch
 import copy
 import time
 import tools
+import signal
 
 def sys_print(txt): return sys.stdout.write(txt)
 def row(DB): return DB['output_lengths']+len(DB['previous_commands'])
@@ -86,8 +87,6 @@ def enter(DB):
     front_of_line(DB)
     DB['command']=''
     DB['command_pointer']=len(DB['previous_commands'])
-    while DB['oq'].empty():
-        time.sleep(0.1)
 def special_keys(DB):
     key = ord(getch())
     #print('special key 1: ' +str(key))
@@ -143,6 +142,8 @@ def run_script(DB, script):
     DB['yank']=script
     yank(DB)
     DB['yank']=''
+def handler(signum, frame):
+    pass
 def main(i_queue, o_queue, script):
     DB={}
     DB['command']=''
@@ -165,9 +166,14 @@ def main(i_queue, o_queue, script):
             for r in response_chunks:
                 print(r)
                 DB['output_lengths']+=1#here
-        time.sleep(0.05)
-        key = ord(getch())
-        read_letter(key, keyboard, DB)
+        try:
+            signal.signal(signal.SIGALRM, handler)
+            signal.alarm(1)
+            key = ord(getch())
+            signal.alarm(0)
+            read_letter(key, keyboard, DB)
+        except Exception, exc:
+            pass
 
 
 

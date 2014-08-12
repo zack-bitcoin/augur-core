@@ -16,39 +16,39 @@ def spend_verify(tx, txs, DB):
     tx_copy = copy.deepcopy(tx)
     tx_copy_2 = copy.deepcopy(tx)
     if not E_check(tx, 'to', [str, unicode]):
-        print('no to')
+        tools.log('no to')
         return False
     #if is_number(tx['to']):
-    #    print('thats a number, not a person')
+    #    tools.log('thats a number, not a person')
     #    return False
     if len(tx['to'])<=30:
         #this system supports a maximum of 10^30 blocks.
-        print('that address is too short')
-        print('tx: ' +str(tx))
+        tools.log('that address is too short')
+        tools.log('tx: ' +str(tx))
         return False
     if not E_check(tx, 'signatures', list):
-        print('no signautres')
+        tools.log('no signautres')
         return False
     if not E_check(tx, 'pubkeys', list):
-        print('no pubkeys')
+        tools.log('no pubkeys')
         return False
     if not E_check(tx, 'amount', int):
-        print('no amount')
+        tools.log('no amount')
         return False
     tx_copy.pop('signatures')
     if len(tx['pubkeys']) == 0:
-        print('pubkey error')
+        tools.log('pubkey error')
         return False
     if len(tx['signatures']) > len(tx['pubkeys']):
-        print('sigs too long')
+        tools.log('sigs too long')
         return False
     msg = tools.det_hash(tx_copy)
     if not sigs_match(copy.deepcopy(tx['signatures']),
                       copy.deepcopy(tx['pubkeys']), msg):
-        print('sigs do not match')
+        tools.log('sigs do not match')
         return False
     if not txs_tools.fee_check(tx, txs, DB):
-        print('fee check error')
+        tools.log('fee check error')
         return False
     return True
 
