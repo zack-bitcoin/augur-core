@@ -61,7 +61,7 @@ def peers_check(peers, DB):
             return []
 
         block_count = cmd({'type': 'blockCount'})
-        tools.log('block count: ' +str(block_count))
+        #tools.log('block count: ' +str(block_count))
         if not isinstance(block_count, dict):
             return
         if 'error' in block_count.keys():
@@ -83,7 +83,7 @@ def peers_check(peers, DB):
 
 
 def suggestions(DB):
-    tools.log('in suggestions: ' +str(DB['suggested_txs']))
+    #tools.log('in suggestions: ' +str(DB['suggested_txs']))
     [blockchain.add_tx(tx, DB) for tx in DB['suggested_txs']]
     DB['suggested_txs'] = []
     [blockchain.add_block(block, DB) for block in DB['suggested_blocks']]

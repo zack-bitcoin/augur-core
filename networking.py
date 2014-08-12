@@ -73,7 +73,7 @@ def serve_forever(message_handler_func, PORT, queue):
 '''
 
 def connect(msg, host, port):
-    tools.log('attempting to connect')
+    #tools.log('attempting to connect')
     if len(msg) < 1 or len(msg) > MAX_MESSAGE_SIZE:
         print('wrong sized message')
         return
@@ -81,7 +81,7 @@ def connect(msg, host, port):
     s.setblocking(0)
     try:
         #s.settimeout(2)
-        tools.log('how far1')
+        #tools.log('how far1')
         s.connect((str(host), int(port)))
         tools.log('how far2')
         msg['version'] = custom.version

@@ -45,6 +45,7 @@ def count(address, DB):
 
 def add_tx(tx, DB):
     # Attempt to add a new transaction into the pool.
+    out=['']
     if type(tx) != type({'a':1}): 
         return False
     address = tools.make_address(tx['pubkeys'], len(tx['signatures']))
@@ -54,37 +55,41 @@ def add_tx(tx, DB):
 
     def type_check(tx, txs):
         if not tools.E_check(tx, 'type', [str, unicode]):
-            print('blockchain type')
+            out[0]+='blockchain type'
             return False
         if tx['type'] == 'mint':
             return False
         if tx['type'] not in transactions.tx_check:
-            print('bad type')
+            out[0]+='bad type'
             return False
         return True
 
     def too_big_block(tx, txs):
         return len(tools.package(txs+[tx])) > networking.MAX_MESSAGE_SIZE - 5000
 
-    def verify_tx(tx, txs):
+    def verify_tx(tx, txs, out):
         if not type_check(tx, txs):
-            print('type error')
+            out[0]+='type error'
             return False
         if tx in txs:
-            print('no duplicates')
+            out[0]+='no duplicates'
             return False
         if verify_count(tx, txs):
-            print('count error')
+            out[0]+='count error'
             return False
         if too_big_block(tx, txs):
-            print('too many txs')
+            out[0]+='too many txs'
             return False
         if not transactions.tx_check[tx['type']](tx, txs, DB):
-            print('failed to add tx: ' +str(tx))
+            out[0]+='update transactions.py to find out why. print statements are no good. ' +str(tx)
             return False
         return True
-    if verify_tx(tx, DB['txs']):
+    if verify_tx(tx, DB['txs'], out):
         DB['txs'].append(tx)
+        return('added tx: ' +str(tx))
+    else:
+        return('failed to add tx because: '+out[0])
+        
 
 targets = {}
 times = {}  # Stores blocktimes

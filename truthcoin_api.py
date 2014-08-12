@@ -13,7 +13,7 @@ import time
 import command_prompt_advanced
 
 def create_jury(DB): 
-    easy_add_transaction({'type': 'create_jury', 'vote_id': DB['args'][0]}, DB)
+    return easy_add_transaction({'type': 'create_jury', 'vote_id': DB['args'][0]}, DB)
 def DB_print(DB):
     return(str(DB))
 def info(DB): 
@@ -110,8 +110,7 @@ def easy_add_transaction(tx_orig, DB):
     except:
         tx['count'] = 1
     tx['signatures'] = [tools.sign(tools.det_hash(tx), custom.privkey)]
-    blockchain.add_tx(tx, DB)
-    return('CREATED TX: ' + str(tx))
+    return(blockchain.add_tx(tx, DB))
 
 
 def help_(DB):      return(str('available commands: '+str(Do.keys())))
@@ -133,18 +132,27 @@ def balance(DB): return(str(my_balance(DB, raw_input('address'))))
 def log(DB): tools.log(accumulate_words(DB['args'])[1:])
 def stop_(DB): DB['stop']=True
 Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'h':help_, 'help':help_, '?':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, 'me':me, 'wait_till_block':wait_till_block, '':(lambda DB: 42), 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_}
-def Do_func(DB): return Do.get(DB['command'], lambda DB: str(DB['command']) + ' is not a command. use "?" for a list of commands')(DB)
+#def Do_func(DB): return Do.get(DB['command'], lambda DB: str(DB['command']) + ' is not a command. use "?" for a list of commands')(DB)
 def accumulate_words(l, out=''):
     if len(l)>0: return accumulate_words(l[1:], out+' '+l[0])
     return out
-def main(DB, script):
-    command_prompt_advanced.run_script(DB, script)
+def main(DB, i_queue, o_queue):
+    #command_prompt_advanced.run_script(DB, script)
     while True:
-        time.sleep(1)
-        DB['command']=raw_input('>>> ')
+        time.sleep(2)
+        if not(i_queue.empty()):
+            command=i_queue.get()
+            if command[0] in Do: 
+                DB['args']=command[1:]
+                out=Do[command[0]](DB)
+            else: 
+                out=str(command[0]) + ' is not a command. use "?" for a list of commands'
+            #tools.log('tryint to print: ' +str(out))
+            o_queue.put(out)
+        #DB['command']=raw_input('>>> ')
         #if command in Do: Do[command](DB)
-        out=Do_func(DB)
-        print(out)
+        #out=Do_func(DB)
+        #print(out)
         #tools.log(out)
         #else: print(str(command) + ' is not a command. use "?" for a list of commands')
 

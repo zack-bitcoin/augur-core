@@ -1,8 +1,8 @@
 import sys
 from getch import getch
-import truthcoin_api
 import copy
 import time
+import tools
 
 def sys_print(txt): return sys.stdout.write(txt)
 def row(DB): return DB['output_lengths']+len(DB['previous_commands'])
@@ -71,23 +71,23 @@ def enter(DB):
     DB['previous_commands'].append(DB['command'])
     c=copy.deepcopy(DB['command'])
     c=c.split(' ')
-    if len(c)>0: 
-        DB['command']=c[0]
-        DB['args']=c[1:]
-        response=truthcoin_api.Do_func(DB)
-        if type(response)==str:
-            response_chunks=chunks_of_width(80, response)
-            for r in response_chunks:
-                print(r)
-                DB['output_lengths']+=1
-    else: 
-        error('crazy')
-
+    tools.log('c: ' +str(c))
+    DB['iq'].put(c)
+        #response=truthcoin_api.Do_func(DB)#remove this line till...
+        #if type(response)==str:
+        #    response_chunks=chunks_of_width(80, response)
+        #    for r in response_chunks:
+        #        print(r)
+        #        DB['output_lengths']+=1#here
+    if c[0]=='stop':
+        sys.exit(1)
     if len(DB['previous_commands'])>1000:
         DB['previous_commands'].remove(DB['previous_commands'][0])
     front_of_line(DB)
     DB['command']=''
     DB['command_pointer']=len(DB['previous_commands'])
+    while DB['oq'].empty():
+        time.sleep(0.1)
 def special_keys(DB):
     key = ord(getch())
     #print('special key 1: ' +str(key))
@@ -143,7 +143,7 @@ def run_script(DB, script):
     DB['yank']=script
     yank(DB)
     DB['yank']=''
-def main(script):
+def main(i_queue, o_queue, script):
     DB={}
     DB['command']=''
     DB['previous_commands']=[]
@@ -152,13 +152,22 @@ def main(script):
     DB['yank']=''
     DB['output_lengths']=0
     DB['args']=[]
+    DB['iq']=i_queue
+    DB['oq']=o_queue
     clear_screen(DB)
     set_cursor(DB)
-    if script!='':
-        run_script(DB, script)
+    run_script(DB, script)
     while True:
-        time.sleep(0.2)
-        if DB['stop']:
-            sys.exit(1)
+        while not(o_queue.empty()):
+            response=o_queue.get()
+            tools.log('from o_queue: ' +str(response))
+            response_chunks=chunks_of_width(80, str(response))
+            for r in response_chunks:
+                print(r)
+                DB['output_lengths']+=1#here
+        time.sleep(0.05)
         key = ord(getch())
         read_letter(key, keyboard, DB)
+
+
+

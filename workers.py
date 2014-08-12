@@ -11,12 +11,21 @@ import truthcoin_api
 import tools
 import blockchain
 import gui
+from multiprocessing import Queue, Process
 
+i_queue=Queue()
+o_queue=Queue()
 run_script=''
 try:
+    '''
     script_lines=file(sys.argv[1],'r').readlines()
+    tools.log('script_lines: ' +str(script_lines))
+    script=[]
     for line in script_lines:
-        run_script+=line
+        script
+        i_queue.put(line[:-1].split(' '))
+    '''
+    script=file(sys.argv[1],'r').read()
 except: pass
 db = leveldb.LevelDB(custom.database_name)
 DB = {'stop':False,
@@ -33,7 +42,7 @@ def len_f(i, DB):
 DB['length']=len_f(0, DB)
 DB['diffLength']='0'
 if DB['length']>-1:
-    print('DB: ' +str(DB))
+    #print('DB: ' +str(DB))
     DB['diffLength']=blockchain.db_get(str(DB['length']), DB)['diffLength']
 #cmd_prompt_func=truthcoin_api.main
 #if custom.cmd_prompt_advanced:
@@ -53,16 +62,19 @@ worker_tasks = [
     {'target': listener.server,
      'args': (DB,),
      'daemon': True},
-    {'target': gui.main,
-     'args': (custom.gui_port, custom.brainwallet, DB),
-     'daemon': True},
+    #{'target': gui.main,
+    # 'args': (custom.gui_port, custom.brainwallet, DB),
+    # 'daemon': True},
+    {'target': truthcoin_api.main,
+     'args': (DB, i_queue, o_queue),
+     'daemon':True}
 ]
 networking.kill_processes_using_ports([str(custom.gui_port),
                                        str(custom.listen_port)])
-
-
+cmd=Process(target=command_prompt_advanced.main, args=(i_queue, o_queue, script))
+cmd.start()
 def start_worker_proc(**kwargs):
-    print("Making worker thread.")
+    #print("Making worker thread.")
     is_daemon = kwargs.pop('daemon', True)
     proc = threading.Thread(**kwargs)
     proc.daemon = is_daemon
@@ -75,6 +87,7 @@ while not DB['stop']:
     #print('in loop')
     time.sleep(0.5)
 print('stopping all threads...')
+cmd.join()
 time.sleep(5)
 sys.exit(1)
 
