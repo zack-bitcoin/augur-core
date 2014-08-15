@@ -4,7 +4,6 @@ import copy
 import tools
 import blockchain
 import custom
-import http
 import random
 import transactions
 import sys
