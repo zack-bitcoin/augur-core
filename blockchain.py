@@ -129,7 +129,7 @@ def target(DB, length=0):
     if length == 0:
         length = DB['length']
     if length < 4:
-        return '0' * 4 + 'f' * 60  # Use same difficulty for first few blocks.
+        return '0' * 4 + '6' * 60  # Use same difficulty for first few blocks.
     if length <= DB['length'] and str(length) in targets:
         return targets[str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
 
@@ -276,3 +276,16 @@ def delete_block(DB):
         DB['diffLength'] = block['diffLength']
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
+
+def suggestion_txs(DB):
+    #tools.log('in suggestions: ' +str(DB['suggested_txs']))
+    while True:
+        time.sleep(2)
+        [add_tx(tx, DB) for tx in DB['suggested_txs']]
+        DB['suggested_txs'] = []
+def suggestion_blocks(DB):
+    while True:
+        time.sleep(2)
+        [add_block(block, DB) for block in DB['suggested_blocks']]
+        DB['suggested_blocks'] = []
+

@@ -15,5 +15,5 @@ info 2
 info 3
 info 4
 info 5
-wait_till_block 11
-stop
+info 6
+ stop

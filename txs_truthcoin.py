@@ -61,7 +61,7 @@ def jury_vote_check(tx, txs, DB):
         tools.log('that is not a decision_id')
         tools.log('decision: ' +str(decision))
         tools.log('tx: ' +str(tx))
-        error()
+        #error()
         return False
     if decision['state']!='proposed':
         tools.log('this decision has already been decided')

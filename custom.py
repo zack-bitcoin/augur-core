@@ -44,4 +44,4 @@ def blocktime(length):
     else:
         return 60
 '''
-def blocktime(length): return 5
+def blocktime(length): return 20

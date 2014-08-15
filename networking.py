@@ -5,39 +5,64 @@ import re
 import tools
 import custom
 import time
+import sys
 MAX_MESSAGE_SIZE = 60000
 
 
-def kill_processes_using_ports(ports):
-    popen = subprocess.Popen(['netstat', '-lpn'],
-                             shell=False,
-                             stdout=subprocess.PIPE)
-    (data, err) = popen.communicate()
-    pattern = "^tcp.*((?:{0})).* (?P<pid>[0-9]*)/.*$"
-    pattern = pattern.format(')|(?:'.join(ports))
-    prog = re.compile(pattern)
-    for line in data.split('\n'):
-        match = re.match(prog, line)
-        if match:
-            pid = match.group('pid')
-            subprocess.Popen(['kill', '-9', pid])
+def recvall(sock, max_size):
+    data = ''
+    while not tools.can_unpack(data):
+        time.sleep(0.1)
+        try:
+            d=sock.recv(max_size - len(data))
+            if not d:
+                #connection broken
+                return {'recvall error':data}
+            data += d
+        except:
+            tools.log("error: " + str(sys.exc_info()[0]))
+            tools.log("error: " + str(sys.exc_info()[1]))
+            tools.log("error: " + str(sys.exc_info()[2]))
+            pass
 
-def can_unpack(o):
-    try:
-        tools.unpackage(o)
-        return True
-    except:
-        return False
+    return data
+def sendall(sock, data):
+    while data:
+        time.sleep(0.1)
+        sent = sock.send(data)
+        data = data[sent:]
 
-def serve_forever(message_handler_func, PORT, queue):
+#def test_handler_func(data, DB):
+#    return str(data)+str(data)+str(data)
+#def test_server():
+#    kill_processes_using_ports([str(8700)])
+#    serve_forever(test_handler_func, 8700, {})
+#def connect_socket(sock, ip, port):
+#    while True:
+#        try:
+#            sock.connect((ip, port))
+#            return 
+#        except:
+#            tools.log("error in connect_socket: " + str(sys.exc_info()#[0]))
+#            pass
+def test_connect():
+    s = socket.socket()
+    s.setblocking(0)
+    connect_socket(s, '127.0.0.1', 8700)
+    tools.log('connecting')
+    sendall(s, tools.package('123456790'*100))
+    tools.log('connected')
+    response=recvall(s, 100000)
+    return response
+
+def serve_forever(peers_queue, PORT):
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    tools.kill_processes_using_ports([str(PORT)])
     server.bind(('127.0.0.1', PORT))
-    #server.listen(100)
+    server.listen(100)
     server.setblocking(0)
     while True:
-        time.sleep(0.1)
-        data=''
         flag=True
         try:
             client, addr = server.accept()
@@ -46,32 +71,7 @@ def serve_forever(message_handler_func, PORT, queue):
         if flag:
             tools.log('heard peer!')
             (ip, port) = addr
-            while not can_unpack(data):
-                time.sleep(0.1)
-                data = client.recv(MAX_MESSAGE_SIZE)
-                if len(response) == 0:
-                    error('peer disconnected')
-                    #we could insert security checks here
-                tools.log('serve forever recieved: ' +str(data))
-            data = tools.unpackage(data)
-            client.sendall(tools.package(message_handler_func(data, queue)))
-
-'''old
-def serve_forever(message_handler_func, PORT, queue):
-    server = socket.socket()
-    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server.bind(('127.0.0.1', PORT))
-    server.listen(100)
-    while True:
-        time.sleep(0.1)
-        client, addr = server.accept()
-        (ip, port) = addr
-        data = client.recv(MAX_MESSAGE_SIZE)
-        #we could insert security checks here
-        data = tools.unpackage(data)
-        client.sendall(tools.package(message_handler_func(data, queue)))
-'''
-
+            peers_queue.put(client)
 def connect(msg, host, port):
     #tools.log('attempting to connect')
     if len(msg) < 1 or len(msg) > MAX_MESSAGE_SIZE:
@@ -81,27 +81,20 @@ def connect(msg, host, port):
     s.setblocking(0)
     try:
         #s.settimeout(2)
-        #tools.log('how far1')
+        tools.log('how far1 '+str(host)+' '+str(port))
         s.connect((str(host), int(port)))
         tools.log('how far2')
         msg['version'] = custom.version
         tools.log('how far3')
-        s.sendall(tools.package(msg))
+        sendall(s, tools.package(msg))
+        #s.sendall(tools.package(msg))
         tools.log('how far4')
-        response = ''
-        while not can_unpack(response):
-            tools.log('in send message loop')
-            time.sleep(0.1)
-            response = s.recv(MAX_MESSAGE_SIZE)
-            if len(response) == 0:
-                error('peer disconnected')
-        #print(response)
-        return tools.unpackage(response)
+        response=recvall(s, MAX_MESSAGE_SIZE)
+         return tools.unpackage(response)
     except Exception as e:
-        #print('THE ERROR WAS: ' +str(e))
+        tools.log('THE ERROR WAS: ' +str(e))
         #print('disconnect')
         return {'error': e}
-
 
 def send_command(peer, msg):
     return connect(msg, peer[0], peer[1])
