@@ -15,7 +15,7 @@ INSTALL (for ubuntu)
 
 To run 1 node
 
-    python workers.py
+    python main.py
 
 Then send your browser to:
 

@@ -39,6 +39,7 @@ def serve_forever(PORT, handler):
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     tools.kill_processes_using_ports([str(PORT)])
+    time.sleep(2)
     server.bind(('127.0.0.1', PORT))
     server.listen(100)
     server.setblocking(0)

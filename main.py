@@ -59,7 +59,6 @@ worker_tasks = [
      'args': (custom.port, lambda d: message_handler.main(d, DB)),
      'daemon': True}
 ]
-tools.kill_processes_using_ports([str(custom.port)])
 processes= [#these do NOT share memory with the rest.
     {'target':command_prompt_advanced.main, 
      'args':(i_queue, o_queue, script)}
