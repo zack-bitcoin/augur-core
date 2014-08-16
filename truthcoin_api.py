@@ -133,22 +133,23 @@ def accumulate_words(l, out=''):
 def main(DB, i_queue, o_queue):
     #command_prompt_advanced.run_script(DB, script)
     while True:
-        time.sleep(0.1)
-        if not(i_queue.empty()):
-            command=i_queue.get()
-            if command[0] in Do: 
-                DB['args']=command[1:]
-                out=Do[command[0]](DB)
-            else: 
-                out=str(command[0]) + ' is not a command. use "?" for a list of commands'
-            #tools.log('tryint to print: ' +str(out))
-            o_queue.put(out)
-        #DB['command']=raw_input('>>> ')
-        #if command in Do: Do[command](DB)
-        #out=Do_func(DB)
-        #print(out)
-        #tools.log(out)
-        #else: print(str(command) + ' is not a command. use "?" for a list of commands')
+        main_helper(DB, i_queue, o_queue)
+
+def main_helper(DB, i_queue, o_queue):
+    time.sleep(0.1)
+    try:
+        if i_queue.empty():
+            return
+        command=i_queue.get(False)
+        if command[0] in Do: 
+            DB['args']=command[1:]
+            out=Do[command[0]](DB)
+        else: 
+            out=str(command[0]) + ' is not a command. use "?" for a list of commands'
+        o_queue.put(out)
+    except:
+        tools.log('truthcoin error: '+str(sys.exc_info()))
+        pass
 
 
 

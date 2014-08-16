@@ -14,7 +14,7 @@ import time
 import copy
 import sys
 
-def make_mint(pubkey, pubkey, DB):
+def make_mint(pubkey, DB):
     address = tools.make_address([pubkey], 1)
     return {'type': 'mint',
             'pubkeys': [pubkey],
@@ -48,7 +48,7 @@ def make_block(prev_block, txs, pubkey, DB):
            'prevHash': tools.det_hash(prev_block)}
     out = tools.unpackage(tools.package(out))
     return out
-def POW(block, hashes):
+def POW(block, hashes, restart_signal):
     halfHash = tools.det_hash(block)
     block[u'nonce'] = random.randint(0, 10000000000000000000000000000000000000000)
     count = 0
@@ -77,7 +77,7 @@ def miner(block_submit_queue, get_work_queue, restart_signal):
             need_new_work = False
             continue
 
-        possible_block = POW(block_header, hashes_till_check)
+        possible_block = POW(block_header, hashes_till_check, restart_signal)
         if 'error' in possible_block:  # We hit the hash ceiling.
             continue
         # Another worker found the block.
@@ -90,12 +90,12 @@ def miner(block_submit_queue, get_work_queue, restart_signal):
             need_new_work = True
 
 
-def restart_workers():
+def restart_workers(worker_mailboxes):
     #print("Possible solution found, restarting mining workers.")
     for worker_mailbox in worker_mailboxes:
         worker_mailbox['restart'].set()
 
-def spawn_worker():
+def spawn_worker(submitted_blocks):
     #print("Spawning worker")
     restart_signal = multiprocessing.Event()
     work_queue = multiprocessing.Queue()
@@ -112,11 +112,11 @@ def main(pubkey, hashes_till_check, DB):
     submitted_blocks = multiprocessing.Queue()
     num_cores = multiprocessing.cpu_count()
     tools.log("Creating %d mining workers." % num_cores)
-    worker_mailboxes = [spawn_worker() for _ in range(num_cores)]
+    worker_mailboxes = [spawn_worker(submitted_blocks) for _ in range(num_cores)]
     candidate_block = None
     length = None
     while True:
-        time.sleep(0.5)
+        time.sleep(2)
         length = DB['length']
         if length == -1:
             candidate_block = genesis(pubkey, DB)
@@ -135,8 +135,8 @@ def main(pubkey, hashes_till_check, DB):
         if solved_block['length'] != length + 1:
             continue
         #tools.log('potential block: '+str(solved_block))
-        DB['suggested_blocks'].append(solved_block)
-        restart_workers()
+        DB['suggested_blocks'].put(solved_block)
+        restart_workers(worker_mailboxes)
         if DB['stop']:
             sys.exit(1)
 

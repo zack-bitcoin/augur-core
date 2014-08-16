@@ -72,14 +72,7 @@ def enter(DB):
     DB['previous_commands'].append(DB['command'])
     c=copy.deepcopy(DB['command'])
     c=c.split(' ')
-    tools.log('c: ' +str(c))
     DB['iq'].put(c)
-        #response=truthcoin_api.Do_func(DB)#remove this line till...
-        #if type(response)==str:
-        #    response_chunks=chunks_of_width(80, response)
-        #    for r in response_chunks:
-        #        print(r)
-        #        DB['output_lengths']+=1#here
     if c[0]=='stop':
         sys.exit(1)
     if len(DB['previous_commands'])>1000:
@@ -143,7 +136,7 @@ def run_script(DB, script):
     yank(DB)
     DB['yank']=''
 def handler(signum, frame):
-    pass
+    time.sleep(0.5)#<---- VERY IMPORTANT. This thread is blocking otherwise.
 def main(i_queue, o_queue, script):
     DB={}
     DB['command']=''
@@ -161,7 +154,6 @@ def main(i_queue, o_queue, script):
     while True:
         while not(o_queue.empty()):
             response=o_queue.get()
-            tools.log('from o_queue: ' +str(response))
             response_chunks=chunks_of_width(80, str(response))
             for r in response_chunks:
                 print(r)

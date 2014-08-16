@@ -17,10 +17,8 @@ def db_get(n, DB):
     except:
         db_put(n, default_entry, DB)
         return db_get(n, DB)
-
 def db_put(key, dic, DB): return DB['db'].Put(str(key), tools.package(dic))
 def db_delete(key, DB): return DB['db'].Delete(str(key))
-
 def db_existence(key, DB):
     n=str(key)
     try:
@@ -28,31 +26,24 @@ def db_existence(key, DB):
         return not a==default_entry
     except:
         return False
-
 def count(address, DB):
     # Returns the number of transactions that pubkey has broadcast.
-
     def zeroth_confirmation_txs(address, DB):
         def is_zero_conf(t):
             other_address=tools.make_address(t['pubkeys'], len(t['signatures']))
             return address == other_address
         return len(filter(is_zero_conf, DB['txs']))
-
     current = db_get(address, DB)['count']
     zeroth=zeroth_confirmation_txs(address, DB)
     return current+zeroth
-
-
 def add_tx(tx, DB):
     # Attempt to add a new transaction into the pool.
     out=['']
     if type(tx) != type({'a':1}): 
         return False
     address = tools.make_address(tx['pubkeys'], len(tx['signatures']))
-
     def verify_count(tx, txs):
         return tx['count'] != count(address, DB)
-
     def type_check(tx, txs):
         if not tools.E_check(tx, 'type', [str, unicode]):
             out[0]+='blockchain type'
@@ -63,10 +54,8 @@ def add_tx(tx, DB):
             out[0]+='bad type'
             return False
         return True
-
     def too_big_block(tx, txs):
         return len(tools.package(txs+[tx])) > networking.MAX_MESSAGE_SIZE - 5000
-
     def verify_tx(tx, txs, out):
         if not type_check(tx, txs):
             out[0]+='type error'
@@ -89,41 +78,29 @@ def add_tx(tx, DB):
         return('added tx: ' +str(tx))
     else:
         return('failed to add tx because: '+out[0])
-        
-
 targets = {}
 times = {}  # Stores blocktimes
-
-
 def recent_blockthings(key, DB, size, length=0):
     # Grabs info from old blocks.
     if key == 'time':
         storage = times
     if key == 'target':
         storage = targets
-
     def get_val(length):
         leng = str(length)
         if not leng in storage:
             storage[leng] = db_get(leng, DB)[key]
         return storage[leng]
-
     if length == 0:
         length = DB['length']
     start = (length-size) if (length-size) >= 0 else 0
     return map(get_val, range(start, length))
-
-
 def hexSum(a, b):
     # Sum of numbers expressed as hexidecimal strings
     return tools.buffer_(str(hex(int(a, 16)+int(b, 16)))[2: -1], 64)
-
-
 def hexInvert(n):
     # Use double-size for division, to reduce information leakage.
     return tools.buffer_(str(hex(int('f' * 128, 16) / int(n, 16)))[2: -1], 64)
-
-
 def target(DB, length=0):
     """ Returns the target difficulty at a paticular blocklength. """
     if length == 0:
@@ -132,15 +109,12 @@ def target(DB, length=0):
         return '0' * 4 + '6' * 60  # Use same difficulty for first few blocks.
     if length <= DB['length'] and str(length) in targets:
         return targets[str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
-
     def targetTimesFloat(target, number):
         a = int(str(target), 16)
         b = int(a * number)
         return tools.buffer_(str(hex(b))[2: -1], 64)
-
     def weights(length):
         return [custom.inflection ** (length-i) for i in range(length)]
-
     def estimate_target(DB):
         """
         We are actually interested in the average number of hashes required to
@@ -153,24 +127,20 @@ def target(DB, length=0):
             while len(l) > 1:
                 l = [hexSum(l[0], l[1])] + l[2:]
             return l[0]
-
         targets = recent_blockthings('target', DB, custom.history_length)
         w = weights(len(targets))
         tw = sum(w)
         targets = map(hexInvert, targets)
-
         def weighted_multiply(i):
             return targetTimesFloat(targets[i], w[i]/tw)
         weighted_targets = [weighted_multiply(i) for i in range(len(targets))]
         return hexInvert(sumTargets(weighted_targets))
-
     def estimate_time(DB):
         times = recent_blockthings('time', DB, custom.history_length)
         blocklengths = [times[i] - times[i - 1] for i in range(1, len(times))]
         w = weights(len(blocklengths))  # Geometric weighting
         tw = sum(w)  # Normalization constant
         return sum([w[i] * blocklengths[i] / tw for i in range(len(blocklengths))])
-
     retarget = estimate_time(DB) / custom.blocktime(length)
     return targetTimesFloat(estimate_target(DB), retarget)
 
@@ -276,16 +246,13 @@ def delete_block(DB):
         DB['diffLength'] = block['diffLength']
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
-
-def suggestion_txs(DB):
-    #tools.log('in suggestions: ' +str(DB['suggested_txs']))
+def suggestions(DB, q, f):
     while True:
-        time.sleep(2)
-        [add_tx(tx, DB) for tx in DB['suggested_txs']]
-        DB['suggested_txs'] = []
-def suggestion_blocks(DB):
-    while True:
-        time.sleep(2)
-        [add_block(block, DB) for block in DB['suggested_blocks']]
-        DB['suggested_blocks'] = []
+        time.sleep(1)
+        while not q.empty():
+            try:
+                f(q.get(False), DB)
+            except: pass
+def suggestion_txs(DB): return suggestions(DB, DB['suggested_txs'], add_tx)
+def suggestion_blocks(DB): return suggestions(DB, DB['suggested_blocks'], add_block)
 

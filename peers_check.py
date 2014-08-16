@@ -1,3 +1,4 @@
+import time, networking, tools, blockchain, custom
 def cmd(peer, x):
     return networking.send_command(peer, x)
 def fork_check(newblocks, DB):
@@ -20,11 +21,13 @@ def download_blocks(peer, DB, peers_block_count, length):
         # peer might trick us into deleting everything over and over.
         if fork_check(blocks, DB):
             blockchain.delete_block(DB)
-    DB['suggested_blocks'].extend(blocks)
+    for block in blocks:
+        DB['suggested_blocks'].put(block)
     return
 def ask_for_txs(peer, DB):
     txs = cmd(peer, {'type': 'txs'})
-    DB['suggested_txs'].extend(txs)
+    for tx in txs:
+        DB['suggested_txs'].put(tx)
     pushers = [x for x in DB['txs'] if x not in txs]
     for push in pushers:
         cmd(peer, {'type': 'pushtx', 'tx': push})
@@ -45,8 +48,6 @@ def peer_check(peer, DB):
     size = max(len(DB['diffLength']), len(block_count['diffLength']))
     us = tools.buffer_(DB['diffLength'], size)
     them = tools.buffer_(block_count['diffLength'], size)
-    tools.log('us: ' +str(us))
-    tools.log('them: ' +str(them))
     if them < us:
         return give_block(peer, DB, block_count)
     if us == them:
@@ -55,6 +56,6 @@ def peer_check(peer, DB):
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     while True:
-        time.sleep(custom.blocktime(1000)/2)
+        time.sleep(10)
         for peer in peers:
             peer_check(peer, DB)

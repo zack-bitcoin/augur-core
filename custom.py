@@ -6,8 +6,7 @@ import hashlib
 peers = [['localhost', 8901],
          ['localhost', 8902]]
 database_name = 'DB.db'
-listen_port=8900
-gui_port=8700
+port=8900
 version = "VERSION"
 block_reward = 10 ** 5
 premine = 5 * 10 ** 6

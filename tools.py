@@ -1,5 +1,7 @@
 import pt
 import hashlib
+import re
+import subprocess
 from json import dumps as package, loads as unpackage
 from collections import OrderedDict
 def log(tx):
