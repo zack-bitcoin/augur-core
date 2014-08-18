@@ -4,6 +4,20 @@ import re
 import subprocess
 from json import dumps as package, loads as unpackage
 from collections import OrderedDict
+import time
+def heart_monitor(queue):
+    beats={}
+    while True:
+        time.sleep(0.03)
+        t=time.time()
+        for beat in beats:
+            if t-beats[beat]>30:
+                beats[beat]=t
+                log('Error in thread: ' +str(beat))
+        if not(queue.empty()):
+            beat=queue.get(False)
+            #log('heart monitor: ' +str(beat))
+            beats[beat]=t
 def log(tx):
     with open("log.py", "a") as myfile:
         myfile.write(tx+'\n')

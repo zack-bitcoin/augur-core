@@ -34,7 +34,7 @@ def pushtx(dic, DB):
     DB['suggested_txs'].put(dic['tx'])
     return 'success'
 def pushblock(dic, DB):
-    DB['suggested_blocks'].put(dic['block'])
+    DB['suggested_blocks'].put([dic['block'], dic['peer']])
     return 'success'
 def main(dic, DB):
     """Sometimes peers ask us for information or push new transactions or

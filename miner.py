@@ -117,6 +117,7 @@ def main(pubkey, hashes_till_check, DB):
     length = None
     while True:
         time.sleep(2)
+        DB['heart_queue'].put('miner')
         length = DB['length']
         if length == -1:
             candidate_block = genesis(pubkey, DB)
@@ -134,7 +135,7 @@ def main(pubkey, hashes_till_check, DB):
         solved_block = submitted_blocks.get()  # TODO(roasbeef): size=1?
         if solved_block['length'] != length + 1:
             continue
-        #tools.log('potential block: '+str(solved_block))
+        #tools.log('potential block: ' +str(solved_block))
         DB['suggested_blocks'].put(solved_block)
         restart_workers(worker_mailboxes)
         if DB['stop']:

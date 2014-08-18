@@ -21,7 +21,10 @@ def info(DB):
     return(str(blockchain.db_get(DB['args'][0], DB)))   
 def my_address(DB):
     return(str(custom.address))
-def spend(DB): easy_add_transaction({'type': 'spend', 'amount': int(raw_input('how much to send (in satoshis)? ' )), 'to': raw_input('who to send to? ' )}, DB)
+def spend(DB): 
+    if len(DB['args'])<2:
+        return('how much to send (in satoshis)? who to send to? ')
+    easy_add_transaction({'type': 'spend', 'amount': int(DB['args'][0]), 'to':DB['args'][1]}, DB)
 def votecoin_spend(DB):
     tx = {'type': 'spend', 'amount':int(DB['args'][0]), 'to': DB['args'][2], 'vote_id':DB['args'][1]}
     return easy_add_transaction(tx, DB)
@@ -122,7 +125,10 @@ def wait_till_block(DB):
         b=blockcount(DB)
         if int(b)>=int(DB['args'][0]):
             return str(b)
-def balance(DB): return(str(my_balance(DB, raw_input('address'))))
+def balance(DB): 
+    if len(DB['args'])<1:
+        return('what address do you want the balance for?')
+    return(str(my_balance(DB, DB['args'][0])))
 def log(DB): tools.log(accumulate_words(DB['args'])[1:])
 def stop_(DB): DB['stop']=True
 Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'h':help_, 'help':help_, '?':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, 'me':me, 'wait_till_block':wait_till_block, '':(lambda DB: ''), 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_}
@@ -133,10 +139,12 @@ def accumulate_words(l, out=''):
 def main(DB, i_queue, o_queue):
     #command_prompt_advanced.run_script(DB, script)
     while True:
-        main_helper(DB, i_queue, o_queue)
+        DB['heart_queue'].put('truthcoin api')
+        for i in range(30):
+            main_helper(DB, i_queue, o_queue)
 
 def main_helper(DB, i_queue, o_queue):
-    time.sleep(0.1)
+    time.sleep(0.3)
     try:
         if i_queue.empty():
             return
@@ -150,7 +158,5 @@ def main_helper(DB, i_queue, o_queue):
     except:
         tools.log('truthcoin error: '+str(sys.exc_info()))
         pass
-
-
 
 

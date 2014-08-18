@@ -7,6 +7,7 @@ import custom
 import tools
 import networking
 import transactions
+import sys
 
 default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
 
@@ -106,7 +107,7 @@ def target(DB, length=0):
     if length == 0:
         length = DB['length']
     if length < 4:
-        return '0' * 4 + '6' * 60  # Use same difficulty for first few blocks.
+        return '0' * 3 + '8' * 61  # Use same difficulty for first few blocks.
     if length <= DB['length'] and str(length) in targets:
         return targets[str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
     def targetTimesFloat(target, number):
@@ -145,11 +146,10 @@ def target(DB, length=0):
     return targetTimesFloat(estimate_target(DB), retarget)
 
 
-def add_block(block, DB):
+def add_block(block_pair, DB):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
      hashpower. """
-    #print('add block')
     def median(mylist):
         if len(mylist) < 1:
             return 0
@@ -203,9 +203,25 @@ def add_block(block, DB):
         if tx_check(block['txs']):
             return False
         return True
-
+    if type(block_pair)==type([1,2,3]):
+        block=block_pair[0]
+        peer=block_pair[1]
+    else:
+        block=block_pair
+        peer=False
+    #tools.log('attempt to add block: ' +str(block))
     if block_check(block, DB):
-        #print('add_block: ' + str(block))
+        #tools.log('add_block: ' + str(block))
+        #tools.log('peer: ' + str(peer))
+        i=0
+        if peer != False:
+            tools.log('peer not false')
+            for p in DB['peers_ranked']:
+                if p[0]==peer:
+                    j=i
+                i+=1
+            tools.log('j: ' +str(j))
+            DB['peers_ranked'][j][1]*=0.1#listen more to people who have newer blocks.
         db_put(block['length'], block, DB)
         DB['length'] = block['length']
         DB['diffLength'] = block['diffLength']
@@ -246,13 +262,18 @@ def delete_block(DB):
         DB['diffLength'] = block['diffLength']
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
-def suggestions(DB, q, f):
+def suggestions(DB, s, f):
     while True:
+        DB['heart_queue'].put(s)
         time.sleep(1)
-        while not q.empty():
+        if not DB[s].empty():
+            #tools.log('got thing: ' +str(s))
             try:
-                f(q.get(False), DB)
-            except: pass
-def suggestion_txs(DB): return suggestions(DB, DB['suggested_txs'], add_tx)
-def suggestion_blocks(DB): return suggestions(DB, DB['suggested_blocks'], add_block)
+                f(DB[s].get(False), DB)
+            except:
+                tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
+def suggestion_txs(DB): 
+    return suggestions(DB, 'suggested_txs', add_tx)
+def suggestion_blocks(DB): 
+    return suggestions(DB, 'suggested_blocks', add_block)
 

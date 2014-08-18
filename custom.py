@@ -3,8 +3,10 @@ import tools
 import hashlib
 
 
-peers = [['localhost', 8901],
+peers = [['localhost', 8900],
+         ['localhost', 8901],
          ['localhost', 8902]]
+
 database_name = 'DB.db'
 port=8900
 version = "VERSION"
@@ -43,4 +45,4 @@ def blocktime(length):
     else:
         return 60
 '''
-def blocktime(length): return 20
+def blocktime(length): return 10

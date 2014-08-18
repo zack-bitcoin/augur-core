@@ -16,6 +16,7 @@ import Queue
 
 i_queue=multiprocessing.Queue()
 o_queue=multiprocessing.Queue()
+heart_queue=multiprocessing.Queue()
 try:
     script=file(sys.argv[1],'r').read()
 except: script=''
@@ -25,7 +26,9 @@ DB = {'stop':False,
       'txs': [],
       'suggested_blocks': Queue.Queue(),
       'suggested_txs': Queue.Queue(),
+      'heart_queue': heart_queue,
       'memoized_votes':{},
+      'peers_ranked':[],
       'diffLength': '0'}
 def len_f(i, DB):
     if not blockchain.db_existence(str(i), DB): return i-1
@@ -56,12 +59,14 @@ worker_tasks = [
      'args': (custom.peers, DB),
      'daemon': True},
     {'target': networking.serve_forever,
-     'args': (custom.port, lambda d: message_handler.main(d, DB)),
+     'args': (custom.port, lambda d: message_handler.main(d, DB), heart_queue),
      'daemon': True}
 ]
 processes= [#these do NOT share memory with the rest.
     {'target':command_prompt_advanced.main, 
-     'args':(i_queue, o_queue, script)}
+     'args':(i_queue, o_queue, script)},
+    {'target':tools.heart_monitor,
+     'args':(heart_queue, )}
 ]
 cmds=[]
 for process in processes:
