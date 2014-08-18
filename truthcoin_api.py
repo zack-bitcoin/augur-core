@@ -121,7 +121,8 @@ def my_balance(DB, address=custom.address):
     return(str(blockchain.db_get(address, DB)['amount']-txs_tools.cost_0(DB['txs'], DB)['truthcoin_cost']))
 def wait_till_block(DB):
     while True:
-        time.sleep(1)
+        time.sleep(5)
+        DB['heart_queue'].put('truthcoin api')        
         b=blockcount(DB)
         if int(b)>=int(DB['args'][0]):
             return str(b)

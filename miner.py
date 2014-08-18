@@ -2,7 +2,6 @@
     blockchain.
 """
 from Queue import Empty
-
 import blockchain
 import copy
 import custom
@@ -13,14 +12,12 @@ import random
 import time
 import copy
 import sys
-
 def make_mint(pubkey, DB):
     address = tools.make_address([pubkey], 1)
     return {'type': 'mint',
             'pubkeys': [pubkey],
             'signatures': ['first_sig'],
             'count': blockchain.count(address, DB)}
-
 def genesis(pubkey, DB):
     target = blockchain.target(DB)
     out = {'version': custom.version,
@@ -31,10 +28,7 @@ def genesis(pubkey, DB):
            'txs': [make_mint(pubkey, DB)]}
     out = tools.unpackage(tools.package(out))
     return out
-
 def make_block(prev_block, txs, pubkey, DB):
-    #print('DB: ' +str(DB))
-    #print('prev: ' +str(prev_block))
     leng = int(prev_block['length']) + 1
     target = blockchain.target(DB, leng)
     diffLength = blockchain.hexSum(prev_block['diffLength'],
@@ -48,7 +42,7 @@ def make_block(prev_block, txs, pubkey, DB):
            'prevHash': tools.det_hash(prev_block)}
     out = tools.unpackage(tools.package(out))
     return out
-def POW(block, hashes, restart_signal):
+def POW(block, restart_signal):
     halfHash = tools.det_hash(block)
     block[u'nonce'] = random.randint(0, 10000000000000000000000000000000000000000)
     count = 0
@@ -56,88 +50,63 @@ def POW(block, hashes, restart_signal):
                           u'halfHash': halfHash}) > block['target']:
         count += 1
         block[u'nonce'] += 1
-        if count > hashes:
-            return {'error': False}
         if restart_signal.is_set():
             restart_signal.clear()
             return {'solution_found': True}
     return block
-def miner(block_submit_queue, get_work_queue, restart_signal):
-    block_header = None
-    need_new_work = False
-    while True:
-        # Either get the current block header, or restart because a block has
-        # been solved by another worker.
+def new_worker(solution_queue):
+    in_queue=multiprocessing.Queue()
+    restart=multiprocessing.Event()
+    proc = multiprocessing.Process(target=miner, args=(restart, solution_queue, in_queue))
+    proc.daemon=True
+    proc.start()
+    return({'in_queue':in_queue, 'restart':restart, 'solution_queue':solution_queue, 'proc':proc})
+def dump_out(queue):
+    while not queue.empty():
         try:
-            if need_new_work or block_header is None:
-                block_header, hashes_till_check = get_work_queue.get(True, 1)
-                need_new_work = False
-        # Try to optimistically get the most up-to-date work.
-        except Empty:
-            need_new_work = False
-            continue
-
-        possible_block = POW(block_header, hashes_till_check, restart_signal)
-        if 'error' in possible_block:  # We hit the hash ceiling.
-            continue
-        # Another worker found the block.
-        elif 'solution_found' in possible_block:
-            # Empty out the signal queue.
-            need_new_work = True
-        # We've found a block!
-        else:
-            block_submit_queue.put(block_header)
-            need_new_work = True
-
-
-def restart_workers(worker_mailboxes):
-    #print("Possible solution found, restarting mining workers.")
-    for worker_mailbox in worker_mailboxes:
-        worker_mailbox['restart'].set()
-
-def spawn_worker(submitted_blocks):
-    #print("Spawning worker")
-    restart_signal = multiprocessing.Event()
-    work_queue = multiprocessing.Queue()
-    worker_proc = multiprocessing.Process(target=miner,
-                                          args=(submitted_blocks, work_queue,
-                                                restart_signal))
-    worker_proc.daemon = True
-    worker_proc.start()
-    return {'restart': restart_signal, 'worker': worker_proc,
-            'work_queue': work_queue}
-
-def main(pubkey, hashes_till_check, DB):
-    """ Spawns worker CPU mining processes and coordinates the effort."""
-    submitted_blocks = multiprocessing.Queue()
+            queue.get(False)
+        except:
+            pass
+def restart_workers(workers):
+    for worker in workers:
+        dump_out(worker['in_queue'])
+        worker['restart'].set()
+def main(pubkey, DB):
     num_cores = multiprocessing.cpu_count()
-    tools.log("Creating %d mining workers." % num_cores)
-    worker_mailboxes = [spawn_worker(submitted_blocks) for _ in range(num_cores)]
-    candidate_block = None
-    length = None
+    solution_queue = multiprocessing.Queue()
+    workers = [new_worker(solution_queue) for _ in range(num_cores)]
     while True:
-        time.sleep(2)
-        DB['heart_queue'].put('miner')
-        length = DB['length']
-        if length == -1:
-            candidate_block = genesis(pubkey, DB)
-            txs = []
-        else:
-            prev_block = blockchain.db_get(length, DB)
-            candidate_block = make_block(prev_block, DB['txs'], pubkey, DB)
-
-        work = (candidate_block, hashes_till_check)
-
-        for worker_mailbox in worker_mailboxes:
-            worker_mailbox['work_queue'].put(copy.copy(work))
-
-        # When block found, add to suggested blocks.
-        solved_block = submitted_blocks.get()  # TODO(roasbeef): size=1?
-        if solved_block['length'] != length + 1:
-            continue
-        #tools.log('potential block: ' +str(solved_block))
-        DB['suggested_blocks'].put(solved_block)
-        restart_workers(worker_mailboxes)
         if DB['stop']:
             sys.exit(1)
-
+        time.sleep(2)
+        DB['heart_queue'].put('miner')
+        if DB['length']==-1:
+            candidate_block = genesis(pubkey, DB)
+        else:
+            prev_block = blockchain.db_get(DB['length'], DB)
+            candidate_block = make_block(prev_block, DB['txs'], pubkey, DB)
+        work = candidate_block
+        for worker in workers:
+            worker['in_queue'].put(work)
+            worker['in_queue'].put(work)
+        while solution_queue.empty():
+            time.sleep(1)
+        restart_workers(workers)
+        while not solution_queue.empty():
+            try:
+                DB['suggested_blocks'].put(solution_queue.get(False))
+            except:
+                continue
+def miner(restart, solution_queue, in_queue):
+    while True:
+        try:
+            candidate_block=in_queue.get(False)
+        except:
+            continue
+        possible_block = POW(candidate_block, restart)
+        if 'error' in possible_block: 
+            continue
+        elif 'solution_found' in possible_block: 
+            continue
+        else:
+            solution_queue.put(possible_block)

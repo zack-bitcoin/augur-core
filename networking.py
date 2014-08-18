@@ -70,10 +70,7 @@ def connect(msg, host, port):
     s = socket.socket()
     s.setblocking(0)
     try:
-        tools.log('host: ' +str(host))
-        tools.log('port: ' +str(port))
         b=connect_socket(s, str(host), int(port))
-        tools.log('after')
         if not b: 
             s.close()
             return {'error':'here'}
@@ -83,7 +80,7 @@ def connect(msg, host, port):
         s.close()
         return tools.unpackage(response)
     except:
-        tools.log('unable to connect to peer: ' +str(host)+ ' ' + str(port) + ' because: ' +str(sys.exc_info()))
+        #tools.log('unable to connect to peer: ' +str(host)+ ' ' + str(port) + ' because: ' +str(sys.exc_info()))
         s.close()
         return {'error':'networking connection'}
 

@@ -17,6 +17,7 @@ import Queue
 i_queue=multiprocessing.Queue()
 o_queue=multiprocessing.Queue()
 heart_queue=multiprocessing.Queue()
+suggested_blocks=multiprocessing.Queue()
 try:
     script=file(sys.argv[1],'r').read()
 except: script=''
@@ -24,7 +25,7 @@ db = leveldb.LevelDB(custom.database_name)
 DB = {'stop':False,
       'db': db,
       'txs': [],
-      'suggested_blocks': Queue.Queue(),
+      'suggested_blocks': suggested_blocks,
       'suggested_txs': Queue.Queue(),
       'heart_queue': heart_queue,
       'memoized_votes':{},
@@ -47,7 +48,7 @@ worker_tasks = [
      'args': (DB, i_queue, o_queue),
      'daemon':True},
     {'target': miner.main,
-     'args': (custom.pubkey, custom.hashes_per_check, DB),
+     'args': (custom.pubkey, DB),
      'daemon': False},#it makes more threads, so it can't be a daemon.
     {'target': blockchain.suggestion_txs,
      'args': (DB,),

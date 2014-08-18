@@ -68,8 +68,8 @@ def main(peers, DB):
         DB['peers_ranked'].append([peer, 5])
     while True:
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
-        tools.log(str(DB['peers_ranked']))
-        time.sleep(10)
+        #tools.log(str(DB['peers_ranked']))
+        time.sleep(4)
         DB['heart_queue'].put('peers check')
         i=exponential_random(len(DB['peers_ranked']), 0.5)
         t1=time.time()

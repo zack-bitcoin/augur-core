@@ -1,5 +1,7 @@
 wait_till_block 0
 create_jury jury_id_abc
+wait_till_block 1
+create_jury jury_id_abc
 wait_till_block 2
 votecoin_spend 1 jury_id_abc 1234567890123456789012345678901234567890
 votecoin_spend 2 jury_id_abc 01234567890123456789012345678901234567890

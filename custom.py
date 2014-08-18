@@ -36,7 +36,6 @@ brainwallet = 'brain wallet'
 privkey = tools.det_hash(brainwallet)
 pubkey = tools.privtopub(privkey)
 address = tools.make_address([pubkey], 1)
-hashes_per_check = 10 ** 4
 
 '''
 def blocktime(length):

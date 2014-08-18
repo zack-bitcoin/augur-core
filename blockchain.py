@@ -212,15 +212,12 @@ def add_block(block_pair, DB):
     #tools.log('attempt to add block: ' +str(block))
     if block_check(block, DB):
         #tools.log('add_block: ' + str(block))
-        #tools.log('peer: ' + str(peer))
         i=0
         if peer != False:
-            tools.log('peer not false')
             for p in DB['peers_ranked']:
                 if p[0]==peer:
                     j=i
                 i+=1
-            tools.log('j: ' +str(j))
             DB['peers_ranked'][j][1]*=0.1#listen more to people who have newer blocks.
         db_put(block['length'], block, DB)
         DB['length'] = block['length']
@@ -266,6 +263,7 @@ def suggestions(DB, s, f):
     while True:
         DB['heart_queue'].put(s)
         time.sleep(1)
+        #tools.log('size: ' +str(DB[s].qsize()))
         if not DB[s].empty():
             #tools.log('got thing: ' +str(s))
             try:

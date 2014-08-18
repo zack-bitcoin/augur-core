@@ -19,7 +19,7 @@ To run 1 node
 
 Then send your browser to:
 
-     http://localhost:8700
+    http://localhost:8700
 
 For now, there is a 20-block cycle.
 1-10: votecoin-holders may give encrypted votes on decisions. (in the final version of truthcoin, this step will take 1000+ blocks)
