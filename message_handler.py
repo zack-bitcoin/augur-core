@@ -1,3 +1,5 @@
+"""When a peer talks to us, this is how we generate a response. This is the external API.
+"""
 import networking
 import custom
 import tools

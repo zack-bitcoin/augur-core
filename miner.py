@@ -78,6 +78,8 @@ def main(pubkey, DB):
     while True:
         if DB['stop']:
             sys.exit(1)
+        while not DB['mine']:
+            time.sleep(1)
         time.sleep(2)
         DB['heart_queue'].put('miner')
         if DB['length']==-1:
@@ -99,6 +101,7 @@ def main(pubkey, DB):
                 continue
 def miner(restart, solution_queue, in_queue):
     while True:
+        
         try:
             candidate_block=in_queue.get(False)
         except:

@@ -1,3 +1,5 @@
+"""A bunch of functions that are used by multiple threads.
+"""
 import pt
 import hashlib
 import re
@@ -92,3 +94,13 @@ def can_unpack(o):
     except:
         return False
 
+def easy_add_transaction(tx_orig, DB):
+    tx = copy.deepcopy(tx_orig)
+    if 'pubkeys' not in tx:
+        tx['pubkeys']=[custom.pubkey]
+    try:
+        tx['count'] = blockchain.count(custom.address, DB)
+    except:
+        tx['count'] = 1
+    tx['signatures'] = [tools.sign(tools.det_hash(tx), custom.privkey)]
+    return(blockchain.add_tx(tx, DB))

@@ -1,3 +1,6 @@
+"""We regularly check on peers to see if they have mined new blocks.
+This file explains how we initiate interactions with our peers.
+"""
 import time, networking, tools, blockchain, custom, random
 def cmd(peer, x):
     return networking.send_command(peer, x)

@@ -1,3 +1,5 @@
+"""a python version of the R program at https://github.com/psztorc/Truthcoin
+"""
 import rpy2.robjects as robjects
 
 

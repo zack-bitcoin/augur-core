@@ -1,3 +1,5 @@
+"""These are transactions that make up a truthcoin system. Transaction types that are used in blockchains more generally are left in transactions.py
+"""
 import txs_tools
 import ConsensusMechanism
 import math

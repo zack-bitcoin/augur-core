@@ -1,3 +1,6 @@
+"""These are functions that are exclusively used for the truthcoin aspects of the blockchain.
+tools.py contains functions that are used everywhere.
+"""
 import blockchain
 import custom
 import math

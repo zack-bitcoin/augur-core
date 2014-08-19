@@ -1,5 +1,4 @@
-""" This file explains how we talk to the database. It explains the rules for
-    adding blocks and transactions.
+""" This file explains explains the rules for adding and removing blocks from the local chain.
 """
 import time
 import copy
@@ -107,7 +106,7 @@ def target(DB, length=0):
     if length == 0:
         length = DB['length']
     if length < 4:
-        return '0' * 3 + '8' * 61  # Use same difficulty for first few blocks.
+        return '0' * 4 + 'f' * 60  # Use same difficulty for first few blocks.
     if length <= DB['length'] and str(length) in targets:
         return targets[str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
     def targetTimesFloat(target, number):

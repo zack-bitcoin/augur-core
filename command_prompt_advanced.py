@@ -1,3 +1,5 @@
+"""This file gives a shell-like interface. 
+"""
 import sys
 from getch import getch
 import copy

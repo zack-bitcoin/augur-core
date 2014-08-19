@@ -1,3 +1,5 @@
+"""This program starts all the threads going. When it hears a kill signal, it kills all the threads and packs up the database.
+"""
 import miner
 import message_handler
 import time
@@ -18,11 +20,13 @@ i_queue=multiprocessing.Queue()
 o_queue=multiprocessing.Queue()
 heart_queue=multiprocessing.Queue()
 suggested_blocks=multiprocessing.Queue()
+o_queue.put('''Truthshell, use 'help help' to learn about the help system''')
 try:
     script=file(sys.argv[1],'r').read()
 except: script=''
 db = leveldb.LevelDB(custom.database_name)
 DB = {'stop':False,
+      'mine':False,
       'db': db,
       'txs': [],
       'suggested_blocks': suggested_blocks,
@@ -47,15 +51,15 @@ worker_tasks = [
     {'target': truthcoin_api.main,
      'args': (DB, i_queue, o_queue),
      'daemon':True},
-    {'target': miner.main,
-     'args': (custom.pubkey, DB),
-     'daemon': False},#it makes more threads, so it can't be a daemon.
     {'target': blockchain.suggestion_txs,
      'args': (DB,),
      'daemon': True},
     {'target': blockchain.suggestion_blocks,
      'args': (DB,),
      'daemon': True},
+    {'target': miner.main,
+     'args': (custom.pubkey, DB),
+     'daemon': False},
     {'target': peers_check.main,
      'args': (custom.peers, DB),
      'daemon': True},

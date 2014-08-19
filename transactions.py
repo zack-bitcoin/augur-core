@@ -1,5 +1,5 @@
 """This file explains how we tell if a transaction is valid or not, it explains
-how we update the system when new transactions are added to the blockchain."""
+how we update the database when new transactions are added to the blockchain."""
 import blockchain
 import custom
 import copy

@@ -1,11 +1,9 @@
-"""This is for easy customization of new currencies."""
+"""This is to make magic numbers easier to deal with."""
 import tools
 import hashlib
 
 
-peers = [['localhost', 8900],
-         ['localhost', 8901],
-         ['localhost', 8902]]
+peers = [['localhost', 8900]]
 
 database_name = 'DB.db'
 port=8900
