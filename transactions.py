@@ -79,16 +79,16 @@ def mint(tx, DB):
 
 def spend(tx, DB):
     def initialize_to_zero_helper(loc, address, DB):
-        acc=blockchain.db_get(address, DB)
+        acc=tools.db_get(address, DB)
         if loc[1] not in acc[loc[0]]:
             acc[loc[0]][loc[1]]=0
-            blockchain.db_put(address , acc, DB)    
+            tools.db_put(address , acc, DB)    
     def initialize_to_zero_votecoin(vote_id, address, DB):
         initialize_to_zero_helper(['votecoin', vote_id], address, DB)
-        if address not in blockchain.db_get(vote_id, DB)['members']:
+        if address not in tools.db_get(vote_id, DB)['members']:
             adjust_list(['members'], vote_id, False, address, DB)
     def memory_leak_helper(loc, address, DB):
-        acc=blockchain.db_get(address, DB)
+        acc=tools.db_get(address, DB)
         bool_=txs_tools.get_(loc, acc)==0
         if bool_:
             adjust_dict(loc, address, True, {loc[-1]: 0}, DB)

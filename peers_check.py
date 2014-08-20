@@ -5,7 +5,7 @@ import time, networking, tools, blockchain, custom, random
 def cmd(peer, x):
     return networking.send_command(peer, x)
 def fork_check(newblocks, DB):
-    block = blockchain.db_get(DB['length'], DB)
+    block = tools.db_get(DB['length'], DB)
     recent_hash = tools.det_hash(block)
     their_hashes = map(tools.det_hash, newblocks)
     return recent_hash not in their_hashes
@@ -39,7 +39,7 @@ def ask_for_txs(peer, DB):
     return 0
 def give_block(peer, DB, block_count):
     cmd(peer, {'type': 'pushblock',
-               'block': blockchain.db_get(block_count['length'] + 1,
+               'block': tools.db_get(block_count['length'] + 1,
                                           DB)})
     return 0
 def peer_check(peer, DB):

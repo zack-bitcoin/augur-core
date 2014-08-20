@@ -25,7 +25,7 @@ def rangeRequest(dic, DB):
     counter = 0
     while (len(tools.package(out)) < custom.max_download
            and ran[0] + counter <= ran[1]):
-        block = blockchain.db_get(ran[0] + counter, DB)
+        block = tools.db_get(ran[0] + counter, DB)
         if 'length' in block:
             out.append(block)
         counter += 1

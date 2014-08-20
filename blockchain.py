@@ -3,47 +3,20 @@
 import time
 import copy
 import custom
-import tools
 import networking
 import transactions
 import sys
+import tools
 
-default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
-
-def db_get(n, DB):
-    n = str(n)
-    try:
-        return tools.unpackage(DB['db'].Get(n))
-    except:
-        db_put(n, default_entry, DB)
-        return db_get(n, DB)
-def db_put(key, dic, DB): return DB['db'].Put(str(key), tools.package(dic))
-def db_delete(key, DB): return DB['db'].Delete(str(key))
-def db_existence(key, DB):
-    n=str(key)
-    try:
-        a=tools.unpackage(DB['db'].Get(n))
-        return not a==default_entry
-    except:
-        return False
-def count(address, DB):
-    # Returns the number of transactions that pubkey has broadcast.
-    def zeroth_confirmation_txs(address, DB):
-        def is_zero_conf(t):
-            other_address=tools.make_address(t['pubkeys'], len(t['signatures']))
-            return address == other_address
-        return len(filter(is_zero_conf, DB['txs']))
-    current = db_get(address, DB)['count']
-    zeroth=zeroth_confirmation_txs(address, DB)
-    return current+zeroth
 def add_tx(tx, DB):
     # Attempt to add a new transaction into the pool.
+    print('top of add_tx')
     out=['']
     if type(tx) != type({'a':1}): 
         return False
     address = tools.make_address(tx['pubkeys'], len(tx['signatures']))
     def verify_count(tx, txs):
-        return tx['count'] != count(address, DB)
+        return tx['count'] != tools.count(address, DB)
     def type_check(tx, txs):
         if not tools.E_check(tx, 'type', [str, unicode]):
             out[0]+='blockchain type'
@@ -89,7 +62,7 @@ def recent_blockthings(key, DB, size, length=0):
     def get_val(length):
         leng = str(length)
         if not leng in storage:
-            storage[leng] = db_get(leng, DB)[key]
+            storage[leng] = tools.db_get(leng, DB)[key]
         return storage[leng]
     if length == 0:
         length = DB['length']
@@ -181,7 +154,7 @@ def add_block(block_pair, DB):
                                          hexInvert(block['target'])):
             return False
         if length >= 0:
-            if tools.det_hash(db_get(length, DB)) != block['prevHash']:
+            if tools.det_hash(tools.db_get(length, DB)) != block['prevHash']:
                 return False
         a = copy.deepcopy(block)
         a.pop('nonce')
@@ -223,7 +196,7 @@ def add_block(block_pair, DB):
             else:
                 #maybe this peer should be added to our list of peers?
                 pass
-        db_put(block['length'], block, DB)
+        tools.db_put(block['length'], block, DB)
         DB['length'] = block['length']
         DB['diffLength'] = block['diffLength']
         orphans = copy.deepcopy(DB['txs'])
@@ -247,19 +220,19 @@ def delete_block(DB):
         times.pop(str(DB['length']))
     except:
         pass
-    block = db_get(DB['length'], DB)
+    block = tools.db_get(DB['length'], DB)
     orphans = copy.deepcopy(DB['txs'])
     DB['txs'] = []
     for tx in block['txs']:
         orphans.append(tx)
         DB['add_block']=False
         transactions.update[tx['type']](tx, DB)
-    db_delete(DB['length'], DB)
+    tools.db_delete(DB['length'], DB)
     DB['length'] -= 1
     if DB['length'] == -1:
         DB['diffLength'] = '0'
     else:
-        block = db_get(DB['length'], DB)
+        block = tools.db_get(DB['length'], DB)
         DB['diffLength'] = block['diffLength']
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
@@ -278,4 +251,3 @@ def suggestion_txs(DB):
     return suggestions(DB, 'suggested_txs', add_tx)
 def suggestion_blocks(DB): 
     return suggestions(DB, 'suggested_blocks', add_block)
-

@@ -9,7 +9,7 @@ import tools
 addr=tools.addr
 
 def cost_to_buy_shares(tx, DB):
-    pm=blockchain.db_get(tx['PM_id'], DB)
+    pm=tools.db_get(tx['PM_id'], DB)
     shares_purchased=pm['shares_purchased']
     buy=tx['buy']
     B=pm['B']
@@ -23,7 +23,7 @@ def cost_0(txs, DB):
     #cost of the zeroth confirmation transactions
     total_cost = []
     votecoin_cost = {}
-    for Tx in filter(lambda t: custom.address == addr(t), txs):
+    for Tx in filter(lambda t: DB['address'] == addr(t), txs):
         def spend_(total_cost=total_cost, votecoin_cost=votecoin_cost):
             #global total_cost
             #global votecoin_cost
@@ -60,7 +60,7 @@ def fee_check(tx, txs, DB):
     cost_=cost_0(txs, DB)
     truthcoin_cost = cost_['truthcoin_cost']
     votecoin_cost = cost_['votecoin_cost']
-    acc=blockchain.db_get(address, DB)
+    acc=tools.db_get(address, DB)
     if int(acc['amount']) < truthcoin_cost: 
         tools.log('insufficient truthcoin')
         return False
@@ -86,9 +86,9 @@ def set_(loc, dic, val):
     return dic
 
 def adjust(location, pubkey, DB, f):#location shouldn't be here.
-    acc = blockchain.db_get(pubkey, DB)
+    acc = tools.db_get(pubkey, DB)
     f(acc)
-    blockchain.db_put(pubkey, acc, DB)    
+    tools.db_put(pubkey, acc, DB)    
 def adjust_int(key, pubkey, amount, DB):
     def f(acc, amount=amount):
         if not DB['add_block']: amount=-amount
@@ -120,6 +120,6 @@ def adjust_list(location, pubkey, remove, item, DB):
         set_(location, acc, current)
     adjust(location, pubkey, DB, f)    
 def symmetric_put(id_, dic, DB):
-    if DB['add_block']: blockchain.db_put(id_, dic, DB)
-    else: blockchain.db_delete(id_, DB)
+    if DB['add_block']: tools.db_put(id_, dic, DB)
+    else: tools.db_delete(id_, DB)
 

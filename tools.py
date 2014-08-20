@@ -7,6 +7,8 @@ import subprocess
 from json import dumps as package, loads as unpackage
 from collections import OrderedDict
 import time
+import copy
+
 def heart_monitor(queue):
     beats={}
     while True:
@@ -23,6 +25,12 @@ def heart_monitor(queue):
 def log(tx):
     with open("log.py", "a") as myfile:
         myfile.write(tx+'\n')
+def can_unpack(o):
+    try:
+        unpackage(o)
+        return True
+    except:
+        return False
 def addr(tx): return make_address(tx['pubkeys'], len(tx['signatures']))
 def sign(msg, privkey): return pt.ecdsa_sign(msg, privkey)
 def verify(msg, sig, pubkey): return pt.ecdsa_verify(msg, sig, pubkey)
@@ -86,21 +94,30 @@ def kill_processes_using_ports(ports):
         if match:
             pid = match.group('pid')
             subprocess.Popen(['kill', '-9', pid])
-
-def can_unpack(o):
+default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
+def db_get(n, DB):
+    n = str(n)
     try:
-        unpackage(o)
-        return True
+        return unpackage(DB['db'].Get(n))
+    except:
+        db_put(n, default_entry, DB)
+        return db_get(n, DB)
+def db_put(key, dic, DB): return DB['db'].Put(str(key), package(dic))
+def db_delete(key, DB): return DB['db'].Delete(str(key))
+def db_existence(key, DB):
+    n=str(key)
+    try:
+        a=unpackage(DB['db'].Get(n))
+        return not a==default_entry
     except:
         return False
-
-def easy_add_transaction(tx_orig, DB):
-    tx = copy.deepcopy(tx_orig)
-    if 'pubkeys' not in tx:
-        tx['pubkeys']=[custom.pubkey]
-    try:
-        tx['count'] = blockchain.count(custom.address, DB)
-    except:
-        tx['count'] = 1
-    tx['signatures'] = [tools.sign(tools.det_hash(tx), custom.privkey)]
-    return(blockchain.add_tx(tx, DB))
+def count(address, DB):
+    # Returns the number of transactions that pubkey has broadcast.
+    def zeroth_confirmation_txs(address, DB):
+        def is_zero_conf(t):
+            other_address=make_address(t['pubkeys'], len(t['signatures']))
+            return address == other_address
+        return len(filter(is_zero_conf, DB['txs']))
+    current = db_get(address, DB)['count']
+    zeroth=zeroth_confirmation_txs(address, DB)
+    return current+zeroth

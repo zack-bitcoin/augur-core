@@ -5,13 +5,14 @@ import custom
 import time
 import sys
 MAX_MESSAGE_SIZE = 60000
-def recvall(sock, max_size):
+def recvall(sock, max_size, Timespan=1):
     data = ''
     tries=0
     while not tools.can_unpack(data):
-        time.sleep(0.02)
+        sleep_chunk=0.01
+        time.sleep(sleep_chunk)
         tries+=1
-        if tries>50:
+        if tries>Timespan/sleep_chunk:
             return {'recvall timeout error': data}
         try:
             d=sock.recv(max_size - len(data))
@@ -62,27 +63,33 @@ def serve_forever(PORT, handler, heart_queue):
             client.close()
         except:
             pass
-            #tools.log('server error: ' + str(sys.exc_info()))
-def connect(msg, host, port):
+            #('server error: ' + str(sys.exc_info()))
+def connect(msg, host, port, response_time=1):
     if len(msg) < 1 or len(msg) > MAX_MESSAGE_SIZE:
         tools.log('wrong sized message')
-        return
+        return('wrong size')
     s = socket.socket()
     s.setblocking(0)
-    try:
-        b=connect_socket(s, str(host), int(port))
-        if not b: 
-            s.close()
-            return {'error':'here'}
-        msg['version'] = custom.version
-        sendall(s, tools.package(msg))
-        response=recvall(s, MAX_MESSAGE_SIZE)
+    #try:
+    b=connect_socket(s, str(host), int(port))
+    if not b: 
         s.close()
+        return ({'error':'cannot connect'})
+    msg['version'] = custom.version
+    sendall(s, tools.package(msg))
+    response=recvall(s, MAX_MESSAGE_SIZE, response_time)
+    s.close()
+    try:
         return tools.unpackage(response)
     except:
+        pass
+    if 'recvall timeout error' in response:
+        return({'error':'cannot download'})
+        #print('truthcoin is not yet turned on.')
+    #except:
         #tools.log('unable to connect to peer: ' +str(host)+ ' ' + str(port) + ' because: ' +str(sys.exc_info()))
-        s.close()
-        return {'error':'networking connection'}
+    #    s.close()
+    #    return {'error':'connect2: '+str(sys.exc_info())}
 
-def send_command(peer, msg):
-    return connect(msg, peer[0], peer[1])
+def send_command(peer, msg, response_time=1):
+    return connect(msg, peer[0], peer[1], response_time)

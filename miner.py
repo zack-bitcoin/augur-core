@@ -17,7 +17,7 @@ def make_mint(pubkey, DB):
     return {'type': 'mint',
             'pubkeys': [pubkey],
             'signatures': ['first_sig'],
-            'count': blockchain.count(address, DB)}
+            'count': tools.count(address, DB)}
 def genesis(pubkey, DB):
     target = blockchain.target(DB)
     out = {'version': custom.version,
@@ -85,7 +85,7 @@ def main(pubkey, DB):
         if DB['length']==-1:
             candidate_block = genesis(pubkey, DB)
         else:
-            prev_block = blockchain.db_get(DB['length'], DB)
+            prev_block = tools.db_get(DB['length'], DB)
             candidate_block = make_block(prev_block, DB['txs'], pubkey, DB)
         work = candidate_block
         for worker in workers:

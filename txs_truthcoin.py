@@ -20,13 +20,13 @@ def create_jury_check(tx, txs, DB):
         tools.log('vote_id can not be a number')
         return False
     if len(tx['vote_id'])>1000: return False
-    if blockchain.db_existence(tx['vote_id'], DB): 
+    if tools.db_existence(tx['vote_id'], DB): 
         tools.log('this vote_id is already being used')
         return False
-    if not blockchain.db_existence(address, DB): 
+    if not tools.db_existence(address, DB): 
         tools.log('this address is not used by anyone')
         return False
-    acc=blockchain.db_get(address, DB)
+    acc=tools.db_get(address, DB)
     for t in txs:
         if 'jury_id' in t:
             if t['jury_id']==tx['jury_id']:
@@ -40,8 +40,8 @@ def propose_decision_check(tx, txs, DB):
         tools.log('that can not be a number')
         return False
     if len(tx['decision_id'])>6**4: return False
-    if not blockchain.db_existence(tx['vote_id'], DB): return False
-    if blockchain.db_existence(tx['decision_id'], DB): return False
+    if not tools.db_existence(tx['vote_id'], DB): return False
+    if tools.db_existence(tx['decision_id'], DB): return False
     for t in txs:
         if 'decision_id' in t:
             if t['decision_id']==tx['decision_id']:
@@ -58,7 +58,7 @@ def jury_vote_check(tx, txs, DB):
         return False
     if not E_check(tx, 'old_vote', [str, unicode]): return False
     if not E_check(tx, 'new_vote', [str, unicode]): return False
-    decision=blockchain.db_get(tx['decision_id'], DB)
+    decision=tools.db_get(tx['decision_id'], DB)
     if 'state' not in decision:
         tools.log('that is not a decision_id')
         tools.log('decision: ' +str(decision))
@@ -68,7 +68,7 @@ def jury_vote_check(tx, txs, DB):
     if decision['state']!='proposed':
         tools.log('this decision has already been decided')
         return False
-    if not blockchain.db_existence(tx['decision_id'], DB): 
+    if not tools.db_existence(tx['decision_id'], DB): 
         tools.log('decision error')
         return False
     if tools.reveal_time_p(DB): 
@@ -82,14 +82,14 @@ def jury_vote_check(tx, txs, DB):
 def reveal_jury_vote_check(tx, txs, DB):
     tools.log('reveal jury vote check')
     address=addr(tx)
-    acc=blockchain.db_get(address, DB)
+    acc=tools.db_get(address, DB)
     if not E_check(tx, 'decision_id', [str, unicode]): 
         tools.log('decision id error')
         return False
     if is_number(tx['decision_id']):
         tools.log('that can not be a number')
         return False
-    decision=blockchain.db_get(tx['decision_id'], DB)
+    decision=tools.db_get(tx['decision_id'], DB)
     if decision['state']!='proposed':
         tools.log('this decision has already been decided')
         return False
@@ -124,7 +124,7 @@ def SVD_consensus_check(tx, txs, DB):
     if is_number(tx['vote_id']) or is_number(tx['decision_id']):
         tools.log('that can not be a number')
         return False
-    jury=blockchain.db_get(tx['vote_id'], DB)
+    jury=tools.db_get(tx['vote_id'], DB)
     if len(decisions)<5:
         tools.log('need at least 5 decisions to compute SVD')
         return False
@@ -147,7 +147,7 @@ def prediction_market_check(tx, txs, DB):
             tools.log(str(l)+ ' error')
             return False
     for dec in tx['decisions']:
-        if not blockchain.db_existence(dec, DB): 
+        if not tools.db_existence(dec, DB): 
             tools.log('decision is not in the database: ' +str(dec))
             return False
         if is_number(dec):
@@ -179,8 +179,8 @@ def prediction_market_check(tx, txs, DB):
         tools.log('PM_id error')
         return False        
     if len(tx['PM_id'])>1000: return False
-    if blockchain.db_existence(tx['PM_id'], DB): 
-        tools.log('PM: ' +str(blockchain.db_get(tx['PM_id'], DB)))
+    if tools.db_existence(tx['PM_id'], DB): 
+        tools.log('PM: ' +str(tools.db_get(tx['PM_id'], DB)))
         tools.log('this PM_id is already being used')
         return False
     for t in txs:
@@ -188,7 +188,7 @@ def prediction_market_check(tx, txs, DB):
             if t['PM_id']==tx['PM_id']:
                 tools.log('Someone used that PM in this block already')
                 return False
-    acc=blockchain.db_get(address, DB)
+    acc=tools.db_get(address, DB)
     if not txs_tools.fee_check(tx, txs, DB): return False#
     return True
 
@@ -200,7 +200,7 @@ def buy_shares_check(tx, txs, DB):
     if not E_check(tx, 'PM_id', [str, unicode]):
         tools.log('pm id error')
         return False
-    pm=blockchain.db_get(tx['PM_id'], DB)
+    pm=tools.db_get(tx['PM_id'], DB)
     if len(tx['buy'])!=len(pm['shares_purchased']):
         tools.log('buy length error')
         return False
@@ -219,7 +219,7 @@ def collect_winnings_check(tx, txs, DB):
     if not E_check(tx, 'address', [str, unicode]):
         tools.log('no address error')
         return False
-    acc=blockchain.db_get(tx['address'], DB)
+    acc=tools.db_get(tx['address'], DB)
     if not E_check(tx, 'PM_id', [str, unicode]):
         tools.log('no PM_id error')
         return False
@@ -230,7 +230,7 @@ def collect_winnings_check(tx, txs, DB):
         tools.log('that is not how many shares you have error')
         return False
     for dec in pm['decisions']:
-        decision = blockchain.db_get(dec, DB)
+        decision = tools.db_get(dec, DB)
         if decisions['state'] not in ['yes', 'no']:
             tools.log('we have not yet reached consensus on the outcome of this market error')
             return False
@@ -261,16 +261,16 @@ def propose_decision(tx, DB):
 
 def jury_vote(tx, DB):
     address=addr(tx)
-    acc=blockchain.db_get(address, DB)
+    acc=tools.db_get(address, DB)
     if tx['decision_id'] not in acc['votes']:
         acc['votes'][tx['decision_id']]='unsure'
         #this memory leak needs to be cleaned up somewhere else.
-        blockchain.db_put(address, acc, DB)
+        tools.db_put(address, acc, DB)
     adjust_int(['count'], address, 1, DB)
     adjust_int(['amount'], address, -custom.jury_vote_fee, DB)
-    #print('before adjust: ' +str(blockchain.db_get(address, DB)))
+    #print('before adjust: ' +str(tools.db_get(address, DB)))
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
-    #print('after adjust: ' +str(blockchain.db_get(address, DB)))
+    #print('after adjust: ' +str(tools.db_get(address, DB)))
     
 def reveal_jury_vote(tx, DB):    
     address=addr(tx)
@@ -282,7 +282,7 @@ def decision_matrix(jury, decisions, DB):
     for decision in decisions:
         row=[]
         for member in jury['members']:#empty
-            acc=blockchain.db_get(member, DB)
+            acc=tools.db_get(member, DB)
             vote='unsure'
             try:
                 vote=acc['votes'][decision]
@@ -301,7 +301,7 @@ def decision_matrix(jury, decisions, DB):
 def SVD_consensus(tx, DB):
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
-    jury=blockchain.db_get(tx['vote_id'], DB)
+    jury=tools.db_get(tx['vote_id'], DB)
     matrix=decision_matrix(jury, tx['decisions'], DB)
     result=ConsensusMechanism.main(matrix)
     #create fee. If there are more decisions, then the fee is lower.
@@ -332,7 +332,7 @@ def prediction_market(tx, DB):#also used to increase liquidity of existing marke
     #has a 'buy_shares' inside of it, eventually
 def buy_shares(tx, DB):
     address = addr(tx)
-    acc = blockchain.db_get(address, DB)
+    acc = tools.db_get(address, DB)
     adjust_int(['count'], address, 1, DB)
     #tx={'buy':[10, -5, 0, 0, 0], PM_id:''} this would buy 10 shares of the first state, and sell 5 of the second.
     cost=txs_tools.cost_to_buy_shares(tx, DB)
@@ -348,16 +348,16 @@ def buy_shares(tx, DB):
     for i in range(len(tx['buy'])):
         adjust_int(['shares_purchased', i], tx['PM_id'], tx['buy'][i], DB)
         adjust_int(['shares', tx['PM_id'], i], address, tx['buy'][i], DB)
-    acc = blockchain.db_get(address, DB)
+    acc = tools.db_get(address, DB)
     if acc['shares'][tx['PM_id']]==all_zeros:
         adjust_dict(['shares'], address, True, dic, DB)
 def collect_winnings(tx, DB):
     address = addr(tx)
-    acc = blockchain.db_get(address, DB)
-    pm = blockchain.db_get(tx['PM_id'], DB)
+    acc = tools.db_get(address, DB)
+    pm = tools.db_get(tx['PM_id'], DB)
     outcome_combination=[]
     for dec in pm['decisions']:
-        decision = blockchain.db_get(dec, DB)
+        decision = tools.db_get(dec, DB)
         do={'yes':(lambda: outcome_combination.append(1)), 
             'no':(lambda: outcome_combination.append(0))}
         do[decision['state']]()
