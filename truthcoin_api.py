@@ -168,7 +168,7 @@ def mine(DB):
         return('miner is now turned off')
     else: 
         DB['mine']=True
-        return ('miner on. (use "miner off" to turn off)')
+        return ('miner on. (use "mine off" to turn off)')
     
     
 Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, 'wait_till_block':wait_till_block, '':(lambda DB: ''), 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'mine':mine}

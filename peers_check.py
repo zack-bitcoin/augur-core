@@ -60,10 +60,10 @@ def peer_check(peer, DB):
         return ask_for_txs(peer, DB)
     return download_blocks(peer, DB, block_count, length)
 def exponential_random(size, chance):
-    for i in range(size):
-        if random.random()<chance:
-            return i
-    return exponential_random(size, chance)
+    while True:
+        for i in range(size):
+            if random.random()<chance:
+                return i
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     DB['peers_ranked']=[]

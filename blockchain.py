@@ -212,12 +212,17 @@ def add_block(block_pair, DB):
     if block_check(block, DB):
         #tools.log('add_block: ' + str(block))
         i=0
+        j='empty'
         if peer != False:
             for p in DB['peers_ranked']:
                 if p[0]==peer:
                     j=i
                 i+=1
-            DB['peers_ranked'][j][1]*=0.1#listen more to people who have newer blocks.
+            if j!='empty':
+                DB['peers_ranked'][j][1]*=0.1#listen more to people who have newer blocks.
+            else:
+                #maybe this peer should be added to our list of peers?
+                pass
         db_put(block['length'], block, DB)
         DB['length'] = block['length']
         DB['diffLength'] = block['diffLength']

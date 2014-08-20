@@ -3,7 +3,8 @@ import tools
 import hashlib
 
 
-peers = [['localhost', 8900]]
+peers = [['192.241.212.114', 88]]
+
 
 database_name = 'DB.db'
 port=8900

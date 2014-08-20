@@ -10,6 +10,7 @@ INSTALL (for ubuntu)
     sudo apt-get install git
     sudo apt-get install python-leveldb
     sudo apt-get install python-rpy2
+    https://pypi.python.org/pypi/getch
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW
 
