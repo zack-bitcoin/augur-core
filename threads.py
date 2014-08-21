@@ -1,20 +1,6 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads and packs up the database.
 """
-import miner
-import message_handler
-import time
-import threading
-import tools
-import custom
-import leveldb
-import networking
-import command_prompt_advanced
-import sys
-import truthcoin_api
-import blockchain
-import peers_check
-import multiprocessing
-import Queue
+import miner, peer_recieve, time, threading, tools, custom, leveldb, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
 
 #def main():
 if True:
@@ -70,7 +56,7 @@ if True:
          'args': (custom.peers, DB),
          'daemon': True},
         {'target': networking.serve_forever,
-         'args': (custom.port, lambda d: message_handler.main(d, DB), heart_queue),
+         'args': (custom.port, lambda d: pree_recieve.main(d, DB), heart_queue),
          'daemon': True}
     ]
     processes= [#these do NOT share memory with the rest.

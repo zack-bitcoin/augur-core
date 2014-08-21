@@ -1,17 +1,6 @@
 """This is the internal API for truthshell. These are the words that are used to interact with truthcoin.
 """
-import copy
-import tools
-import blockchain
-import custom
-import random
-import transactions
-import sys
-import txs_tools
-import time
-import command_prompt_advanced
-import networking
-
+import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking
 def easy_add_transaction(tx_orig, DB):
     print('start of easy add')
     tx = copy.deepcopy(tx_orig)
@@ -45,7 +34,7 @@ def help_(DB):
         'txs':'returns a list of the zeroth confirmation transactions that are expected to be included in the next block',
         'difficulty':'returns current difficulty',
         'my_balance':'the amount of truthcoin that you own',
-        'wait_till_block':'to stop the truthshell until block 100 has passed, type: "./truthd wait_till_block 100". Any additional words that you type are saved until block 100, and they are executed at that time.',
+        #'wait_till_block':'to stop the truthshell until block 100 has passed, type: "./truthd wait_till_block 100". Any additional words that you type are saved until block 100, and they are executed at that time.',
         'balance':'if you want to know the balance for address <addr>, type: ./truthd balance <addr>',
         'log':'records the following words into the file "log.py"',
         'stop':'This is the correct way to stop truthcoin. If you turn off in any other way, then you are likely to corrupt your database, and you have to redownload all the blocks again.',
@@ -89,7 +78,6 @@ def ask_decision(DB):
         return('not enough inputs')
     tx={'type':'propose_decision', 'vote_id':DB['args'][0], 'decision_id':DB['args'][1], 'txt':accumulate_words(DB['args'][2:])[1:]}
     return easy_add_transaction(tx, DB)
-
 def vote_on_decision(DB):
     if len(DB['args'])<3:
         return('not enough inputs')
@@ -104,7 +92,6 @@ def vote_on_decision(DB):
         old_vote=acc['votes'][decision_id]
     tx={'type':'jury_vote', 'vote_id':DB['args'][0], 'decision_id':decision_id, 'old_vote':old_vote, 'new_vote':answer_hash}
     return easy_add_transaction(tx, DB)
-
 def reveal_vote(DB):
     if len(DB['args'])<2:
         return('not enough inputs')
@@ -119,7 +106,6 @@ def reveal_vote(DB):
         return easy_add_transaction(tx, DB)
     else:
         return('you do not have any encrypted vote to decrypt')
-
 def decisions_keepers(jury, DB):
     matrix=transactions.decision_matrix(jury, jury['decisions'], DB)
     #exclude decisions with insufficient participation*certainty
@@ -129,7 +115,6 @@ def decisions_keepers(jury, DB):
         if pc[i]>0.6:
             decisions.append(jury['decisions'][i])
     return decisions
-
 def SVD_consensus(DB):
     if len(DB['args'])<1:
         return('unique id for that branch?')
@@ -137,19 +122,15 @@ def SVD_consensus(DB):
     jury=tools.db_get(vote_id, DB)
     tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':decisions_keepers(jury, DB)}
     return(easy_add_transaction(tx, DB))
-
 def make_PM(DB):
     #contains an example prediction market. which is compatible with the example buy_shares on this same page.
     #to make_PM other than the example, you need to edit the following line of code, and restart truthcoin.
     tx={'type':'prediction_market', 'PM_id':'weather', 'fees':0, 'B':10, 'states':['0 0 0', '1 0 0', '1 1 0', 'default'], 'states_combinatory':[[0,0,0],[1,0,0],[1,1,0]], 'shares_purchased':[0,0,0,0],'decisions':["decision_1","decision_2","decision_3"], 'owner':DB['address']}
-    #print('pm in make: ' +str(tx))
     return(easy_add_transaction(tx, DB))
-
 def buy_shares(DB):
     #to buy shares other than the example, you need to edit the following line of code, and restart truthcoin.
     tx={'type':'buy_shares', 'buy':[5,4,3,0], 'PM_id':'weather'}
     return(easy_add_transaction(tx, DB))
-
 def collect_winnings(DB):
     add=DB['address']
     acc=tools.db_get(add, DB)
@@ -162,13 +143,6 @@ def my_balance(DB, address='default'):
     if address=='default':
         address=DB['address']
     return(str(tools.db_get(address, DB)['amount']-txs_tools.cost_0(DB['txs'], DB)['truthcoin_cost']))
-def wait_till_block(DB):
-    while True:
-        time.sleep(5)
-        DB['heart_queue'].put('truthcoin api')        
-        b=blockcount(DB)
-        if int(b)>=int(DB['args'][0]):
-            return str(b)
 def balance(DB): 
     if len(DB['args'])<1:
         return('what address do you want the balance for?')
@@ -185,10 +159,7 @@ def mine(DB):
     else: 
         DB['mine']=True
         return ('miner on. (use "./truthd mine off" to turn off)')
-    
-    
-Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, 'wait_till_block':wait_till_block, '':(lambda DB: ''), 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'mine':mine}
-
+Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':(lambda DB: ' '), 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'mine':mine}
 def main(DB, heart_queue):
     def responder(dic):
         command=dic['command']
@@ -199,27 +170,3 @@ def main(DB, heart_queue):
             out=str(command[0]) + ' is not a command. use "./truthd commands" to get the list of truthshell commands. use "./truthd help help" to learn about the help tool.'
         return out
     return networking.serve_forever(custom.truthd_port, responder, heart_queue)
-
-'''
-def main(DB, i_queue, o_queue):
-    while True:
-        for i in range(30):
-            main_helper(DB, i_queue, o_queue)
-        DB['heart_queue'].put('shell api')
-def main_helper(DB, i_queue, o_queue):
-    time.sleep(0.3)
-    try:
-        if i_queue.empty():
-            return
-        command=i_queue.get(False)
-        if command[0] in Do: 
-            DB['args']=command[1:]
-            out=Do[command[0]](DB)
-        else: 
-            out=str(command[0]) + ' is not a command. use "commands" to get the list of truthshell commands. use "help help" to learn about the help tool.'
-        o_queue.put(out)
-    except:
-        tools.log('truthcoin error: '+str(sys.exc_info()))
-        pass
-'''
-

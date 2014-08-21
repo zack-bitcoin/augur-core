@@ -1,13 +1,6 @@
 """This is to make magic numbers easier to deal with."""
-import tools
-import hashlib
-
-
+import tools, hashlib
 peers = [['192.241.212.114', 88]]
-#['127.0.0.1', 8901],
- #        ['127.0.0.1', 8902]]
-
-
 database_name = 'DB.db'
 port=8900
 truthd_port=8800
@@ -33,17 +26,4 @@ history_length = 400
 inflection = 0.985
 download_many = 500  # Max number of blocks to request from a peer at the same time.
 max_download = 50000
-#cmd_prompt_advanced=True
-##brainwallet = 'brain wallet'
-##privkey = tools.det_hash(brainwallet)
-##pubkey = tools.privtopub(privkey)
-##address = tools.make_address([pubkey], 1)
-
-'''
-def blocktime(length):
-    if length * block_reward < premine:
-        return 30  # seconds
-    else:
-        return 60
-'''
-def blocktime(length): return 10
+def blocktime(length): return 30

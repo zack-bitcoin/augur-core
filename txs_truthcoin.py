@@ -7,7 +7,6 @@ import pprint
 import custom
 import tools
 import blockchain
-
 addr=tools.addr
 E_check=tools.E_check
 is_number=tools.is_number
@@ -235,8 +234,6 @@ def collect_winnings_check(tx, txs, DB):
             tools.log('we have not yet reached consensus on the outcome of this market error')
             return False
     return True
-
-
 adjust_int=txs_tools.adjust_int
 adjust_dict=txs_tools.adjust_dict
 adjust_list=txs_tools.adjust_list
@@ -258,25 +255,19 @@ def propose_decision(tx, DB):
     decision={'state':'proposed',#proposed, yes, no
               'txt':tx['txt']}
     symmetric_put(tx['decision_id'], decision, DB)
-
 def jury_vote(tx, DB):
     address=addr(tx)
     acc=tools.db_get(address, DB)
     if tx['decision_id'] not in acc['votes']:
         acc['votes'][tx['decision_id']]='unsure'
-        #this memory leak needs to be cleaned up somewhere else.
         tools.db_put(address, acc, DB)
     adjust_int(['count'], address, 1, DB)
     adjust_int(['amount'], address, -custom.jury_vote_fee, DB)
-    #print('before adjust: ' +str(tools.db_get(address, DB)))
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
-    #print('after adjust: ' +str(tools.db_get(address, DB)))
-    
 def reveal_jury_vote(tx, DB):    
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
-    
 def decision_matrix(jury, decisions, DB):
     matrix=[]
     for decision in decisions:
@@ -297,7 +288,6 @@ def decision_matrix(jury, decisions, DB):
                 row.append('NA')
         matrix.append(row)
     return matrix
-
 def SVD_consensus(tx, DB):
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
@@ -315,7 +305,6 @@ def SVD_consensus(tx, DB):
         adjust_string(['state'], decision, 'proposed', new, DB)
     #if a prediction market expires, then we should give 1/2 it's fees to votecoin holders, and 1/2 it's fees to the author
     #the prediction market may have unused seed capital. This seed capital should go to the author
-
 def prediction_market(tx, DB):#also used to increase liquidity of existing market, eventually
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
@@ -326,7 +315,6 @@ def prediction_market(tx, DB):#also used to increase liquidity of existing marke
     pm['author']=address
     pm['shares_purchased']=[]
     for i in range(len(tx['states'])): pm['shares_purchased'].append(0)
-    #pm={'fees':0, 'B':tx['B'], 'states':['not cloudy', 'cloudy', 'cloudy+rain/sleet', 'cloudy+snow'], 'states_combinatory':[[0,0,0],[1,0,0],[1,1,0]], 'shares_puchased':[0,0,0,0],'decisions':[decision_id_cloudy, decision_id_rain, decision_id_snow], 'owner':address}
     symmetric_put(tx['PM_id'], pm, DB)
     tools.log('created PM: '+str(tx['PM_id']))
     #has a 'buy_shares' inside of it, eventually
@@ -370,6 +358,3 @@ def collect_winnings(tx, DB):
     if else_:
         adjust_int(['amount'], address, acc['shares'][tx['PM_id']][-1], DB)
     adjust_dict(['shares'], address, True, {tx['PM_id']:tx['shares']}, DB)
-
-
-

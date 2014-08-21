@@ -1,28 +1,17 @@
 """This file explains how we tell if a transaction is valid or not, it explains
 how we update the database when new transactions are added to the blockchain."""
-import blockchain
-import custom
-import copy
-import tools
-import txs_tools
+import blockchain, custom, copy, tools, txs_tools
 import txs_truthcoin as tt
-
 E_check=tools.E_check
 def spend_verify(tx, txs, DB):
-
     def sigs_match(sigs, pubs, msg):
         return all(tools.verify(msg, sig, pub) for sig in sigs for pub in pubs)
-
     tx_copy = copy.deepcopy(tx)
     tx_copy_2 = copy.deepcopy(tx)
     if not E_check(tx, 'to', [str, unicode]):
         tools.log('no to')
         return False
-    #if is_number(tx['to']):
-    #    tools.log('thats a number, not a person')
-    #    return False
     if len(tx['to'])<=30:
-        #this system supports a maximum of 10^30 blocks.
         tools.log('that address is too short')
         tools.log('tx: ' +str(tx))
         return False
@@ -51,11 +40,8 @@ def spend_verify(tx, txs, DB):
         tools.log('fee check error')
         return False
     return True
-
-
 def mint_verify(tx, txs, DB):
     return 0 == len(filter(lambda t: t['type'] == 'mint', txs))
-
 tx_check = {'spend':spend_verify,
             'mint':mint_verify,
             'create_jury':tt.create_jury_check,
@@ -71,12 +57,10 @@ adjust_int=txs_tools.adjust_int
 adjust_dict=txs_tools.adjust_dict
 adjust_list=txs_tools.adjust_list
 symmetric_put=txs_tools.symmetric_put
-
 def mint(tx, DB):
     address = tools.addr(tx)
     adjust_int(['amount'], address, custom.block_reward, DB)
     adjust_int(['count'], address, 1, DB)
-
 def spend(tx, DB):
     def initialize_to_zero_helper(loc, address, DB):
         acc=tools.db_get(address, DB)
@@ -110,7 +94,6 @@ def spend(tx, DB):
         adjust_int(['amount'], tx['to'], tx['amount'], DB)
     adjust_int(['amount'], address, -custom.fee, DB)
     adjust_int(['count'], address, 1, DB)
-
 update = {'mint':mint,
           'spend':spend,
           'create_jury':tt.create_jury,
@@ -121,4 +104,3 @@ update = {'mint':mint,
           'prediction_market':tt.prediction_market,
           'buy_shares':tt.buy_shares,
           'collect_winnings':tt.collect_winnings}
-

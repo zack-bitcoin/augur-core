@@ -13,13 +13,13 @@ INSTALL (for ubuntu)
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW
 
-To run 1 node
+To run a truthcoin node
 
-    python main.py
+    python threads.py
 
-Then send your browser to:
+Then to talk to truthcoin use:
 
-    http://localhost:8700
+    python truthd.py
 
 For now, there is a 20-block cycle.
 1-10: votecoin-holders may give encrypted votes on decisions. (in the final version of truthcoin, this step will take 1000+ blocks)

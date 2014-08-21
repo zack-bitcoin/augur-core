@@ -44,7 +44,6 @@ def give_block(peer, DB, block_count):
     return 0
 def peer_check(peer, DB):
     block_count = cmd(peer, {'type': 'blockCount'})
-    #tools.log('block count: ' +str(block_count))
     if not isinstance(block_count, dict):
         return
     if 'error' in block_count.keys():
@@ -53,7 +52,6 @@ def peer_check(peer, DB):
     size = max(len(DB['diffLength']), len(block_count['diffLength']))
     us = tools.buffer_(DB['diffLength'], size)
     them = tools.buffer_(block_count['diffLength'], size)
-    #tools.log('us them: ' +str(us) + ' '+str(them) + ' '+str(peer))
     if them < us:
         return give_block(peer, DB, block_count)
     if us == them:
@@ -71,7 +69,6 @@ def main(peers, DB):
         DB['peers_ranked'].append([peer, 5])
     while True:
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
-        #tools.log(str(DB['peers_ranked']))
         time.sleep(4)
         DB['heart_queue'].put('peers check')
         i=exponential_random(len(DB['peers_ranked']), 0.5)

@@ -1,13 +1,8 @@
 """A bunch of functions that are used by multiple threads.
 """
-import pt
-import hashlib
-import re
-import subprocess
+import pt, hashlib, re, subprocess, time, copy
 from json import dumps as package, loads as unpackage
-from collections import OrderedDict
-import time
-import copy
+#from collections import OrderedDict
 
 def heart_monitor(queue):
     beats={}
@@ -38,12 +33,12 @@ def privtopub(privkey): return pt.privtopub(privkey)
 def hash_(x): return hashlib.sha256(x).hexdigest()
 def det_hash(x):
     """Deterministically takes sha256 of dict, list, int, or string."""
-    def det_list(l): return '[%s]' % ','.join(map(det, sorted(l)))
-    def det_dict(x):
-        list_=map(lambda p: det(p[0]) + ':' + det(p[1]), sorted(x.items()))
-        return '{%s}' % ','.join(list_)
-    def det(x): return {list: det_list, dict: det_dict}.get(type(x), str)(x)
-    return hash_(det(unpackage(package(x))))
+    #def det_list(l): return '[%s]' % ','.join(map(det, sorted(l)))
+    #def det_dict(x):
+    #    list_=map(lambda p: det(p[0]) + ':' + det(p[1]), sorted(x.items()))
+    #    return '{%s}' % ','.join(list_)
+    #def det(x): return {list: det_list, dict: det_dict}.get(type(x), str)(x)
+    return hash_(package(x, sort_keys=True))
 def base58_encode(num):
     num = int(num, 16)
     alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'

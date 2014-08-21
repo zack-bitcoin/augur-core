@@ -1,11 +1,6 @@
 """When a peer talks to us, this is how we generate a response. This is the external API.
 """
-import networking
-import custom
-import tools
-import blockchain
-import time
-
+import networking, custom, tools, blockchain, time
 def security_check(dic):
     if 'version' not in dic or dic['version'] != custom.version:
         return {'bool': False, 'error': 'version'}
@@ -39,8 +34,6 @@ def pushblock(dic, DB):
     DB['suggested_blocks'].put([dic['block'], dic['peer']])
     return 'success'
 def main(dic, DB):
-    """Sometimes peers ask us for information or push new transactions or
-    blocks to us. This file explains how we respond. """
     funcs = {'blockCount': blockCount, 'rangeRequest': rangeRequest,
              'txs': txs, 'pushtx': pushtx, 'pushblock': pushblock}
     if 'type' not in dic:
@@ -54,4 +47,3 @@ def main(dic, DB):
         return funcs[dic['type']](check['newdic'], DB)
     except:
         pass
-

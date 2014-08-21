@@ -1,13 +1,8 @@
 """These are functions that are exclusively used for the truthcoin aspects of the blockchain.
 tools.py contains functions that are used everywhere.
 """
-import blockchain
-import custom
-import math
-import tools
-
+import blockchain, custom, math, tools
 addr=tools.addr
-
 def cost_to_buy_shares(tx, DB):
     pm=tools.db_get(tx['PM_id'], DB)
     shares_purchased=pm['shares_purchased']
@@ -18,7 +13,6 @@ def cost_to_buy_shares(tx, DB):
     def add(a, b): return a+b
     C_new=C(map(add, shares_purchased, buy), B)
     return C_new-C_old
-
 def cost_0(txs, DB):
     #cost of the zeroth confirmation transactions
     total_cost = []
@@ -40,7 +34,6 @@ def cost_0(txs, DB):
             total_cost.append(custom.buy_shares_fee)
             total_cost.append(cost)
             total_cost.append(int(abs(cost*0.01)))
-            
         Do={'spend':spend_,
             'mint':(lambda: total_cost.append(-custom.block_reward)), 
             'create_jury':(lambda: total_cost.append(custom.create_jury_fee)), 
@@ -53,8 +46,6 @@ def cost_0(txs, DB):
             'prediction_market':(lambda: total_cost.append(Tx['B']*math.log(len(Tx['states']))))}
         Do[Tx['type']]()
     return {'truthcoin_cost':sum(total_cost), 'votecoin_cost':votecoin_cost}
-    
-
 def fee_check(tx, txs, DB):
     address = addr(tx)
     cost_=cost_0(txs, DB)
@@ -76,15 +67,12 @@ def fee_check(tx, txs, DB):
             tools.log('not enough votecoin: ' +str(v_id))
             return False
     return True
-
 def get_(loc, thing): 
     if loc==[]: return thing
     return get_(loc[1:], thing[loc[0]])
-
 def set_(loc, dic, val):
     get_(loc[:-1], dic)[loc[-1]] = val
     return dic
-
 def adjust(location, pubkey, DB, f):#location shouldn't be here.
     acc = tools.db_get(pubkey, DB)
     f(acc)
@@ -122,4 +110,3 @@ def adjust_list(location, pubkey, remove, item, DB):
 def symmetric_put(id_, dic, DB):
     if DB['add_block']: tools.db_put(id_, dic, DB)
     else: tools.db_delete(id_, DB)
-
