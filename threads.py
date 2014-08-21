@@ -56,7 +56,7 @@ if True:
          'args': (custom.peers, DB),
          'daemon': True},
         {'target': networking.serve_forever,
-         'args': (custom.port, lambda d: pree_recieve.main(d, DB), heart_queue),
+         'args': (custom.port, lambda d: peer_recieve.main(d, DB), heart_queue),
          'daemon': True}
     ]
     processes= [#these do NOT share memory with the rest.

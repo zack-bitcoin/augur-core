@@ -1,6 +1,7 @@
 """This is to make magic numbers easier to deal with."""
 import tools, hashlib
-peers = [['192.241.212.114', 88]]
+peers = [['192.241.212.114', 87],
+         ['127.0.0.1', 8900]]
 database_name = 'DB.db'
 port=8900
 truthd_port=8800

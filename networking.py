@@ -70,7 +70,7 @@ def connect(msg, host, port, response_time=1):
     b=connect_socket(s, str(host), int(port))
     if not b: 
         s.close()
-        return ({'error':'cannot connect'})
+        return ({'error':'cannot connect: '+str(host)})
     msg['version'] = custom.version
     sendall(s, tools.package(msg))
     response=recvall(s, MAX_MESSAGE_SIZE, response_time)
@@ -80,6 +80,6 @@ def connect(msg, host, port, response_time=1):
     except:
         pass
     if 'recvall timeout error' in response:
-        return({'error':'cannot download'})
+        return({'error':'cannot download: '+str(host)})
 def send_command(peer, msg, response_time=1):
     return connect(msg, peer[0], peer[1], response_time)
