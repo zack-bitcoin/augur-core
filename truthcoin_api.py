@@ -15,30 +15,30 @@ def easy_add_transaction(tx_orig, DB):
     return(blockchain.add_tx(tx, DB))
 def help_(DB):      
     tell_about_command={
-        'help':'type "./truthd help <cmd>" to learn about <cmd>. type "./truthd commands" to get a list of all truthshell commands',
+        'help':'type "./truthd.py help <cmd>" to learn about <cmd>. type "./truthd.py commands" to get a list of all truthshell commands',
         'commands':'returns a list of the truthshell commands',
-        'create_jury':'If you want to create a jury called "bitcoin", then type: ./truthd create_jury bitcoin.',
+        'create_jury':'If you want to create a jury called "bitcoin", then type: ./truthd.py create_jury bitcoin.',
         'DB_print':'prints the database that is shared between threads',
         'info':'prints the contents of an entree in the hashtable. If you want to know what the first block was: info 0, if you want to know about a particular address <addr>: info <addr>, if you want to know about yourself: info my_address',
         'my_address':'tells you your own address',
         'spend':'spends money, in satoshis, to an address <addr>. Example: spend 1000 11j9csj9802hc982c2h09ds',
         'votecoin_spend':'spend votecoins from jury <jury>, to address <addr>. Example: votecoin_spend 1000 <jury> <addr>',
-        'ask_decision': 'If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truthd ask_decision weather_question_203 what will the weather be tomorrow',
+        'ask_decision': 'If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truthd.py ask_decision weather_question_203 what will the weather be tomorrow',
         'vote_on_decision':'If you want to vote in jury <jury>, and you want to vote on decision <decision>, and you want to vote "yes", for example: vote_on_decision <jury> <decision> yes',
         'reveal_vote':'If you want to reveal your vote for the decision with the unique identifier <decision> which was asked ofjury <jury>, then: reveal_vote <jury> <decision>',
         'SVD_consensus':'If you want to resolve decisions asked of jury <jury>, then: SVD_consensus <jury>',
-        'make_PM':'The inputs for make_PM are very complicated. For now, you have to: (1) use "./truthd stop" to kill the program. (2) edit the function "make_PM" in the file "truthcoin_api.py".(3) restart the program with "python threads.py"',
-        'buy_shares':'The inputs for buy_shares are very complicated. For now, you have to: (1) use "./truthd stop" to kill the program. (2) edit the function "make_PM" in the file "truthcoin_api.py".(3) restart the program with "python threads.py"',
+        'make_PM':'The inputs for make_PM are very complicated. For now, you have to: (1) use "./truthd.py stop" to kill the program. (2) edit the function "make_PM" in the file "truthcoin_api.py".(3) restart the program with "python threads.py"',
+        'buy_shares':'The inputs for buy_shares are very complicated. For now, you have to: (1) use "./truthd.py stop" to kill the program. (2) edit the function "make_PM" in the file "truthcoin_api.py".(3) restart the program with "python threads.py"',
         'collect_winnings':'To transform your winning shares from prediction market <PM> into truthcoin: collect_winnings <PM>',
         'blockcount':'returns the number of blocks since the genesis block',
         'txs':'returns a list of the zeroth confirmation transactions that are expected to be included in the next block',
         'difficulty':'returns current difficulty',
         'my_balance':'the amount of truthcoin that you own',
-        #'wait_till_block':'to stop the truthshell until block 100 has passed, type: "./truthd wait_till_block 100". Any additional words that you type are saved until block 100, and they are executed at that time.',
-        'balance':'if you want to know the balance for address <addr>, type: ./truthd balance <addr>',
+        #'wait_till_block':'to stop the truthshell until block 100 has passed, type: "./truthd.py wait_till_block 100". Any additional words that you type are saved until block 100, and they are executed at that time.',
+        'balance':'if you want to know the balance for address <addr>, type: ./truthd.py balance <addr>',
         'log':'records the following words into the file "log.py"',
         'stop':'This is the correct way to stop truthcoin. If you turn off in any other way, then you are likely to corrupt your database, and you have to redownload all the blocks again.',
-        'mine':'turn the miner on/off. Example to turn on: "./truthd mine on", example to turn off: "./truthd mine off"',
+        'mine':'turn the miner on/off. Example to turn on: "./truthd.py mine on", example to turn off: "./truthd.py mine off"',
         'DB':'returns a database of information that is shared between threads'
     }
     if len(DB['args'])==0:
@@ -158,7 +158,7 @@ def mine(DB):
         return('miner is now turned off')
     else: 
         DB['mine']=True
-        return ('miner on. (use "./truthd mine off" to turn off)')
+        return ('miner on. (use "./truthd.py mine off" to turn off)')
 Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':(lambda DB: ' '), 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'mine':mine}
 def main(DB, heart_queue):
     def responder(dic):
@@ -167,7 +167,7 @@ def main(DB, heart_queue):
             DB['args']=command[1:]
             out=Do[command[0]](DB)
         else: 
-            out=str(command[0]) + ' is not a command. use "./truthd commands" to get the list of truthshell commands. use "./truthd help help" to learn about the help tool.'
+            out=str(command[0]) + ' is not a command. use "./truthd.py commands" to get the list of truthshell commands. use "./truthd.py help help" to learn about the help tool.'
         return out
     try:
         return networking.serve_forever(custom.truthd_port, responder, heart_queue)

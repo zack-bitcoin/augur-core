@@ -37,9 +37,9 @@ def ask_for_txs(peer, DB):
     for push in pushers:
         cmd(peer, {'type': 'pushtx', 'tx': push})
     return 0
-def give_block(peer, DB, block_count):
+def give_block(peer, DB, block_count_l):
     cmd(peer, {'type': 'pushblock',
-               'block': tools.db_get(block_count['length'] + 1,
+               'block': tools.db_get(block_count_l + 1,
                                           DB)})
     return 0
 def peer_check(peer, DB):
@@ -53,7 +53,9 @@ def peer_check(peer, DB):
     us = tools.buffer_(DB['diffLength'], size)
     them = tools.buffer_(block_count['diffLength'], size)
     if them < us:
-        return give_block(peer, DB, block_count)
+        for i in range(block_count['length'], min(block_count['length']+10, length)):
+            give_block(peer, DB, i)
+        return 0
     if us == them:
         return ask_for_txs(peer, DB)
     return download_blocks(peer, DB, block_count, length)
