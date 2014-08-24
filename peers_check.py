@@ -1,7 +1,7 @@
 """We regularly check on peers to see if they have mined new blocks.
 This file explains how we initiate interactions with our peers.
 """
-import time, networking, tools, blockchain, custom, random
+import time, networking, tools, blockchain, custom, random, sys
 def cmd(peer, x):
     return networking.send_command(peer, x)
 def fork_check(newblocks, DB):
@@ -67,7 +67,13 @@ def main(peers, DB):
     DB['peers_ranked']=[]
     for peer in peers:
         DB['peers_ranked'].append([peer, 5])
-    while True:
+    try:
+        while True:
+            main_once(peers, DB)
+    except:
+        print('main peers check: ' +str(sys.exc_info()))
+
+def main_once(peers, DB):
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
         time.sleep(4)
         DB['heart_queue'].put('peers check')

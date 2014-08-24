@@ -248,6 +248,12 @@ def suggestions(DB, s, f):
             except:
                 tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
 def suggestion_txs(DB): 
-    return suggestions(DB, 'suggested_txs', add_tx)
+    try:
+        return suggestions(DB, 'suggested_txs', add_tx)
+    except:
+        print(str(sys.exc_info()))
 def suggestion_blocks(DB): 
-    return suggestions(DB, 'suggested_blocks', add_block)
+    try:
+        return suggestions(DB, 'suggested_blocks', add_block)
+    except:
+        print(str(sys.exc_info()))

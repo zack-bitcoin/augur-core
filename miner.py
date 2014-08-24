@@ -75,33 +75,37 @@ def main(pubkey, DB):
     num_cores = multiprocessing.cpu_count()
     solution_queue = multiprocessing.Queue()
     workers = [new_worker(solution_queue) for _ in range(num_cores)]
-    while True:
-        if DB['stop']:
-            sys.exit(1)
-        while not DB['mine']:
-            time.sleep(1)
-        time.sleep(2)
-        DB['heart_queue'].put('miner')
-        if DB['length']==-1:
-            candidate_block = genesis(pubkey, DB)
-        else:
-            prev_block = tools.db_get(DB['length'], DB)
-            candidate_block = make_block(prev_block, DB['txs'], pubkey, DB)
-        work = candidate_block
-        for worker in workers:
-            worker['in_queue'].put(work)
-            worker['in_queue'].put(work)
-        while solution_queue.empty():
-            time.sleep(1)
-        restart_workers(workers)
-        while not solution_queue.empty():
-            try:
-                DB['suggested_blocks'].put(solution_queue.get(False))
-            except:
-                continue
+    try:
+        while True:
+            main_once(pubkey, DB, num_cores, solution_queue, workers)
+    except:
+        print('miner main: ' +str(sys.exc_info()))
+def main_once(pubkey, DB, num_cores, solution_queue, workers):
+    if DB['stop']:
+        sys.exit(1)
+    while not DB['mine']:
+        time.sleep(1)
+    time.sleep(2)
+    DB['heart_queue'].put('miner')
+    if DB['length']==-1:
+        candidate_block = genesis(pubkey, DB)
+    else:
+        prev_block = tools.db_get(DB['length'], DB)
+        candidate_block = make_block(prev_block, DB['txs'], pubkey, DB)
+    work = candidate_block
+    for worker in workers:
+        worker['in_queue'].put(work)
+        worker['in_queue'].put(work)
+    while solution_queue.empty():
+        time.sleep(1)
+    restart_workers(workers)
+    while not solution_queue.empty():
+        try:
+            DB['suggested_blocks'].put(solution_queue.get(False))
+        except:
+            continue
 def miner(restart, solution_queue, in_queue):
     while True:
-        
         try:
             candidate_block=in_queue.get(False)
         except:

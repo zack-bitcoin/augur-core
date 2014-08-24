@@ -169,4 +169,7 @@ def main(DB, heart_queue):
         else: 
             out=str(command[0]) + ' is not a command. use "./truthd commands" to get the list of truthshell commands. use "./truthd help help" to learn about the help tool.'
         return out
-    return networking.serve_forever(custom.truthd_port, responder, heart_queue)
+    try:
+        return networking.serve_forever(custom.truthd_port, responder, heart_queue)
+    except:
+        print(str(sys.exc_info()))

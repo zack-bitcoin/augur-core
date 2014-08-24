@@ -46,21 +46,32 @@ def serve_forever(PORT, handler, heart_queue):
     server.bind(('0.0.0.0', PORT))
     server.listen(100)
     server.setblocking(0)
-    while True:
-        heart_queue.put('server')
-        time.sleep(0.1)
-        try:
-            client, addr = server.accept()
-            (ip, port) = addr
-            peer=[str(ip), int(port)]
-            data=recvall(client, MAX_MESSAGE_SIZE)
-            if type(data)==type('string'):
-                data=tools.unpackage(data)
-            data['peer']=peer
-            sendall(client, tools.package(handler(data)))
-            client.close()
-        except:
-            pass
+    try:
+        while True:
+            serve_once(PORT, handler, heart_queue, server)
+    except:
+        print('serve forever error: ' +str(sys.exc_info()))
+def serve_once(PORT, handler, heart_queue, server):
+    heart_queue.put('server: '+str(PORT))
+    time.sleep(0.1)
+    #try:
+    try:
+        client, addr = server.accept()
+    except:
+        return
+    (ip, port) = addr
+    peer=[str(ip), int(port)]
+    try:
+        data=recvall(client, MAX_MESSAGE_SIZE)
+    except:
+        return
+    if type(data)==type('string'):
+        data=tools.unpackage(data)
+    data['peer']=peer
+    sendall(client, tools.package(handler(data)))
+    client.close()
+    #except:
+    #    pass
 def connect(msg, host, port, response_time=1):
     if len(msg) < 1 or len(msg) > MAX_MESSAGE_SIZE:
         tools.log('wrong sized message')

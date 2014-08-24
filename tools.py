@@ -7,15 +7,17 @@ from json import dumps as package, loads as unpackage
 def heart_monitor(queue):
     beats={}
     while True:
-        time.sleep(0.03)
+        time.sleep(0.3)
         t=time.time()
         for beat in beats:
             if t-beats[beat]>30:
                 beats[beat]=t
-                log('Error in thread: ' +str(beat))
+                log('thread has an error: ' +str(beat))
         if not(queue.empty()):
             beat=queue.get(False)
             #log('heart monitor: ' +str(beat))
+            if beat not in beats:
+                log('adding thread: ' +str(beat))
             beats[beat]=t
 def log(tx):
     with open("log.py", "a") as myfile:
