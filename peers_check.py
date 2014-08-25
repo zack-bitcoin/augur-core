@@ -77,9 +77,9 @@ def main(peers, DB):
 
 def main_once(peers, DB):
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
-        time.sleep(4)
+        time.sleep(2)
         DB['heart_queue'].put('peers check')
-        i=exponential_random(len(DB['peers_ranked']), 0.5)
+        i=exponential_random(len(DB['peers_ranked']), 0.4)
         t1=time.time()
         r=peer_check(DB['peers_ranked'][i][0], DB)
         t2=time.time()

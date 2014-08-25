@@ -43,7 +43,9 @@ def serve_forever(PORT, handler, heart_queue):
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     tools.kill_processes_using_ports([str(PORT)])
     time.sleep(2)
+    #print('before bind')
     server.bind(('0.0.0.0', PORT))
+    #print('after bind')
     server.listen(100)
     server.setblocking(0)
     try:
@@ -64,11 +66,15 @@ def serve_once(PORT, handler, heart_queue, server):
     try:
         data=recvall(client, MAX_MESSAGE_SIZE)
     except:
+        client.close()
         return
     if type(data)==type('string'):
         data=tools.unpackage(data)
     data['peer']=peer
-    sendall(client, tools.package(handler(data)))
+    try:
+        sendall(client, tools.package(handler(data)))
+    except:
+        pass
     client.close()
     #except:
     #    pass

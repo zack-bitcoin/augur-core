@@ -10,7 +10,7 @@ import tools
 
 def add_tx(tx, DB):
     # Attempt to add a new transaction into the pool.
-    print('top of add_tx')
+    #print('top of add_tx')
     out=['']
     if type(tx) != type({'a':1}): 
         return False
@@ -181,7 +181,7 @@ def add_block(block_pair, DB):
     else:
         block=block_pair
         peer=False
-    #tools.log('attempt to add block: ' +str(block))
+    tools.log('attempt to add block: ' +str(block))
     if block_check(block, DB):
         #tools.log('add_block: ' + str(block))
         i=0
@@ -239,7 +239,7 @@ def delete_block(DB):
 def suggestions(DB, s, f):
     while True:
         DB['heart_queue'].put(s)
-        time.sleep(1)
+        time.sleep(0.01)
         #tools.log('size: ' +str(DB[s].qsize()))
         if not DB[s].empty():
             #tools.log('got thing: ' +str(s))
@@ -251,9 +251,9 @@ def suggestion_txs(DB):
     try:
         return suggestions(DB, 'suggested_txs', add_tx)
     except:
-        print(str(sys.exc_info()))
+        print('suggestions txs error: ' +str(sys.exc_info()))
 def suggestion_blocks(DB): 
     try:
         return suggestions(DB, 'suggested_blocks', add_block)
     except:
-        print(str(sys.exc_info()))
+        print('suggestions blocks error: ' +str(sys.exc_info()))

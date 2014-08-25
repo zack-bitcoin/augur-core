@@ -172,4 +172,4 @@ def main(DB, heart_queue):
     try:
         return networking.serve_forever(custom.truthd_port, responder, heart_queue)
     except:
-        print(str(sys.exc_info()))
+        print('api error: ' +str(sys.exc_info()))
