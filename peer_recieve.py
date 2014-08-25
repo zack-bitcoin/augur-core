@@ -31,7 +31,11 @@ def pushtx(dic, DB):
     DB['suggested_txs'].put(dic['tx'])
     return 'success'
 def pushblock(dic, DB):
-    DB['suggested_blocks'].put([dic['block'], dic['peer']])
+    if 'blocks' in dic:
+        for block in dic['blocks']:
+            DB['suggested_blocks'].put([block, dic['peer']])
+    else:
+        DB['suggested_blocks'].put([dic['block'], dic['peer']])
     return 'success'
 def main(dic, DB):
     funcs = {'blockCount': blockCount, 'rangeRequest': rangeRequest,

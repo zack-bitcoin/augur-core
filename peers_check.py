@@ -9,15 +9,23 @@ def fork_check(newblocks, DB):
     recent_hash = tools.det_hash(block)
     their_hashes = map(tools.det_hash, newblocks)
     return recent_hash not in their_hashes
+'''
 def bounds(length, peers_block_count):
     if peers_block_count['length'] - length > custom.download_many:
         end = length + custom.download_many - 1
     else:
         end = peers_block_count['length']
     return [max(length - 2, 0), end]
+'''
+def bounds(length, peers_block_count):
+    if peers_block_count - length > custom.download_many:
+        end = length + custom.download_many - 1
+    else:
+        end = peers_block_count
+    return [max(length - 2, 0), end]
 def download_blocks(peer, DB, peers_block_count, length):
     blocks = cmd(peer, {'type': 'rangeRequest',
-                        'range': bounds(length, peers_block_count)})
+                        'range': bounds(length, peers_block_count['length'])})
     if not isinstance(blocks, list):
         return []
     for i in range(2):  # Only delete a max of 2 blocks, otherwise a
@@ -37,10 +45,17 @@ def ask_for_txs(peer, DB):
     for push in pushers:
         cmd(peer, {'type': 'pushtx', 'tx': push})
     return 0
-def give_block(peer, DB, block_count_l):
+def give_block(peer, DB, block_count_peer):
+    #cmd(peer, {'type': 'pushblock',
+    #           'block': tools.db_get(block_count_l + 1,
+    #                                 DB)})
+    blocks=[]
+    b=bounds(block_count_peer+1, DB['length'])
+    for i in range(b[0], b[1]):
+        blocks.append(tools.db_get(i, DB))
+    tools.log('pushing blocks: ' +str(blocks))
     cmd(peer, {'type': 'pushblock',
-               'block': tools.db_get(block_count_l + 1,
-                                          DB)})
+               'blocks': blocks})
     return 0
 def peer_check(peer, DB):
     block_count = cmd(peer, {'type': 'blockCount'})
@@ -52,10 +67,9 @@ def peer_check(peer, DB):
     size = max(len(DB['diffLength']), len(block_count['diffLength']))
     us = tools.buffer_(DB['diffLength'], size)
     them = tools.buffer_(block_count['diffLength'], size)
+    tools.log('us them ' + str(us) + ' '+str(them))
     if them < us:
-        for i in range(block_count['length'], min(block_count['length']+10, length)):
-            give_block(peer, DB, i)
-        return 0
+        return give_block(peer, DB, block_count['length'])
     if us == them:
         return ask_for_txs(peer, DB)
     return download_blocks(peer, DB, block_count, length)
