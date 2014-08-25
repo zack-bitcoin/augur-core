@@ -170,6 +170,6 @@ def main(DB, heart_queue):
             out=str(command[0]) + ' is not a command. use "./truthd.py commands" to get the list of truthshell commands. use "./truthd.py help help" to learn about the help tool.'
         return out
     try:
-        return networking.serve_forever(custom.truthd_port, responder, heart_queue)
+        return networking.serve_forever(custom.truthd_port, responder, heart_queue, DB)
     except:
         print('api error: ' +str(sys.exc_info()))

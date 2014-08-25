@@ -56,7 +56,7 @@ if True:
          'args': (custom.peers, DB),
          'daemon': True},
         {'target': networking.serve_forever,
-         'args': (custom.port, lambda d: peer_recieve.main(d, DB), heart_queue),
+         'args': (custom.port, lambda d: peer_recieve.main(d, DB), heart_queue, DB),
          'daemon': True}
     ]
     processes= [#these do NOT share memory with the rest.
@@ -81,10 +81,14 @@ if True:
     workers = [start_worker_proc(**task_info) for task_info in worker_tasks]
     print('use "./truthd" in a different terminal to interact with the system.')
     while not DB['stop']:
-        #print('in loop')
         time.sleep(0.5)
     tools.log('stopping all threads...')
+    for worker in workers:
+        if not worker.daemon:
+            print('stopping worker')
+            worker.join()
     for cmd in cmds:
+        print('stopping cmd')
         cmd.join()
     time.sleep(5)
     sys.exit(1)

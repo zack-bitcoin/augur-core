@@ -81,8 +81,6 @@ def main(pubkey, DB):
     except:
         print('miner main: ' +str(sys.exc_info()))
 def main_once(pubkey, DB, num_cores, solution_queue, workers):
-    if DB['stop']:
-        sys.exit(1)
     while not DB['mine']:
         time.sleep(1)
     time.sleep(2)

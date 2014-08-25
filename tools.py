@@ -7,7 +7,7 @@ from json import dumps as package, loads as unpackage
 def heart_monitor(queue):
     beats={}
     while True:
-        time.sleep(0.3)
+        time.sleep(0.01)
         t=time.time()
         for beat in beats:
             if t-beats[beat]>30:

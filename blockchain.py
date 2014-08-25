@@ -181,7 +181,7 @@ def add_block(block_pair, DB):
     else:
         block=block_pair
         peer=False
-    tools.log('attempt to add block: ' +str(block))
+    #tools.log('attempt to add block: ' +str(block))
     if block_check(block, DB):
         #tools.log('add_block: ' + str(block))
         i=0
@@ -239,14 +239,13 @@ def delete_block(DB):
 def suggestions(DB, s, f):
     while True:
         DB['heart_queue'].put(s)
-        time.sleep(0.01)
-        #tools.log('size: ' +str(DB[s].qsize()))
-        if not DB[s].empty():
-            #tools.log('got thing: ' +str(s))
-            try:
-                f(DB[s].get(False), DB)
-            except:
-                tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
+        for i in range(100):
+            time.sleep(0.01)
+            if not DB[s].empty():
+                try:
+                    f(DB[s].get(False), DB)
+                except:
+                    tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
 def suggestion_txs(DB): 
     try:
         return suggestions(DB, 'suggested_txs', add_tx)
