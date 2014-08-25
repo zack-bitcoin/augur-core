@@ -2,7 +2,6 @@
 """
 import miner, peer_recieve, time, threading, tools, custom, leveldb, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
 
-#def main():
 if True:
     i_queue=multiprocessing.Queue()
     o_queue=multiprocessing.Queue()
@@ -83,13 +82,12 @@ if True:
     while not DB['stop']:
         time.sleep(0.5)
     tools.log('stopping all threads...')
+    DB['heart_queue'].put('stop')
+    #the next part does not work at all. DB['db'] needs to get cleaned as well.
     for worker in workers:
-        if not worker.daemon:
-            print('stopping worker')
-            worker.join()
+        worker.join()
     for cmd in cmds:
-        print('stopping cmd')
         cmd.join()
-    time.sleep(5)
+    del DB['db']
     sys.exit(1)
 

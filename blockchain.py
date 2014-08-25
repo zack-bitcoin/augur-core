@@ -241,6 +241,7 @@ def suggestions(DB, s, f):
         DB['heart_queue'].put(s)
         for i in range(100):
             time.sleep(0.01)
+            if DB['stop']: return
             if not DB[s].empty():
                 try:
                     f(DB[s].get(False), DB)

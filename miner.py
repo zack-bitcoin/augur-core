@@ -77,13 +77,13 @@ def main(pubkey, DB):
     workers = [new_worker(solution_queue) for _ in range(num_cores)]
     try:
         while True:
-            main_once(pubkey, DB, num_cores, solution_queue, workers)
+            time.sleep(2)
+            if DB['stop']: return
+            if DB['mine']:
+                main_once(pubkey, DB, num_cores, solution_queue, workers)
     except:
         print('miner main: ' +str(sys.exc_info()))
 def main_once(pubkey, DB, num_cores, solution_queue, workers):
-    while not DB['mine']:
-        time.sleep(1)
-    time.sleep(2)
     DB['heart_queue'].put('miner')
     if DB['length']==-1:
         candidate_block = genesis(pubkey, DB)

@@ -71,6 +71,7 @@ def main(peers, DB):
         DB['peers_ranked'].append([peer, 5])
     try:
         while True:
+            if DB['stop']: return
             main_once(peers, DB)
     except:
         print('main peers check: ' +str(sys.exc_info()))
