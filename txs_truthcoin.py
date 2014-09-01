@@ -78,6 +78,25 @@ def jury_vote_check(tx, txs, DB):
         return False
     if not txs_tools.fee_check(tx, txs, DB): return False
     return True
+def slasher_jury_vote_check(tx, txs, DB):
+    address=addr(tx)
+    if not E_check(tx, 'amount', int): 
+        tools.log('how many votecoins are we confiscating?')
+        return False
+    if not E_check(tx, 'reveal', dict): 
+        tools.log('no reveal')
+        return False
+    if not reveal_jury_vote_check(tx['reveal'], txs, DB):
+        tools.log('this is an invalid reveal tx')
+        return False
+    victim=tools.db_get(addr(tx['reveal']), DB)
+    decision=tx['reveal']['decision_id']
+    decision=tools.db_get(decision, DB)
+    if victim['votecoin'][tx['reveal']['vote_id']]!=tx['amount']:
+        tools.log('that is not how many votecoins they have')
+        return False
+    
+    return True
 def reveal_jury_vote_check(tx, txs, DB):
     tools.log('reveal jury vote check')
     address=addr(tx)
@@ -264,6 +283,19 @@ def jury_vote(tx, DB):
     adjust_int(['count'], address, 1, DB)
     adjust_int(['amount'], address, -custom.jury_vote_fee, DB)
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
+def slasher_jury_vote(tx, DB):
+    address=addr(tx)
+    adjust_int(['count'], address, 1, DB)
+    victim=addr(tx['reveal'])
+    decision=tx['reveal']['decision_id']
+    decision=tools.db_get(decision, DB)
+    txs_tools.initialize_to_zero_votecoin(tx['vote_id'], address, DB)
+    txs_tools.initialize_to_zero_votecoin(tx['vote_id'], victim, DB)
+    adjust_int(['votecoin',decision['vote_id']], victim, -tx['amount'], DB)
+    adjust_int(['votecoin',decision['vote_id']], address, (4*tx['amount'])/5, DB)
+    tx_tools.memory_leak_votecoin(tx['vote_id'], address, DB)
+    tx_tools.memory_leak_votecoin(tx['vote_id'], victim, DB)
+    #remove votecoins from victim, give 4/5ths to address.
 def reveal_jury_vote(tx, DB):    
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)

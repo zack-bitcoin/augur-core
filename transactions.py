@@ -39,6 +39,11 @@ def spend_verify(tx, txs, DB):
     if not txs_tools.fee_check(tx, txs, DB):
         tools.log('fee check error')
         return False
+    if 'vote_id' in tx:
+        if not tx['to'][:-29]=='11':
+            tools.log('cannot hold votecoins in a multisig address')
+            print('cannot hold votecoin in multisig')
+            return False
     return True
 def mint_verify(tx, txs, DB):
     return 0 == len(filter(lambda t: t['type'] == 'mint', txs))
@@ -47,6 +52,7 @@ tx_check = {'spend':spend_verify,
             'create_jury':tt.create_jury_check,
             'propose_decision':tt.propose_decision_check,
             'jury_vote':tt.jury_vote_check,
+            'slasher_jury_vote':tt.slasher_jury_vote_check,
             'reveal_jury_vote':tt.reveal_jury_vote_check,
             'SVD_consensus':tt.SVD_consensus_check,
             'prediction_market':tt.prediction_market_check,
@@ -62,33 +68,14 @@ def mint(tx, DB):
     adjust_int(['amount'], address, custom.block_reward, DB)
     adjust_int(['count'], address, 1, DB)
 def spend(tx, DB):
-    def initialize_to_zero_helper(loc, address, DB):
-        acc=tools.db_get(address, DB)
-        if loc[1] not in acc[loc[0]]:
-            acc[loc[0]][loc[1]]=0
-            tools.db_put(address , acc, DB)    
-    def initialize_to_zero_votecoin(vote_id, address, DB):
-        initialize_to_zero_helper(['votecoin', vote_id], address, DB)
-        if address not in tools.db_get(vote_id, DB)['members']:
-            adjust_list(['members'], vote_id, False, address, DB)
-    def memory_leak_helper(loc, address, DB):
-        acc=tools.db_get(address, DB)
-        bool_=txs_tools.get_(loc, acc)==0
-        if bool_:
-            adjust_dict(loc, address, True, {loc[-1]: 0}, DB)
-        return bool_
-    def memory_leak_votecoin(vote_id, address, DB):
-        bool_=memory_leak_helper(['votecoin', vote_id], address, DB)
-        if bool_:
-            adjust_list(['members'], vote_id, True, address, DB)
     address = tools.addr(tx)
     if 'vote_id' in tx:
-        initialize_to_zero_votecoin(tx['vote_id'], address, DB)
-        initialize_to_zero_votecoin(tx['vote_id'], tx['to'], DB)
+        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], address, DB)
+        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], tx['to'], DB)
         adjust_int(['votecoin', tx['vote_id']], address, -tx['amount'], DB)
         adjust_int(['votecoin', tx['vote_id']], tx['to'], tx['amount'], DB)
-        memory_leak_votecoin(tx['vote_id'], address, DB)#this should get rid of any zeros in the jury so we don't leak memory.
-        memory_leak_votecoin(tx['vote_id'], tx['to'], DB)#this should get rid of any zeros in the jury so we don't leak memory.
+        txs_tools.memory_leak_votecoin(tx['vote_id'], address, DB)#this should get rid of any zeros in the jury so we don't leak memory.
+        txs_tools.memory_leak_votecoin(tx['vote_id'], tx['to'], DB)#this should get rid of any zeros in the jury so we don't leak memory.
     else:
         adjust_int(['amount'], address, -tx['amount'], DB)
         adjust_int(['amount'], tx['to'], tx['amount'], DB)
@@ -100,6 +87,7 @@ update = {'mint':mint,
           'propose_decision':tt.propose_decision,
           'jury_vote':tt.jury_vote,
           'reveal_jury_vote':tt.reveal_jury_vote,
+          'slasher_jury_vote':tt.slasher_jury_vote,
           'SVD_consensus':tt.SVD_consensus,
           'prediction_market':tt.prediction_market,
           'buy_shares':tt.buy_shares,

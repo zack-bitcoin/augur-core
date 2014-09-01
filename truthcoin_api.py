@@ -2,7 +2,6 @@
 """
 import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking
 def easy_add_transaction(tx_orig, DB):
-    print('start of easy add')
     tx = copy.deepcopy(tx_orig)
     if 'pubkeys' not in tx:
         tx['pubkeys']=[DB['pubkey']]
@@ -11,7 +10,6 @@ def easy_add_transaction(tx_orig, DB):
     except:
         tx['count'] = 1
     tx['signatures'] = [tools.sign(tools.det_hash(tx), DB['privkey'])]
-    print('end of easy add')
     return(blockchain.add_tx(tx, DB))
 def help_(DB):      
     tell_about_command={

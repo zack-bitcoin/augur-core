@@ -67,17 +67,27 @@ def peer_check(peer, DB):
     size = max(len(DB['diffLength']), len(block_count['diffLength']))
     us = tools.buffer_(DB['diffLength'], size)
     them = tools.buffer_(block_count['diffLength'], size)
-    tools.log('us them ' + str(us) + ' '+str(them))
     if them < us:
         return give_block(peer, DB, block_count['length'])
     if us == them:
         return ask_for_txs(peer, DB)
     return download_blocks(peer, DB, block_count, length)
+def exponential_random(weights):
+    def grab(r, weights, counter=0):
+        if len(weights)==0: return counter
+        if r<weights[0]: return counter
+        else: return grab(r-weights[0], weights[1:], counter+1)
+    weights=map(lambda x: 1.0/x, weights)
+    tot=sum(weights)
+    r=random.random()*tot
+    return grab(r, weights)
+'''
 def exponential_random(size, chance):
     while True:
         for i in range(size):
             if random.random()<chance:
                 return i
+'''
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     DB['peers_ranked']=[]
@@ -94,7 +104,8 @@ def main_once(peers, DB):
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
         time.sleep(2)
         DB['heart_queue'].put('peers check')
-        i=exponential_random(len(DB['peers_ranked']), 0.4)
+        #i=exponential_random(len(DB['peers_ranked']), 0.4)
+        i=exponential_random(map(lambda x: x[1], DB['peers_ranked']))
         t1=time.time()
         r=peer_check(DB['peers_ranked'][i][0], DB)
         t2=time.time()
