@@ -7,11 +7,15 @@ import pprint
 import custom
 import tools
 import blockchain
+import transactions
 addr=tools.addr
 E_check=tools.E_check
 is_number=tools.is_number
 def create_jury_check(tx, txs, DB):
     address=addr(tx)
+    if not transactions.signature_check(tx):
+        tools.log('signature check')
+        return False
     if not E_check(tx, 'vote_id', [str, unicode]): 
         tools.log('vote id error')
         return False
@@ -33,6 +37,9 @@ def create_jury_check(tx, txs, DB):
     if not txs_tools.fee_check(tx, txs, DB): return False
     return True
 def propose_decision_check(tx, txs, DB):
+    if not transactions.signature_check(tx):
+        tools.log('signature check')
+        return False
     if not E_check(tx, 'vote_id', [str, unicode]): return False
     if not E_check(tx, 'decision_id', [str, unicode]): return False
     if is_number(tx['vote_id']) or is_number(tx['decision_id']):
@@ -50,6 +57,9 @@ def propose_decision_check(tx, txs, DB):
     if len(tx['txt'])>6**5: return False
     return True
 def jury_vote_check(tx, txs, DB):
+    if not transactions.signature_check(tx):
+        tools.log('signature check')
+        return False
     if not E_check(tx, 'decision_id', [str, unicode]): return False
     if not E_check(tx, 'vote_id', [str, unicode]): return False
     if is_number(tx['vote_id']) or is_number(tx['decision_id']):
@@ -80,6 +90,9 @@ def jury_vote_check(tx, txs, DB):
     return True
 def slasher_jury_vote_check(tx, txs, DB):
     address=addr(tx)
+    if not transactions.signature_check(tx):
+        tools.log('signature check')
+        return False
     if not E_check(tx, 'amount', int): 
         tools.log('how many votecoins are we confiscating?')
         return False
@@ -98,6 +111,9 @@ def slasher_jury_vote_check(tx, txs, DB):
     
     return True
 def reveal_jury_vote_check(tx, txs, DB):
+    if not transactions.signature_check(tx):
+        tools.log('signature check')
+        return False
     tools.log('reveal jury vote check')
     address=addr(tx)
     acc=tools.db_get(address, DB)
@@ -158,6 +174,9 @@ def SVD_consensus_check(tx, txs, DB):
     if not txs_tools.fee_check(tx, txs, DB): return False
     return True
 def prediction_market_check(tx, txs, DB):
+    if not transactions.signature_check(tx):
+        tools.log('signature check')
+        return False
     address=addr(tx)
     for l in ['states', 'states_combinatory', 'shares_purchased', 'decisions']:
         if not E_check(tx, l, list): 
@@ -212,6 +231,9 @@ def prediction_market_check(tx, txs, DB):
 
 
 def buy_shares_check(tx, txs, DB):
+    if not transactions.signature_check(tx):
+        tools.log('signature check')
+        return False
     if not E_check(tx, 'buy', list):
         tools.log('buy error')
         return False
@@ -234,6 +256,9 @@ def buy_shares_check(tx, txs, DB):
         return False
     return True
 def collect_winnings_check(tx, txs, DB):
+    if not transactions.signature_check(tx):
+        tools.log('signature check')
+        return False
     if not E_check(tx, 'address', [str, unicode]):
         tools.log('no address error')
         return False
