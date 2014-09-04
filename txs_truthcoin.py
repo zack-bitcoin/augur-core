@@ -90,6 +90,9 @@ def jury_vote_check(tx, txs, DB):
     return True
 def slasher_jury_vote_check(tx, txs, DB):
     address=addr(tx)
+    if tools.reveal_time_p(DB): 
+        tools.log('reveal time check slasher')
+        return False
     if not transactions.signature_check(tx):
         tools.log('signature check')
         return False
