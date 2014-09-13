@@ -1,6 +1,6 @@
 """This is the internal API for truthshell. These are the words that are used to interact with truthcoin.
 """
-import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking
+import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking, txs_truthcoin
 def easy_add_transaction(tx_orig, DB):
     tx = copy.deepcopy(tx_orig)
     if 'pubkeys' not in tx:
@@ -21,7 +21,7 @@ def help_(DB):
         'my_address':'tells you your own address',
         'spend':'spends money, in satoshis, to an address <addr>. Example: spend 1000 11j9csj9802hc982c2h09ds',
         'votecoin_spend':'spend votecoins from jury <jury>, to address <addr>. Example: votecoin_spend 1000 <jury> <addr>',
-        'ask_decision': 'If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truthd.py ask_decision weather_question_203 what will the weather be tomorrow',
+        'ask_decision': 'If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truthd.py ask_decision <jury> weather_question_203 what will the weather be tomorrow',
         'vote_on_decision':'If you want to vote in jury <jury>, and you want to vote on decision <decision>, and you want to vote "yes", for example: vote_on_decision <jury> <decision> yes',
         'reveal_vote':'If you want to reveal your vote for the decision with the unique identifier <decision> which was asked ofjury <jury>, then: reveal_vote <jury> <decision>',
         'SVD_consensus':'If you want to resolve decisions asked of jury <jury>, then: SVD_consensus <jury>',
@@ -66,6 +66,8 @@ def spend(DB):
         return('not enough inputs')
     easy_add_transaction({'type': 'spend', 'amount': int(DB['args'][0]), 'to':DB['args'][1]}, DB)
 def votecoin_spend(DB):
+    if len(DB['args'])<3:
+        return('not enough inputs')
     tx = {'type': 'spend', 'amount':int(DB['args'][0]), 'to': DB['args'][2], 'vote_id':DB['args'][1]}
     return easy_add_transaction(tx, DB)
 def accumulate_words(l, out=''):
@@ -105,10 +107,14 @@ def reveal_vote(DB):
     else:
         return('you do not have any encrypted vote to decrypt')
 def decisions_keepers(jury, DB):
-    matrix=transactions.decision_matrix(jury, jury['decisions'], DB)
+    matrix=txs_truthcoin.decision_matrix(jury, jury['decisions'], DB)
     #exclude decisions with insufficient participation*certainty
-    pc=transactions.part_cert(matrix)
     decisions=[]
+    if len(matrix)<5: 
+        return []
+    if len(matrix[0])<3:
+        return []
+    pc=txs_truthcoin.part_cert(matrix)
     for i in range(len(pc)):
         if pc[i]>0.6:
             decisions.append(jury['decisions'][i])
@@ -163,7 +169,10 @@ def main(DB, heart_queue):
         command=dic['command']
         if command[0] in Do: 
             DB['args']=command[1:]
-            out=Do[command[0]](DB)
+            try:
+                out=Do[command[0]](DB)
+            except:
+                out='truthcoin api main failure : ' +str(sys.exc_info())
         else: 
             out=str(command[0]) + ' is not a command. use "./truthd.py commands" to get the list of truthshell commands. use "./truthd.py help help" to learn about the help tool.'
         return out

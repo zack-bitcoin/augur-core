@@ -9,14 +9,14 @@ def sigs_match(Sigs, Pubs, msg):
     def match(sig, pubs, msg):
         for p in pubs:
             if tools.verify(msg, sig, p):
-                return {'bool':True, 'pub':pub}
+                return {'bool':True, 'pub':p}
         return {'bool':False}
     for sig in sigs:
         a=match(sig, pubs, msg)
         if not a['bool']:
             return False
-        sigs.pop(sig)
-        pubs.pop(a['pub'])
+        sigs.remove(sig)
+        pubs.remove(a['pub'])
     return True
 def signature_check(tx):
     tx_copy = copy.deepcopy(tx)
@@ -40,30 +40,29 @@ def signature_check(tx):
         return False
     return True
 
-def spend_verify(tx, txs, DB):
+def spend_verify(tx, txs, out, DB):
     if not E_check(tx, 'to', [str, unicode]):
-        tools.log('no to')
+        out[0]+='no to'
         return False
     if not signature_check(tx):
-        tools.log('signature check')
+        out[0]+='signature check'
         return False
     if len(tx['to'])<=30:
-        tools.log('that address is too short')
-        tools.log('tx: ' +str(tx))
+        out[0]+='that address is too short'
+        out[0]+='tx: ' +str(tx)
         return False
     if not E_check(tx, 'amount', int):
-        tools.log('no amount')
+        out[0]+='no amount'
         return False
     if not txs_tools.fee_check(tx, txs, DB):
-        tools.log('fee check error')
+        out[0]+='fee check error'
         return False
     if 'vote_id' in tx:
         if not tx['to'][:-29]=='11':
-            tools.log('cannot hold votecoins in a multisig address')
-            print('cannot hold votecoin in multisig')
+            out[0]+='cannot hold votecoins in a multisig address'
             return False
     return True
-def mint_verify(tx, txs, DB):
+def mint_verify(tx, txs, out, DB):
     return 0 == len(filter(lambda t: t['type'] == 'mint', txs))
 tx_check = {'spend':spend_verify,
             'mint':mint_verify,

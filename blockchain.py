@@ -42,8 +42,8 @@ def add_tx(tx, DB):
         if too_big_block(tx, txs):
             out[0]+='too many txs'
             return False
-        if not transactions.tx_check[tx['type']](tx, txs, DB):
-            out[0]+='update transactions.py to find out why. print statements are no good. ' +str(tx)
+        if not transactions.tx_check[tx['type']](tx, txs, out, DB):
+            out[0]+= 'tx: ' + str(tx)
             return False
         return True
     if verify_tx(tx, DB['txs'], out):
@@ -136,7 +136,7 @@ def add_block(block_pair, DB):
                 if start == []:
                     return False  # Block passes this test
                 start_copy = copy.deepcopy(start)
-                if transactions.tx_check[start[-1]['type']](start[-1], out, DB):
+                if transactions.tx_check[start[-1]['type']](start[-1], out, [''], DB):
                     out.append(start.pop())
                 else:
                     return True  # Block is invalid

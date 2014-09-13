@@ -542,10 +542,14 @@ def string_to_vector(number_of_decisions, string):
 
 Factory=robjects.globalenv['Factory']
 def main(m):
+    print('consensus main 1')
     #len(m) is the number of decisions.
     a=matrix_to_r(m)
+    print('consensus main 2')
     a=Factory(a)
+    print('consensus main 3')
     a=str(a).splitlines()
+    print('consensus main 4')
     outcome=string_to_vector(len(m), a[-8:-7][0])
     author_bonus=string_to_vector(len(m), a[-9:-8][0])
     participationc=string_to_vector(len(m), a[-10:-9][0])
@@ -558,6 +562,7 @@ def main(m):
     for agent in agents:
         smoothrep.append(agent[-48:-44])
         row_bonus.append(agent[-9:])
+    print('consensus main 1')
     return {'outcome':outcome,
             'author_bonus':author_bonus,
             'participation':participationc,

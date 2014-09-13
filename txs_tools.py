@@ -121,7 +121,7 @@ def initialize_to_zero_votecoin(vote_id, address, DB):
         adjust_list(['members'], vote_id, False, address, DB)
 def memory_leak_helper(loc, address, DB):
     acc=tools.db_get(address, DB)
-    bool_=txs_tools.get_(loc, acc)==0
+    bool_=get_(loc, acc)==0
     if bool_:
         adjust_dict(loc, address, True, {loc[-1]: 0}, DB)
     return bool_

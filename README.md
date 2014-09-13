@@ -21,6 +21,8 @@ Then to talk to truthcoin use:
 
     python truthd.py
 
+
+
 For now, there is a 20-block cycle.
 1-10: votecoin-holders may give encrypted votes on decisions. (in the final version of truthcoin, this step will take 1000+ blocks)
 11-15: votecoin-holders may decrypt their votes
