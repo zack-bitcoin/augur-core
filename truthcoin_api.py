@@ -76,7 +76,8 @@ def accumulate_words(l, out=''):
 def ask_decision(DB):
     if len(DB['args'])<3:
         return('not enough inputs')
-    tx={'type':'propose_decision', 'vote_id':DB['args'][0], 'decision_id':DB['args'][1], 'txt':accumulate_words(DB['args'][2:])[1:]}
+    print('DB args: ' +str(DB['args']))
+    tx={'type':'propose_decision', 'vote_id':DB['args'][0], 'decision_id':DB['args'][1], 'txt':accumulate_words(DB['args'][1:])[1:]}
     return easy_add_transaction(tx, DB)
 def vote_on_decision(DB):
     if len(DB['args'])<3:
