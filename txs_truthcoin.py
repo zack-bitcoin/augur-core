@@ -147,9 +147,9 @@ def reveal_jury_vote_check(tx, txs, out, DB):
         return False
     if not txs_tools.fee_check(tx, txs, DB): return False
     return True
-def part_cert(matrix):
+def part_cert(matrix, weights):
     tools.log('before COnsensus: '+str(matrix))
-    result=ConsensusMechanism.main(matrix)
+    result=ConsensusMechanism.main(matrix, rep=weights)
     tools.log('after COnsensus')
     participation=result['participation']
     certainty=result['certainty']
@@ -158,7 +158,9 @@ def part_cert(matrix):
 def SVD_consensus_check(tx, txs, out, DB):
     if not E_check(tx, 'vote_id', [str, unicode]): return False    
     if not E_check(tx, 'decisions', [list]): return False    
-    if not tools.reveal_time_p(DB, 5): return False
+    if not tools.reveal_time_p(DB, 5): 
+        out[0]+='this is not the correct time to do SVD'
+        return False
     if is_number(tx['vote_id']):
         out[0]+='that can not be a number'
         return False
@@ -170,7 +172,8 @@ def SVD_consensus_check(tx, txs, out, DB):
         out[0]+='need at least 3 voters in order to compute SVD'
         return False
     matrix=decision_matrix(jury, tx['decisions'], DB)
-    for i in part_cert(matrix):
+    w=weights(jury, DB)
+    for i in part_cert(matrix, weights):
         if i<0.6:
             out[0]+='participation and certainty too low'
             out[0]+='matrix: ' +str(matrix)
@@ -329,6 +332,12 @@ def reveal_jury_vote(tx, DB):
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
+def weights(jury, DB):
+    out=[]
+    for member in jury['members']:
+        acc=tools.db_get(member, DB)
+        out.append(acc['votecoins'][jury])
+    return out
 def decision_matrix(jury, decisions, DB):
     matrix=[]
     for decision in decisions:
@@ -354,7 +363,8 @@ def SVD_consensus(tx, DB):
     adjust_int(['count'], address, 1, DB)
     jury=tools.db_get(tx['vote_id'], DB)
     matrix=decision_matrix(jury, tx['decisions'], DB)
-    result=ConsensusMechanism.main(matrix)
+    w=weights(jury, DB)
+    result=ConsensusMechanism.main(matrix, rep=w)
     #create fee. If there are more decisions, then the fee is lower.
     tools.log('matrix: ' +str(matrix))
     tools.log(pprint.pformat(result))
@@ -414,8 +424,8 @@ def collect_winnings(tx, DB):
     else_=True
     for i in range(decs):
         if pm['states_combinatory'][i]==outcome_combination:
-            adjust_int(['amount'], address, acc['shares'][tx['PM_id']][i], DB)
+            adjust_int(['amount'], address, tx['shares'][i], DB)
             else_=False
     if else_:
-        adjust_int(['amount'], address, acc['shares'][tx['PM_id']][-1], DB)
+        adjust_int(['amount'], address, tx['shares'][-1], DB)
     adjust_dict(['shares'], address, True, {tx['PM_id']:tx['shares']}, DB)

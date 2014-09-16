@@ -115,7 +115,8 @@ def decisions_keepers(jury, DB):
         return []
     if len(matrix[0])<3:
         return []
-    pc=txs_truthcoin.part_cert(matrix)
+    weights=txs_truthcoin.weights(jury, DB)
+    pc=txs_truthcoin.part_cert(matrix, weights)
     for i in range(len(pc)):
         if pc[i]>0.6:
             decisions.append(jury['decisions'][i])

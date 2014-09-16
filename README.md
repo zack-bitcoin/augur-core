@@ -8,11 +8,10 @@ Donations: 1GbpRPE83Vjg73KFvTVZ4EnS2qNkiLY5TT
 INSTALL (for ubuntu)
 
     sudo apt-get update
-    sudo apt-get install r-base
     sudo apt-get install python-leveldb
-    sudo apt-get install python-rpy2
+    pip install -r requirements.txt
     wget https://github.com/zack-bitcoin/Truthcoin-POW/archive/master.zip
-    unzip mater.zip
+    unzip master.zip
     cd Truthcoin-POW-master
 
 To run a truthcoin node
