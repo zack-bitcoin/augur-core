@@ -192,7 +192,7 @@ def add_block(block_pair, DB):
                     j=i
                 i+=1
             if j!='empty':
-                DB['peers_ranked'][j][1]*=0.1#listen more to people who have newer blocks.
+                DB['peers_ranked'][j][1]*=0.1#listen more to people who give us good blocks.
             else:
                 #maybe this peer should be added to our list of peers?
                 pass
@@ -206,6 +206,20 @@ def add_block(block_pair, DB):
             transactions.update[tx['type']](tx, DB)
         for tx in orphans:
             add_tx(tx, DB)
+    else:
+        i=0
+        j='empty'
+        if peer != False:
+            for p in DB['peers_ranked']:
+                if p[0]==peer:
+                    j=i
+                i+=1
+            if j!='empty':
+                DB['peers_ranked'][j][1]*=0.8#listen less to people who give us bad blocks.
+                DB['peers_ranked'][j][1]+=0.2*60
+            else:
+                #maybe this peer should be added to our list of peers?
+                pass
 
 
 def delete_block(DB):

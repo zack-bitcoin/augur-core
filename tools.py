@@ -33,7 +33,7 @@ def addr(tx): return make_address(tx['pubkeys'], len(tx['signatures']))
 def sign(msg, privkey): return pt.ecdsa_sign(msg, privkey)
 def verify(msg, sig, pubkey): return pt.ecdsa_verify(msg, sig, pubkey)
 def privtopub(privkey): return pt.privtopub(privkey)
-def hash_(x): return hashlib.sha256(x).hexdigest()
+def hash_(x): return hashlib.sha384(x).hexdigest()[0:64]
 def det_hash(x):
     """Deterministically takes sha256 of dict, list, int, or string."""
     #def det_list(l): return '[%s]' % ','.join(map(det, sorted(l)))

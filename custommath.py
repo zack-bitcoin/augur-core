@@ -134,7 +134,6 @@ def WeightedCov(Mat,Rep=-1):
     Coins = ma.copy(Rep)
     for i in range(len(Rep)):
         Coins[i] = (int( (Rep[i] * 1000000)[0] )) 
-       
     Mean = ma.average(Mat, axis=0, weights=hstack(Coins)) # Computing the weighted sample mean (fast, efficient and precise)
     XM = matrix( Mat-Mean ) # xm = X diff to mean
     sigma2 = matrix( 1/(sum(Coins)-1) * ma.multiply(XM, Coins).T.dot(XM) ); # Compute the unbiased weighted sample covariance

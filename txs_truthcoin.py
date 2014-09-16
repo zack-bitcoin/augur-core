@@ -336,7 +336,7 @@ def weights(jury, DB):
     out=[]
     for member in jury['members']:
         acc=tools.db_get(member, DB)
-        out.append(acc['votecoins'][jury])
+        out.append([acc['votecoins'][jury]])
     return out
 def decision_matrix(jury, decisions, DB):
     matrix=[]
