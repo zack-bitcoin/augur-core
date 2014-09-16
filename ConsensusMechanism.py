@@ -1,10 +1,14 @@
 """a python version of the R program at https://github.com/psztorc/Truthcoin
 """
-import consensus, numpy
-def main(m, rep):
+import consensus, numpy, custommath
+def main(m, weights):
+    #total_weight=sum(weights)
+    #weights=map(lambda w: w*1.0/total_weight, weights)
+    weights=numpy.array(weights)
+    weights=custommath.GetWeight(weights)
     a=numpy.array(m)
     a=numpy.ma.masked_array(a, numpy.isnan(a))
-    a=consensus.Factory(a)
+    a=consensus.Factory(a, rep=weights)
     return {'outcome':a['Decisions']['DecisionOutcome_Final'],
             'author_bonus':a['Decisions']['Author Bonus'],
             'participation':a['Participation'],
