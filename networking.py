@@ -43,13 +43,11 @@ def serve_forever(PORT, handler, heart_queue, DB):
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     time.sleep(2)
     heart_queue.put('server: '+str(PORT))
-    #print('before bind')
     try:
         server.bind(('0.0.0.0', PORT))
     except:
         tools.kill_processes_using_ports([str(PORT)])
         return serve_forever(PORT, handler, heart_queue, DB)
-    #print('after bind')
     server.listen(100)
     server.setblocking(0)
     try:

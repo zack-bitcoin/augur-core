@@ -59,6 +59,7 @@ def give_block(peer, DB, block_count_peer):
     return 0
 def peer_check(peer, DB):
     block_count = cmd(peer, {'type': 'blockCount'})
+    tools.log('blockcountL ' +str(block_count))
     if not isinstance(block_count, dict):
         return
     if 'error' in block_count.keys():
@@ -96,9 +97,10 @@ def main(peers, DB):
     try:
         while True:
             if DB['stop']: return
-            main_once(peers, DB)
+            if len(peers)>0:
+                main_once(peers, DB)
     except:
-        print('main peers check: ' +str(sys.exc_info()))
+        tools.log('main peers check: ' +str(sys.exc_info()))
 
 def main_once(peers, DB):
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
