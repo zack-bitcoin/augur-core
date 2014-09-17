@@ -396,7 +396,7 @@ def SVD_consensus(tx, DB):
 def prediction_market(tx, DB):#also used to increase liquidity of existing market, eventually
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
-    adjust_int(['amount'], address, -tx['B'], DB)
+    adjust_int(['amount'], address, int(-tx['B']*math.log(len(tx['states']))), DB)
     pm={}
     for i in ['fees', 'B', 'states', 'states_combinatory', 'shares_purchased', 'decisions']:
         pm[i]=tx[i]

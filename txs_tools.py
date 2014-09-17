@@ -12,7 +12,7 @@ def cost_to_buy_shares(tx, DB):
     C_old=C(shares_purchased, B)
     def add(a, b): return a+b
     C_new=C(map(add, shares_purchased, buy), B)
-    return C_new-C_old
+    return int(C_new-C_old)
 def cost_0(txs, DB):
     #cost of the zeroth confirmation transactions
     total_cost = []

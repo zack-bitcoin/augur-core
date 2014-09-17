@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 import networking, sys, tools, custom#, threads
 
+def build_buy_shares():
+    tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?'))}
+    num_states=int(raw_input('how many states does this pm have?'))
+    tx['buy']=[]
+    for i in range(num_states):
+        tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.')))
+    return tx
 def build_pm():
     tx={'type':'prediction_market', 'fees':0}
     pubkey=str(raw_input('What is the address or pubkey of the owner of the PM?'))
@@ -20,10 +27,8 @@ def build_pm():
         return False
     tx['states_combinatory']=[]
     tx['states']=[]
-    tx['shares_purchased']=[]
     for i in range(num_states):
         tx['states'].append(str(raw_input('what is the text title of the '+str(i)+' state?')))
-        tx['shares_purchased'].append(0)
         if i!=num_states-1:
             next_comb=(str(raw_input('how does the '+str(i)+' state depend upon the outcome of the decisions? For example: if there are 2 decisions, and this market only comes true when the first is "yes" and the second is "no", then you would put: "1 0" here.')))
             tx['states_combinatory'].append(map(int, next_comb.split(' ')))
@@ -36,11 +41,10 @@ def main():
     c=p['command']
     if c[0]=='make_PM':
         tx=build_pm()
-        print('buit pm: ' +str(tx))
         run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
     elif c[0]=='buy_shares':
-        print('Buy shares')
-        #build up buy_shares question by question
+        tx=build_buy_shares()
+        run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
     elif c[0]=='new_address':
         if len(c)<2:
             print('what is your brain wallet? not enough inputs.')
