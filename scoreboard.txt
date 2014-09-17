@@ -1,0 +1,6 @@
+The bottleneck in developement for this project is currently the lack of beta testers. The people on this page are more important for truthcoin than anyone else. If you attempt to run truthcoin, and show zack a bug that he can reproduce, then you can be on this page too.
+
+psztorc installation instructions misspelled
+psztorc it is now possible to replace the R code with python
+koeppelmann the installation instructions were in the wrong order
+koeppelmann wrong port for other server
