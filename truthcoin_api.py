@@ -3,15 +3,18 @@
 import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking, txs_truthcoin
 def easy_add_transaction(tx_orig, DB, privkey='default'):
     tx = copy.deepcopy(tx_orig)
-    if 'pubkeys' not in tx:
-        tx['pubkeys']=[DB['pubkey']]
     try:
         tx['count'] = tools.count(DB['address'], DB)
     except:
         tx['count'] = 1
     if privkey=='default':
-        privkey=DB['privkey']
-    tx['signatures'] = [tools.sign(tools.det_hash(tx), DB['privkey'])]
+        if 'privkey' in DB:
+            privkey=DB['privkey']
+        else:
+            return('no private key is known, so the tx cannot be signed. Here is the tx: '+str(tools.package(tx_orig).encode('base64')))
+    if 'pubkeys' not in tx:
+        tx['pubkeys']=[tools.privtopub(privkey)]
+    tx['signatures'] = [tools.sign(tools.det_hash(tx), privkey)]
     return(blockchain.add_tx(tx, DB))
 def help_(DB):      
     tell_about_command={
@@ -40,7 +43,8 @@ def help_(DB):
         'log':'records the following words into the file "log.py"',
         'stop':'This is the correct way to stop truthcoin. If you turn off in any other way, then you are likely to corrupt your database, and you have to redownload all the blocks again.',
         'mine':'turn the miner on/off. Example to turn on: "./truthd.py mine on", example to turn off: "./truthd.py mine off"',
-        'DB':'returns a database of information that is shared between threads'
+        'DB':'returns a database of information that is shared between threads',
+        'pushtx':'publishes this transaction to the blockchain, will automatically sign the transaction if necessary: ./truthd.py pushtx tx privkey'
     }
     if len(DB['args'])==0:
         return("needs 2 words. example: 'help help'")
@@ -131,6 +135,13 @@ def SVD_consensus(DB):
     jury=tools.db_get(vote_id, DB)
     tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':decisions_keepers(jury, DB)}
     return(easy_add_transaction(tx, DB))
+def pushtx(DB):
+    if len(DB['args'])<2:
+        return('not enough inputs. should be: "pushtx tx privkey"')
+    tx=tools.unpackage(DB['args'][0].decode('base64'))
+    privkey=tools.det_hash(DB['args'][1])
+    tools.log('your brainwallet was: ' +str(DB['args'][1]))
+    return easy_add_transaction(tx, DB, privkey)
 def make_PM(DB):
     #contains an example prediction market. which is compatible with the example buy_shares on this same page.
     #to make_PM other than the example, you need to edit the following line of code, and restart truthcoin.
@@ -170,7 +181,7 @@ def mine(DB):
         return ('miner on. (use "./truthd.py mine off" to turn off)')
     else:
         return('there is no private key with which to sign blocks. If you want to mine, you need to uncomment the "brain_wallet" line in custom.py')
-Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':(lambda DB: ' '), 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'mine':mine}
+Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':make_PM, 'buy_shares':buy_shares, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':(lambda DB: ' '), 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'mine':mine}
 def main(DB, heart_queue):
     def responder(dic):
         command=dic['command']
