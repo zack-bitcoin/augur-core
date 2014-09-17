@@ -21,11 +21,17 @@ if True:
           'heart_queue': heart_queue,
           'memoized_votes':{},
           'peers_ranked':[],
-          'brainwallet':'brain wallet',
           'diffLength': '0'}
-    DB['privkey']=tools.det_hash(DB['brainwallet'])
-    DB['pubkey']=tools.privtopub(DB['privkey'])
-    DB['address']=tools.make_address([DB['pubkey']], 1)
+    if 'brain_wallet' in dir(custom):
+        DB['privkey']=tools.det_hash(custom.brain_wallet)
+        DB['pubkey']=tools.privtopub(DB['privkey'])
+        DB['address']=tools.make_address([DB['pubkey']], 1)
+    elif 'pubkey' in dir(custom):
+        DB['pubkey']=custom.pubkey
+        DB['address']=tools.make_address([DB['pubkey']], 1)
+    else:
+        print('You need to define either "pubkey" or "brain_wallet" in the file custom.py   If you want to make a new pubkey using the brain_wallet "brain_wallet_42", use the command: ./truthd new_address brain_wallet_42')
+        sys.exit(1)
     def len_f(i, DB):
         if not tools.db_existence(str(i), DB): return i-1
         return len_f(i+1, DB)

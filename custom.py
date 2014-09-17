@@ -3,9 +3,12 @@ import tools, hashlib
 peers = [['192.241.212.114', 8900],
          ['127.0.0.1', 8900]]
 database_name = 'DB.db'
-port=8901
-truthd_port=8801
+port=8900
+truthd_port=8800
 version = "VERSION"
+#either brain_wallet, or pubkey must be uncommented. They need 'quotes' around them.
+#brain_wallet='brainwallet'
+#pubkey='045f8225d8032aae37a0569acf5a86eb5cdfbbe58198da7ef669f895ab992dd57a2d33337df6a6d763380225887be2cca4c1bb5791808f43cc353db89a70faae37'
 block_reward = 10 ** 5
 premine = 5 * 10 ** 6
 fee = 10 ** 3

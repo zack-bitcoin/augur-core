@@ -1,7 +1,7 @@
 """This is the internal API for truthshell. These are the words that are used to interact with truthcoin.
 """
 import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking, txs_truthcoin
-def easy_add_transaction(tx_orig, DB):
+def easy_add_transaction(tx_orig, DB, privkey='default'):
     tx = copy.deepcopy(tx_orig)
     if 'pubkeys' not in tx:
         tx['pubkeys']=[DB['pubkey']]
@@ -9,12 +9,15 @@ def easy_add_transaction(tx_orig, DB):
         tx['count'] = tools.count(DB['address'], DB)
     except:
         tx['count'] = 1
+    if privkey=='default':
+        privkey=DB['privkey']
     tx['signatures'] = [tools.sign(tools.det_hash(tx), DB['privkey'])]
     return(blockchain.add_tx(tx, DB))
 def help_(DB):      
     tell_about_command={
         'help':'type "./truthd.py help <cmd>" to learn about <cmd>. type "./truthd.py commands" to get a list of all truthshell commands',
         'commands':'returns a list of the truthshell commands',
+        'new_address':'type "./truthd.py new_address <brain>" to make a new privkey, pubkey, and address using the brain wallet=<brain>. If you want to use this address, you need to copy/paste the pubkey into the file custom.py',
         'create_jury':'If you want to create a jury called "bitcoin", then type: ./truthd.py create_jury bitcoin.',
         'DB_print':'prints the database that is shared between threads',
         'info':'prints the contents of an entree in the hashtable. If you want to know what the first block was: info 0, if you want to know about a particular address <addr>: info <addr>, if you want to know about yourself: info my_address',
