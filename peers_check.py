@@ -59,7 +59,6 @@ def give_block(peer, DB, block_count_peer):
     return 0
 def peer_check(peer, DB):
     block_count = cmd(peer, {'type': 'blockCount'})
-    tools.log('blockcountL ' +str(block_count))
     if not isinstance(block_count, dict):
         return
     if 'error' in block_count.keys():

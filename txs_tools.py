@@ -14,16 +14,20 @@ def cost_to_buy_shares(tx, DB):
     C_new=C(map(add, shares_purchased, buy), B)
     return C_new-C_old
 def cost_0(txs, DB):
+    tools.log('cost_0')
     #cost of the zeroth confirmation transactions
     total_cost = []
     votecoin_cost = {}
+    tools.log('cost_0')
     for Tx in filter(lambda t: DB['address'] == addr(t), txs):
+        tools.log('cost_0 in for')
         def spend_(total_cost=total_cost, votecoin_cost=votecoin_cost):
             #global total_cost
             #global votecoin_cost
+            tools.log('spend_')
             total_cost.append(custom.fee)
             if 'vote_id' not in Tx:
-                total_cost += Tx['amount']
+                total_cost += [Tx['amount']]
             else:
                 if Tx['vote_id'] not in votecoin_cost: 
                     votecoin_cost[Tx['vote_id']]=0

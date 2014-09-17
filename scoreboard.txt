@@ -4,3 +4,5 @@ psztorc installation instructions misspelled
 psztorc it is now possible to replace the R code with python
 koeppelmann the installation instructions were in the wrong order
 koeppelmann wrong port for other server
+koeppelmann if txs is non-empty, then we cannot run my_balance at the bash api
+koeppelmann no reason for the node to hold the private key

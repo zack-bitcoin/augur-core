@@ -64,7 +64,7 @@ def my_address(DB):
 def spend(DB): 
     if len(DB['args'])<2:
         return('not enough inputs')
-    easy_add_transaction({'type': 'spend', 'amount': int(DB['args'][0]), 'to':DB['args'][1]}, DB)
+    return easy_add_transaction({'type': 'spend', 'amount': int(DB['args'][0]), 'to':DB['args'][1]}, DB)
 def votecoin_spend(DB):
     if len(DB['args'])<3:
         return('not enough inputs')
