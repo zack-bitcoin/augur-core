@@ -1,6 +1,33 @@
 #!/usr/bin/env python
 import networking, sys, tools, custom#, threads
 
+def build_pm():
+    tx={'type':'prediction_market', 'fees':0}
+    pubkey=str(raw_input('What is the address or pubkey of the owner of the PM?'))
+    if len(pubkey)>40:
+        tx['owner']=tools.make_address([pubkey], 1)
+    else:
+        tx['owner']=address
+    tx['PM_id']=str(raw_input('What is the unique name for this new prediction market?\n'))
+    tx['B']=int(raw_input('how big should B be? Initial investment is B*ln(n) where n is the number of states'))
+    num_decisions=int(raw_input('how many decisions is this prediction market to be based upon?'))
+    tx['decisions']=[]
+    for i in range(num_decisions):
+        tx['decisions'].append(str(raw_input('What is the unique name of the '+str(i)+' decision?')))
+    num_states=int(raw_input('how many states can this PM result in?'))
+    if num_states>2**num_decisions: 
+        print('too many states')
+        return False
+    tx['states_combinatory']=[]
+    tx['states']=[]
+    tx['shares_purchased']=[]
+    for i in range(num_states):
+        tx['states'].append(str(raw_input('what is the text title of the '+str(i)+' state?')))
+        tx['shares_purchased'].append(0)
+        if i!=num_states-1:
+            next_comb=(str(raw_input('how does the '+str(i)+' state depend upon the outcome of the decisions? For example: if there are 2 decisions, and this market only comes true when the first is "yes" and the second is "no", then you would put: "1 0" here.')))
+            tx['states_combinatory'].append(map(int, next_comb.split(' ')))
+    return tx
 def main():
     info=sys.argv
     p={'command':sys.argv[1:]}
@@ -8,8 +35,9 @@ def main():
         p['command'].append(' ')
     c=p['command']
     if c[0]=='make_PM':
-        print('PM')
-        #build up PM question by question
+        tx=build_pm()
+        print('buit pm: ' +str(tx))
+        run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
     elif c[0]=='buy_shares':
         print('Buy shares')
         #build up buy_shares question by question

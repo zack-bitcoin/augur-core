@@ -41,21 +41,38 @@ def propose_decision_check(tx, txs, out, DB):
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
-    if not E_check(tx, 'vote_id', [str, unicode]): return False
-    if not E_check(tx, 'decision_id', [str, unicode]): return False
+    if not E_check(tx, 'vote_id', [str, unicode]): 
+        out[0]+='no vote id'
+        return False
+    if not E_check(tx, 'decision_id', [str, unicode]): 
+        out[0]+='no decision id'
+        return False
     if is_number(tx['vote_id']) or is_number(tx['decision_id']):
         out[0]+='that can not be a number'
         return False
-    if len(tx['decision_id'])>6**4: return False
-    if not tools.db_existence(tx['vote_id'], DB): return False
-    if tools.db_existence(tx['decision_id'], DB): return False
+    if len(tx['decision_id'])>6**4: 
+        out[0]+='decision id too long'
+        return False
+    if not tools.db_existence(tx['vote_id'], DB): 
+        out[0]+='that vote id has not been created yet'
+        return False
+    if tools.db_existence(tx['decision_id'], DB): 
+        out[0]+='that decision id has not been created yet'
+        return False
     for t in txs:
         if 'decision_id' in t:
             if t['decision_id']==tx['decision_id']:
+                out[0]+='already have a zeroth confirmation tx of this'
                 return False
-    if not txs_tools.fee_check(tx, txs, DB): return False
-    if not E_check(tx, 'txt', [str, unicode]): return False
-    if len(tx['txt'])>6**5: return False
+    if not txs_tools.fee_check(tx, txs, DB): 
+        out[0]+='you do not have enough money'
+        return False
+    if not E_check(tx, 'txt', [str, unicode]): 
+        out[0]+='what is the txt of this decision?'
+        return False
+    if len(tx['txt'])>6**5: 
+        out[0]+='the txt of this decision is too long'
+        return False
     return True
 def jury_vote_check(tx, txs, out, DB):
     if not transactions.signature_check(tx):
