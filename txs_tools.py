@@ -49,7 +49,7 @@ def cost_0(txs, DB):
     return {'truthcoin_cost':sum(total_cost), 'votecoin_cost':votecoin_cost}
 def fee_check(tx, txs, DB):
     address = addr(tx)
-    cost_=cost_0(txs, DB)
+    cost_=cost_0(txs+[tx], DB)
     truthcoin_cost = cost_['truthcoin_cost']
     votecoin_cost = cost_['votecoin_cost']
     acc=tools.db_get(address, DB)
