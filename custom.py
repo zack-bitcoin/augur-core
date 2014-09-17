@@ -6,9 +6,9 @@ database_name = 'DB.db'
 port=8900
 truthd_port=8800
 version = "VERSION"
-#either brain_wallet, or pubkey must be uncommented. They need 'quotes' around them.
-#brain_wallet='brainwallet'
-#pubkey='045f8225d8032aae37a0569acf5a86eb5cdfbbe58198da7ef669f895ab992dd57a2d33337df6a6d763380225887be2cca4c1bb5791808f43cc353db89a70faae37'
+#either brain_wallet, or pubkey must be uncommented. They need 'quotes' around them. If you want to mine, then you need to uncomment the first one. If you want to leave your computer unattended, then you should use the second one.
+#brain_wallet='brainwallet_CHANGE_THIS_INSECURE'
+#pubkey='045f822change_this_insecurea86eb5cdfbbe58198da7ef669f895ab992dd57a2d33337df6a6d763380225887be2cca4c1bb5791808f43cc353db89a70faae37'
 block_reward = 10 ** 5
 premine = 5 * 10 ** 6
 fee = 10 ** 3
