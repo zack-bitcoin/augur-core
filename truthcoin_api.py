@@ -142,17 +142,6 @@ def pushtx(DB):
     privkey=tools.det_hash(DB['args'][1])
     tools.log('your brainwallet was: ' +str(DB['args'][1]))
     return easy_add_transaction(tx, DB, privkey)
-'''
-def make_PM(DB):
-    #contains an example prediction market. which is compatible with the example buy_shares on this same page.
-    #to make_PM other than the example, you need to edit the following line of code, and restart truthcoin.
-    tx={'type':'prediction_market', 'PM_id':'weather', 'fees':0, 'B':10, 'states':['0 0 0', '1 0 0', '1 1 0', 'default'], 'states_combinatory':[[0,0,0],[1,0,0],[1,1,0]], 'shares_purchased':[0,0,0,0],'decisions':["decision_1","decision_2","decision_3"], 'owner':DB['address']}
-    return(easy_add_transaction(tx, DB))
-'''
-def buy_shares(DB):
-    #to buy shares other than the example, you need to edit the following line of code, and restart truthcoin.
-    tx={'type':'buy_shares', 'buy':[5,4,3,0], 'PM_id':'weather'}
-    return(easy_add_transaction(tx, DB))
 def collect_winnings(DB):
     add=DB['address']
     acc=tools.db_get(add, DB)

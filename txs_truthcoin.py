@@ -198,15 +198,18 @@ def SVD_consensus_check(tx, txs, out, DB):
     if not txs_tools.fee_check(tx, txs, DB): return False
     return True
 def prediction_market_check(tx, txs, out, DB):
+    tools.log('top of prediction market check')
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
     address=addr(tx)
-    for l in ['states', 'states_combinatory', 'shares_purchased', 'decisions']:
+    tools.log('top of prediction market check2')
+    for l in ['states', 'states_combinatory', 'decisions']:
+        tools.log('in for loop: l is: '+l)
         if not E_check(tx, l, list): 
-            out[0]+='tx: ' +str(tx)
             out[0]+=str(l)+ ' error'
             return False
+    tools.log('top of prediction market check3')
     for dec in tx['decisions']:
         if not tools.db_existence(dec, DB): 
             out[0]+='decision is not in the database: ' +str(dec)
@@ -214,43 +217,58 @@ def prediction_market_check(tx, txs, out, DB):
         if is_number(dec):
             out[0]+='decision_id can not be a number'
             return False
+    tools.log('top of prediction market check3')
     if is_number(tx['PM_id']):
         out[0]+='PM_id can not be a number'
         return False
+    tools.log('top of prediction market check4')
     if len(tx['states'])>200:
         out[0]+='too many states'
         return False
+    tools.log('top of prediction market check5')
     if not E_check(tx, 'B', int):
         out[0]+='B error'
         return False
+    tools.log('top of prediction market check6')
     for comb in tx['states_combinatory']:
         if len(comb)!=len(tx['decisions']):
             out[0]+=str(comb)+' comb error'
             return False
+    tools.log('top of prediction market check7')
     for l in [tx['states_combinatory'], tx['states'], tx['decisions']]:
         for comb in l:
             copies=len(filter(lambda comb2: comb==comb2, l))
             if copies!=1:
                 out[0]+=str(comb)+' not mutually exclusive'
                 return False
+    tools.log('top of prediction market check8')
     if len(tx['states'])!=len(tx['states_combinatory'])+1:
         out[0]+='wrong number of possible states?'
         return False
+    tools.log('top of prediction market check9')
     if not E_check(tx, 'PM_id', [str, unicode]):
         out[0]+='PM_id error'
         return False        
-    if len(tx['PM_id'])>1000: return False
+    tools.log('top of prediction market check10')
+    if len(tx['PM_id'])>1000: 
+        out[0]+='PM_id too long'
+        return False
+    tools.log('top of prediction market check11')
     if tools.db_existence(tx['PM_id'], DB): 
         out[0]+='PM: ' +str(tools.db_get(tx['PM_id'], DB))
         out[0]+='this PM_id is already being used'
         return False
+    tools.log('top of prediction market check12')
     for t in txs:
         if 'PM_id' in t:
             if t['PM_id']==tx['PM_id']:
                 out[0]+='Someone used that PM in this block already'
                 return False
     acc=tools.db_get(address, DB)
-    if not txs_tools.fee_check(tx, txs, DB): return False#
+    tools.log('top of prediction market check13')
+    if not txs_tools.fee_check(tx, txs, DB): 
+        out[0]+='you do not have enough money'
+        return False
     return True
 
 
@@ -398,7 +416,7 @@ def prediction_market(tx, DB):#also used to increase liquidity of existing marke
     adjust_int(['count'], address, 1, DB)
     adjust_int(['amount'], address, int(-tx['B']*math.log(len(tx['states']))), DB)
     pm={}
-    for i in ['fees', 'B', 'states', 'states_combinatory', 'shares_purchased', 'decisions']:
+    for i in ['fees', 'B', 'states', 'states_combinatory', 'decisions']:
         pm[i]=tx[i]
     pm['author']=address
     pm['shares_purchased']=[]

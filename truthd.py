@@ -14,7 +14,7 @@ def build_pm():
     if len(pubkey)>40:
         tx['owner']=tools.make_address([pubkey], 1)
     else:
-        tx['owner']=address
+        tx['owner']=pubkey
     tx['PM_id']=str(raw_input('What is the unique name for this new prediction market?\n'))
     tx['B']=int(raw_input('how big should B be? Initial investment is B*ln(n) where n is the number of states'))
     num_decisions=int(raw_input('how many decisions is this prediction market to be based upon?'))

@@ -9,14 +9,6 @@ def fork_check(newblocks, DB):
     recent_hash = tools.det_hash(block)
     their_hashes = map(tools.det_hash, newblocks)
     return recent_hash not in their_hashes
-'''
-def bounds(length, peers_block_count):
-    if peers_block_count['length'] - length > custom.download_many:
-        end = length + custom.download_many - 1
-    else:
-        end = peers_block_count['length']
-    return [max(length - 2, 0), end]
-'''
 def bounds(length, peers_block_count):
     if peers_block_count - length > custom.download_many:
         end = length + custom.download_many - 1
@@ -24,11 +16,12 @@ def bounds(length, peers_block_count):
         end = peers_block_count
     return [max(length - 2, 0), end]
 def download_blocks(peer, DB, peers_block_count, length):
+    b=bounds(length, peers_block_count['length'])
     blocks = cmd(peer, {'type': 'rangeRequest',
-                        'range': bounds(length, peers_block_count['length'])})
+                        'range': b})
     if not isinstance(blocks, list):
         return []
-    for i in range(2):  # Only delete a max of 2 blocks, otherwise a
+    for i in range(20):  # Only delete a max of 20 blocks, otherwise a
         # peer might trick us into deleting everything over and over.
         if fork_check(blocks, DB):
             blockchain.delete_block(DB)
