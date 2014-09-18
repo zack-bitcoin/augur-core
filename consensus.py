@@ -369,7 +369,7 @@ def Chain(X,N=2,ThisRep=-1):
 def DisplayResults(FactorObject):
     """Prints the results in a more-readable format. Requires pandas."""
     
-    import pandas
+    #import pandas
     
     q=FactorObject #shorten for convenience
     
@@ -392,7 +392,7 @@ def DisplayResults(FactorObject):
                    qA["ParticipationR"],
                    qA["RelativePart"],
                    qA["RowBonus"]])
-    print( pandas.DataFrame(AData,ALabels).T )
+    #print( pandas.DataFrame(AData,ALabels).T )
     
     print("")
     print("Decisions: ")
@@ -406,7 +406,7 @@ def DisplayResults(FactorObject):
                    qD["Certainty"],
                    qD["NAs Filled"],
                    qD["DecisionOutcome_Final"]])             
-    print( pandas.DataFrame(DData,DLabels) )
+    #print( pandas.DataFrame(DData,DLabels) )
     
     print("")
     print(" Participation: ",end='')
