@@ -17,8 +17,10 @@ def bounds(length, peers_block_count):
     return [max(length - 2, 0), end+1]
 def download_blocks(peer, DB, peers_block_count, length):
     b=bounds(length, peers_block_count['length'])
+    tools.log('bounds requested: ' +str(b))
     blocks = cmd(peer, {'type': 'rangeRequest',
                         'range': b})
+    tools.log('recieved: ' +str(len(blocks)))
     if not isinstance(blocks, list):
         return []
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
@@ -27,6 +29,7 @@ def download_blocks(peer, DB, peers_block_count, length):
             blockchain.delete_block(DB)
     for block in blocks:
         DB['suggested_blocks'].put([block, peer])
+    time.sleep(1)
     return 0
 def ask_for_txs(peer, DB):
     txs = cmd(peer, {'type': 'txs'})
