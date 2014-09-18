@@ -80,11 +80,11 @@ def main(pubkey, DB):
             time.sleep(2)
             if DB['stop']: return
             if DB['mine']:
+                DB['heart_queue'].put('miner')
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
     except:
         print('miner main: ' +str(sys.exc_info()))
 def main_once(pubkey, DB, num_cores, solution_queue, workers):
-    DB['heart_queue'].put('miner')
     if DB['length']==-1:
         candidate_block = genesis(pubkey, DB)
     else:
