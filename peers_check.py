@@ -14,7 +14,7 @@ def bounds(length, peers_block_count):
         end = length + custom.download_many - 1
     else:
         end = peers_block_count
-    return [max(length - 2, 0), end]
+    return [max(length - 2, 0), end+1]
 def download_blocks(peer, DB, peers_block_count, length):
     b=bounds(length, peers_block_count['length'])
     blocks = cmd(peer, {'type': 'rangeRequest',
