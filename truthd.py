@@ -2,35 +2,35 @@
 import networking, sys, tools, custom#, threads
 
 def build_buy_shares():
-    tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?'))}
-    num_states=int(raw_input('how many states does this pm have?'))
+    tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?\n>'))}
+    num_states=int(raw_input('how many states does this pm have?\n>'))
     tx['buy']=[]
     for i in range(num_states):
-        tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.')))
+        tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.\n>')))
     return tx
 def build_pm():
     tx={'type':'prediction_market', 'fees':0}
-    pubkey=str(raw_input('What is the address or pubkey of the owner of the PM?'))
+    pubkey=str(raw_input('What is the address or pubkey of the owner of the PM?\n>'))
     if len(pubkey)>40:
         tx['owner']=tools.make_address([pubkey], 1)
     else:
         tx['owner']=pubkey
-    tx['PM_id']=str(raw_input('What is the unique name for this new prediction market?\n'))
-    tx['B']=int(raw_input('how big should B be? Initial investment is B*ln(n) where n is the number of states'))
-    num_decisions=int(raw_input('how many decisions is this prediction market to be based upon?'))
+    tx['PM_id']=str(raw_input('What is the unique name for this new prediction market?\n>'))
+    tx['B']=int(raw_input('how big should B be? Initial investment is B*ln(n) where n is the number of states\n>'))
+    num_decisions=int(raw_input('how many decisions is this prediction market to be based upon?\n>'))
     tx['decisions']=[]
     for i in range(num_decisions):
-        tx['decisions'].append(str(raw_input('What is the unique name of the '+str(i)+' decision?')))
-    num_states=int(raw_input('how many states can this PM result in?'))
+        tx['decisions'].append(str(raw_input('What is the unique name of the '+str(i)+' decision?\n>')))
+    num_states=int(raw_input('how many states can this PM result in?\n>'))
     if num_states>2**num_decisions: 
         print('too many states')
         return False
     tx['states_combinatory']=[]
     tx['states']=[]
     for i in range(num_states):
-        tx['states'].append(str(raw_input('what is the text title of the '+str(i)+' state?')))
+        tx['states'].append(str(raw_input('what is the text title of the '+str(i)+' state?\n>')))
         if i!=num_states-1:
-            next_comb=(str(raw_input('how does the '+str(i)+' state depend upon the outcome of the decisions? For example: if there are 2 decisions, and this market only comes true when the first is "yes" and the second is "no", then you would put: "1 0" here.')))
+            next_comb=(str(raw_input('how does the '+str(i)+' state depend upon the outcome of the decisions? For example: if there are 2 decisions, and this market only comes true when the first is "yes" and the second is "no", then you would put: "1 0" here.\n>')))
             tx['states_combinatory'].append(map(int, next_comb.split(' ')))
     return tx
 def main():
