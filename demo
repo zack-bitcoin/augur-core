@@ -1,0 +1,113 @@
+#comments in this walk-through start with a # in the front of the line. Lines of shell shart with 'zack@iloSona:~/Hacking/test$'. Everything else is stuff the program printed out while running.
+zack@iloSona:~/Hacking/test$ ./truthd.py commands
+['SVD_consensus', '', 'help', 'create_jury', 'buy_shares', 'DB', 'mine', 'txs', 'vote_on_decision', 'log', 'my_balance', 'collect_winnings', 'blockcount', 'make_PM', 'stop', 'ask_decision', 'difficulty', 'reveal_vote', 'info', 'commands', 'b', 'my_address', 'votecoin_spend', 'balance', 'spend', 'pushtx']
+zack@iloSona:~/Hacking/test$ ./truthd.py help create_jury
+If you want to create a jury called "bitcoin", then type: ./truthd.py create_jury bitcoin.
+zack@iloSona:~/Hacking/test$ ./truthd.py create_jury jury_1
+added tx: {'count': 10, 'pubkeys': ['049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], 'vote_id': u'jury_1', 'type': 'create_jury', 'signatures': ['HNmHEgNlMRA6e++BjQTPNC5kO+DJg/+XhROYVJv/fRfGMn80F2TwMvO6tazaAoObjLiHFyFTqsxhoUmW9O4t6qs=']}
+#I now mine a block so that the newest transaction will get included into the blockchain.
+zack@iloSona:~/Hacking/test$ ./truthd.py mine
+^Pminer on. (use "./truthd.py mine off" to turn off)
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+9
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+9
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+10
+zack@iloSona:~/Hacking/test$ ./truthd.py mine
+miner on. (use "./truthd.py mine off" to turn off)
+zack@iloSona:~/Hacking/test$ ./truthd.py mine off
+miner is now turned off
+zack@iloSona:~/Hacking/test$ ./truthd.py mine
+miner on. (use "./truthd.py mine off" to turn off)
+zack@iloSona:~/Hacking/test$ ./truthd.py mine off
+miner is now turned off
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+10
+zack@iloSona:~/Hacking/test$ ./truthd.py info 10
+{u'nonce': 6505867036870044269095830492902328996022L, u'target': u'00000964a0a74f4e778000000000000000000000000000000000000000000000', u'time': 1411087778.245912, u'length': 10, u'version': u'VERSION2', u'diffLength': u'867efae0be8120e9246ed9c7511cbff97b493bea89c23afb507f54e0312f4ee298ac50', u'prevHash': u'15a14f1b094c47ea624db31072f0485327690b90ebc5e4157875ada9f3f88b85', u'txs': [{u'count': 10, u'pubkeys': [u'049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'vote_id': u'jury_1', u'type': u'create_jury', u'signatures': [u'HNmHEgNlMRA6e++BjQTPNC5kO+DJg/+XhROYVJv/fRfGMn80F2TwMvO6tazaAoObjLiHFyFTqsxhoUmW9O4t6qs=']}, {u'count': 11, u'pubkeys': [u'049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'signatures': [u'first_sig'], u'type': u'mint'}]}
+#the new transaction got included! see ^
+zack@iloSona:~/Hacking/test$ ./truthd.py info jury_1
+{u'decisions': [], u'members': [u'112VBGZuUG229onyd2hqgiyZK2jfZTR']}
+zack@iloSona:~/Hacking/test$ ./truthd.py my_address
+112VBGZuUG229onyd2hqgiyZK2jfZTR
+zack@iloSona:~/Hacking/test$ ./truthd.py help ask_decision
+If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truthd.py ask_decision <jury> weather_question_203 what will the weather be tomorrow
+zack@iloSona:~/Hacking/test$ ./truthd.py ask_decision jury_1 question_1 word word
+added tx: {'count': 46, 'vote_id': u'jury_1', 'decision_id': u'question_1', 'signatures': ['G83m6QPeDzA1DJFk+yH3CiFjcWIp1Yl3wHPDMVzpeTU7LHnc+Rw97vyBsZzSBDh5wpnUWQoSu6yZ1E3oSegVfoA='], 'pubkeys': ['049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], 'txt': u'question_1 word word', 'type': 'propose_decision'}
+zack@iloSona:~/Hacking/test$ ./truthd.py txs
+[{'count': 46, 'vote_id': u'jury_1', 'decision_id': u'question_1', 'signatures': ['G83m6QPeDzA1DJFk+yH3CiFjcWIp1Yl3wHPDMVzpeTU7LHnc+Rw97vyBsZzSBDh5wpnUWQoSu6yZ1E3oSegVfoA='], 'pubkeys': ['049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], 'txt': u'question_1 word word', 'type': 'propose_decision'}]
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+44
+zack@iloSona:~/Hacking/test$ ./truthd.py mine
+miner on. (use "./truthd.py mine off" to turn off)
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+44
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+44
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+45
+zack@iloSona:~/Hacking/test$ ./truthd.py mine off
+miner is now turned off
+zack@iloSona:~/Hacking/test$ ./truthd.py info 45
+{u'nonce': 2181772776417058596572428078960633165869L, u'target': u'000296683a9b333f000000000000000000000000000000000000000000000000', u'time': 1411088163.908362, u'length': 45, u'version': u'VERSION2', u'diffLength': u'b20b38faf49675901ea550d1d7231fd0bee72e8abadd36aebacd6e8d55c81cfb9c3b63', u'prevHash': u'79df3d185a0ba6275c74920c7a823b95467d2a92abcf5d1b3ad47da2900ccbc6', u'txs': [{u'count': 46, u'signatures': [u'G83m6QPeDzA1DJFk+yH3CiFjcWIp1Yl3wHPDMVzpeTU7LHnc+Rw97vyBsZzSBDh5wpnUWQoSu6yZ1E3oSegVfoA='], u'decision_id': u'question_1', u'vote_id': u'jury_1', u'pubkeys': [u'049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'txt': u'question_1 word word', u'type': u'propose_decision'}, {u'count': 47, u'pubkeys': [u'049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'signatures': [u'first_sig'], u'type': u'mint'}]}
+zack@iloSona:~/Hacking/test$ ./truthd.py info jury_1
+{u'decisions': [u'question_1'], u'members': [u'112VBGZuUG229onyd2hqgiyZK2jfZTR']}
+zack@iloSona:~/Hacking/test$ ./truthd.py commands
+['SVD_consensus', '', 'help', 'create_jury', 'buy_shares', 'DB', 'mine', 'txs', 'vote_on_decision', 'log', 'my_balance', 'collect_winnings', 'blockcount', 'make_PM', 'stop', 'ask_decision', 'difficulty', 'reveal_vote', 'info', 'commands', 'b', 'my_address', 'votecoin_spend', 'balance', 'spend', 'pushtx']
+zack@iloSona:~/Hacking/test$ ./truthd.py make_pm
+make_pm is not a command. use "./truthd.py commands" to get the list of truthshell commands. use "./truthd.py help help" to learn about the help tool.
+zack@iloSona:~/Hacking/test$ ./truthd.py make_PM
+What is the address or pubkey of the owner of the PM?112VBGZuUG229onyd2hqgiyZK2jfZTR
+What is the unique name for this new prediction market?
+pm_1
+how big should B be? Initial investment is B*ln(n) where n is the number of states100
+how many decisions is this prediction market to be based upon?1
+What is the unique name of the 0 decision?question_1
+how many states can this PM result in?2
+what is the text title of the 0 state?1
+how does the 0 state depend upon the outcome of the decisions? For example: if there are 2 decisions, and this market only comes true when the first is "yes" and the second is "no", then you would put: "1 0" here.1
+what is the text title of the 1 state?0
+added tx: {'count': 50, u'B': 100, u'type': u'prediction_market', u'states': [u'1', u'0'], u'PM_id': u'pm_1', 'signatures': ['G7qXOYKBZieR7FnHe1EbsmICtY1sUxP+2Qh3gUINEwzTm38EKXMzBmt0JDfJ1kAH/bH9+6oQYoNGpytYN1Fcoec='], u'fees': 0, u'owner': u'112VBGZuUG229onyd2hqgiyZK2jfZTR', 'pubkeys': ['049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'decisions': [u'question_1'], u'states_combinatory': [[1]]}
+zack@iloSona:~/Hacking/test$ ./truthd.py txs
+[{'count': 50, u'B': 100, u'type': u'prediction_market', u'states': [u'1', u'0'], u'PM_id': u'pm_1', 'signatures': ['G7qXOYKBZieR7FnHe1EbsmICtY1sUxP+2Qh3gUINEwzTm38EKXMzBmt0JDfJ1kAH/bH9+6oQYoNGpytYN1Fcoec='], u'fees': 0, u'owner': u'112VBGZuUG229onyd2hqgiyZK2jfZTR', 'pubkeys': ['049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'decisions': [u'question_1'], u'states_combinatory': [[1]]}]
+zack@iloSona:~/Hacking/test$ ./truthd.py mine
+miner on. (use "./truthd.py mine off" to turn off)
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+47
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+48
+zack@iloSona:~/Hacking/test$ ./truthd.py mine off
+miner is now turned off
+zack@iloSona:~/Hacking/test$ ./truthd.py info 48
+{u'nonce': 5000772876419197464637182333766161377917L, u'target': u'000291aca98a220da00000000000000000000000000000000000000000000000', u'time': 1411088268.060414, u'length': 48, u'version': u'VERSION2', u'diffLength': u'b335741e5f396ec374e201b435c2f8ed156eb81ce3a6aa9f1d3fd21deed7a2f95ca227', u'prevHash': u'8d4fc8b48e7293555b14150950bec99091328bbfb18774ec615e90f4c9304dee', u'txs': [{u'count': 50, u'B': 100, u'decisions': [u'question_1'], u'states': [u'1', u'0'], u'PM_id': u'pm_1', u'signatures': [u'G7qXOYKBZieR7FnHe1EbsmICtY1sUxP+2Qh3gUINEwzTm38EKXMzBmt0JDfJ1kAH/bH9+6oQYoNGpytYN1Fcoec='], u'fees': 0, u'owner': u'112VBGZuUG229onyd2hqgiyZK2jfZTR', u'pubkeys': [u'049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'type': u'prediction_market', u'states_combinatory': [[1]]}, {u'count': 51, u'pubkeys': [u'049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'signatures': [u'first_sig'], u'type': u'mint'}]}
+zack@iloSona:~/Hacking/test$ ./truthd.py info pm_1
+{u'B': 100, u'shares_purchased': [0, 0], u'author': u'112VBGZuUG229onyd2hqgiyZK2jfZTR', u'states': [u'1', u'0'], u'fees': 0, u'decisions': [u'question_1'], u'states_combinatory': [[1]]}
+zack@iloSona:~/Hacking/test$ ./truthd.py info buy_shares
+{u'count': 0, u'amount': 0, u'votecoin': {}, u'votes': {}, u'shares': {}}
+zack@iloSona:~/Hacking/test$ ./truthd.py buy_shares
+What is the unique name for this prediction market?pm_1
+how many states does this pm have?2
+how many shares do you want to buy of state 0? To sell states, use negative numbers.100
+how many shares do you want to buy of state 1? To sell states, use negative numbers.0
+added tx: {'count': 54, u'buy': [100, 0], u'PM_id': u'pm_1', 'signatures': ['G5Zr94azcn40WCiouc6HYbJEZhMF3R4UcQqwySsWDa5SN8DaEv3BYFwLF+ql0RAsn0orJEw73HaKpxhL0G3XWeQ='], 'pubkeys': ['049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'type': u'buy_shares'}
+zack@iloSona:~/Hacking/test$ ./truthd.py info pm_1
+{u'B': 100, u'shares_purchased': [0, 0], u'author': u'112VBGZuUG229onyd2hqgiyZK2jfZTR', u'states': [u'1', u'0'], u'fees': 0, u'decisions': [u'question_1'], u'states_combinatory': [[1]]}
+zack@iloSona:~/Hacking/test$ ./truthd.py txs
+[{'count': 54, u'buy': [100, 0], u'PM_id': u'pm_1', 'signatures': ['G5Zr94azcn40WCiouc6HYbJEZhMF3R4UcQqwySsWDa5SN8DaEv3BYFwLF+ql0RAsn0orJEw73HaKpxhL0G3XWeQ='], 'pubkeys': ['049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'type': u'buy_shares'}]
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+50
+zack@iloSona:~/Hacking/test$ ./truthd.py mine
+miner on. (use "./truthd.py mine off" to turn off)
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+50
+zack@iloSona:~/Hacking/test$ ./truthd.py blockcount
+51
+zack@iloSona:~/Hacking/test$ ./truthd.py mine off
+miner is now turned off
+zack@iloSona:~/Hacking/test$ ./truthd.py info 51
+{u'nonce': 9349828590341819470435521826158002461714L, u'target': u'00028db282551196c00000000000000000000000000000000000000000000000', u'time': 1411088349.161174, u'length': 51, u'version': u'VERSION2', u'diffLength': u'b4619a15a981a1c08843ce122c136813fe3293cab271c0372c5c71f0608a482eb440e6', u'prevHash': u'750680513b952c9d2b1ddea445d5143334e660f5bc04872171c7cc2332ed3f4c', u'txs': [{u'count': 54, u'buy': [100, 0], u'PM_id': u'pm_1', u'signatures': [u'G5Zr94azcn40WCiouc6HYbJEZhMF3R4UcQqwySsWDa5SN8DaEv3BYFwLF+ql0RAsn0orJEw73HaKpxhL0G3XWeQ='], u'pubkeys': [u'049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'type': u'buy_shares'}, {u'count': 55, u'pubkeys': [u'049541c1e6270840ee05cbe2d32cbb796e846c842e4a9b78132b7691eb659cf2f723adf5343292d493871f0b81b95baa8728a0676d8e28dbcc7f7cc4d58e7a5549'], u'signatures': [u'first_sig'], u'type': u'mint'}]}
+zack@iloSona:~/Hacking/test$ ./truthd.py info pm_1
+{u'B': 100, u'shares_purchased': [100, 0], u'author': u'112VBGZuUG229onyd2hqgiyZK2jfZTR', u'states': [u'1', u'0'], u'fees': 0, u'decisions': [u'question_1'], u'states_combinatory': [[1]]}
+zack@iloSona:~/Hacking/test$ ./truthd.py info my_address
+{u'count': 57, u'amount': 5189869, u'votecoin': {u'jury_1': 1296}, u'votes': {}, u'shares': {u'pm_1': [100, 0]}}

@@ -7,3 +7,4 @@ Xkoeppelmann wrong port for other server
 Xkoeppelmann if txs is non-empty, then we cannot run my_balance at the bash api
 Xkoeppelmann no reason for the node to hold the private key
 Xkoeppelmann it is possible to make the balance go negative
+Xkoeppelmann it is too complex to boot up truthcoin

@@ -42,10 +42,7 @@ if True:
     DB['diffLength']='0'
     if DB['length']>-1:
         DB['diffLength']=tools.db_get(str(DB['length']), DB)['diffLength']
-
     worker_tasks = [
-        # Keeps track of blockchain database, checks on peers for new blocks and
-        # transactions.
         #all these workers share memory DB
         #if any one gets blocked, then they are all blocked.
         {'target': truthcoin_api.main,
@@ -67,7 +64,7 @@ if True:
          'args': (custom.port, lambda d: peer_recieve.main(d, DB), heart_queue, DB),
          'daemon': True}
     ]
-    processes= [#these do NOT share memory with the rest.
+    processes= [#this thread does NOT share memory with the rest.
         {'target':tools.heart_monitor,
          'args':(heart_queue, )}
     ]
@@ -78,21 +75,17 @@ if True:
         cmds.append(cmd)
         time.sleep(1)
     def start_worker_proc(**kwargs):
-        #print("Making worker thread.")
         daemon=kwargs.pop('daemon', True)
         proc = threading.Thread(**kwargs)
         proc.daemon = daemon
         proc.start()
         return proc
-
-    #print('tasks: ' + str(worker_tasks))
     workers = [start_worker_proc(**task_info) for task_info in worker_tasks]
     print('use "./truthd" in a different terminal to interact with the system.')
     while not DB['stop']:
         time.sleep(0.5)
     tools.log('stopping all threads...')
     DB['heart_queue'].put('stop')
-    #the next part does not work at all. DB['db'] needs to get cleaned as well.
     for worker in workers:
         worker.join()
     for cmd in cmds:
