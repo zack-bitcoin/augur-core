@@ -1,4 +1,9 @@
 #comments in this walk-through start with a # in the front of the line. Lines of shell shart with '$$'. Everything else is stuff the program printed out while running.
+#this goes through 4 major steps
+#1) creating votecoins
+#2) asking the votecoin-holders a decision
+#3) creating a prediction market based on that decision
+#4) buying shares in the prediction market
 $$ ./truthd.py commands
 ['SVD_consensus', '', 'help', 'create_jury', 'buy_shares', 'DB', 'mine', 'txs', 'vote_on_decision', 'log', 'my_balance', 'collect_winnings', 'blockcount', 'make_PM', 'stop', 'ask_decision', 'difficulty', 'reveal_vote', 'info', 'commands', 'b', 'my_address', 'votecoin_spend', 'balance', 'spend', 'pushtx']
 $$ ./truthd.py help create_jury

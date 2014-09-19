@@ -124,11 +124,10 @@ def GetDecisionOutcomes(Mtemp, ScaledIndex, Rep=-1, Verbose=False):
         # ("What these row-players had to say about the Decisions
         # they DID judge.")
         Col = Mtemp[-Mtemp[..., i].mask, i]
-
         # Discriminate Based on Contract Type
         if not ScaledIndex[i]:
             # Our Current best-guess for this Binary Decision (weighted average)
-            DecisionOutcomes_Raw.append(dot(Col, Row))
+            DecisionOutcomes_Raw.append(dot(map(int, Col), map(lambda i: i[0], Row)))
         else:
             # Our Current best-guess for this Scaled Decision (weighted median)
             wmed = WeightedMedian(Row[:,0], Col)
@@ -174,6 +173,8 @@ def FillNa(Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
         Mnew[NAmat] = 0  # Erase the NA's
 
         # Slightly complicated:
+        print('decisions outcomes raw: ' +str(DecisionOutcomes_Raw))
+        print('NAmat: ' +str(NAmat))
         NAsToFill = dot(NAmat, diag(DecisionOutcomes_Raw[0]))
         
         # This builds a matrix whose columns j:

@@ -134,7 +134,6 @@ def reveal_jury_vote_check(tx, txs, out, DB):
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
-    tools.log('reveal jury vote check')
     address=addr(tx)
     acc=tools.db_get(address, DB)
     if not E_check(tx, 'decision_id', [str, unicode]): 
@@ -166,7 +165,8 @@ def reveal_jury_vote_check(tx, txs, out, DB):
     return True
 def part_cert(matrix, weights):
     tools.log('before COnsensus: '+str(matrix))
-    result=ConsensusMechanism.main(matrix, rep=weights)
+    tools.log('weights: ' +str(weights))
+    result=ConsensusMechanism.main(matrix, weights)
     tools.log('after COnsensus')
     participation=result['participation']
     certainty=result['certainty']
@@ -189,7 +189,8 @@ def SVD_consensus_check(tx, txs, out, DB):
         out[0]+='need at least 3 voters in order to compute SVD'
         return False
     matrix=decision_matrix(jury, tx['decisions'], DB)
-    w=weights(jury, DB)
+    tools.log('tx: ' +str(tx))
+    w=weights(tx['vote_id'], DB, jury)
     for i in part_cert(matrix, weights):
         if i<0.6:
             out[0]+='participation and certainty too low'
@@ -198,18 +199,14 @@ def SVD_consensus_check(tx, txs, out, DB):
     if not txs_tools.fee_check(tx, txs, DB): return False
     return True
 def prediction_market_check(tx, txs, out, DB):
-    tools.log('top of prediction market check')
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
     address=addr(tx)
-    tools.log('top of prediction market check2')
     for l in ['states', 'states_combinatory', 'decisions']:
-        tools.log('in for loop: l is: '+l)
         if not E_check(tx, l, list): 
             out[0]+=str(l)+ ' error'
             return False
-    tools.log('top of prediction market check3')
     for dec in tx['decisions']:
         if not tools.db_existence(dec, DB): 
             out[0]+='decision is not in the database: ' +str(dec)
@@ -217,55 +214,44 @@ def prediction_market_check(tx, txs, out, DB):
         if is_number(dec):
             out[0]+='decision_id can not be a number'
             return False
-    tools.log('top of prediction market check3')
     if is_number(tx['PM_id']):
         out[0]+='PM_id can not be a number'
         return False
-    tools.log('top of prediction market check4')
     if len(tx['states'])>200:
         out[0]+='too many states'
         return False
-    tools.log('top of prediction market check5')
     if not E_check(tx, 'B', int):
         out[0]+='B error'
         return False
-    tools.log('top of prediction market check6')
     for comb in tx['states_combinatory']:
         if len(comb)!=len(tx['decisions']):
             out[0]+=str(comb)+' comb error'
             return False
-    tools.log('top of prediction market check7')
     for l in [tx['states_combinatory'], tx['states'], tx['decisions']]:
         for comb in l:
             copies=len(filter(lambda comb2: comb==comb2, l))
             if copies!=1:
                 out[0]+=str(comb)+' not mutually exclusive'
                 return False
-    tools.log('top of prediction market check8')
     if len(tx['states'])!=len(tx['states_combinatory'])+1:
         out[0]+='wrong number of possible states?'
         return False
-    tools.log('top of prediction market check9')
     if not E_check(tx, 'PM_id', [str, unicode]):
         out[0]+='PM_id error'
         return False        
-    tools.log('top of prediction market check10')
     if len(tx['PM_id'])>1000: 
         out[0]+='PM_id too long'
         return False
-    tools.log('top of prediction market check11')
     if tools.db_existence(tx['PM_id'], DB): 
         out[0]+='PM: ' +str(tools.db_get(tx['PM_id'], DB))
         out[0]+='this PM_id is already being used'
         return False
-    tools.log('top of prediction market check12')
     for t in txs:
         if 'PM_id' in t:
             if t['PM_id']==tx['PM_id']:
                 out[0]+='Someone used that PM in this block already'
                 return False
     acc=tools.db_get(address, DB)
-    tools.log('top of prediction market check13')
     if not txs_tools.fee_check(tx, txs, DB): 
         out[0]+='you do not have enough money'
         return False
@@ -367,18 +353,20 @@ def reveal_jury_vote(tx, DB):
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
-def weights(jury, DB):
+def weights(vote_id, DB, jury='default'):
     out=[]
+    if jury=='default':
+        jury=tools.db_get(jury, DB)
     for member in jury['members']:
         acc=tools.db_get(member, DB)
-        out.append([acc['votecoins'][jury]])
+        out.append([acc['votecoin'][vote_id]])
     return out
 def decision_matrix(jury, decisions, DB):
     matrix=[]
-    for decision in decisions:
+    for member in jury['members']:#empty
+        acc=tools.db_get(member, DB)
         row=[]
-        for member in jury['members']:#empty
-            acc=tools.db_get(member, DB)
+        for decision in decisions:
             vote='unsure'
             try:
                 vote=acc['votes'][decision]
@@ -398,8 +386,8 @@ def SVD_consensus(tx, DB):
     adjust_int(['count'], address, 1, DB)
     jury=tools.db_get(tx['vote_id'], DB)
     matrix=decision_matrix(jury, tx['decisions'], DB)
-    w=weights(jury, DB)
-    result=ConsensusMechanism.main(matrix, rep=w)
+    w=weights(tx['vote_id'], DB, jury)
+    result=ConsensusMechanism.main(matrix, w)
     #create fee. If there are more decisions, then the fee is lower.
     tools.log('matrix: ' +str(matrix))
     tools.log(pprint.pformat(result))

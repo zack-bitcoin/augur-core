@@ -141,11 +141,9 @@ def add_block(block_pair, DB):
                 else:
                     return True  # Block is invalid
             return True  # Block is invalid
-        if not isinstance(block, dict):
-            return False
-        if 'error' in block:
-            return False
-        if 'length' not in block:
+        if not isinstance(block, dict): return False
+        if 'error' in block: return False
+        if not tools.E_check(block, 'length', [int]):
             return False
         length = DB['length']
         if int(block['length']) != int(length) + 1:

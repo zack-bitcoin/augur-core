@@ -114,26 +114,30 @@ def reveal_vote(DB):
         return easy_add_transaction(tx, DB)
     else:
         return('you do not have any encrypted vote to decrypt')
-def decisions_keepers(jury, DB):
+def decisions_keepers(vote_id, jury, DB):
     matrix=txs_truthcoin.decision_matrix(jury, jury['decisions'], DB)
     #exclude decisions with insufficient participation*certainty
     decisions=[]
-    if len(matrix)<5: 
+    if len(matrix)<3: 
         return []
-    if len(matrix[0])<3:
+    if len(matrix[0])<5:
         return []
-    weights=txs_truthcoin.weights(jury, DB)
+    tools.log('in decisions keepers jury: ' +str(jury))
+    weights=txs_truthcoin.weights(vote_id, DB, jury)
     pc=txs_truthcoin.part_cert(matrix, weights)
+    tools.log('decisions keeprs pc: ' +str(pc))
     for i in range(len(pc)):
         if pc[i]>0.6:
             decisions.append(jury['decisions'][i])
+        else:
+            tools.log('participation times certainty was not enough for this block: ' +str(pc[i]))
     return decisions
 def SVD_consensus(DB):
     if len(DB['args'])<1:
         return('unique id for that branch?')
     vote_id=DB['args'][0]
     jury=tools.db_get(vote_id, DB)
-    tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':decisions_keepers(jury, DB)}
+    tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':decisions_keepers(vote_id, jury, DB)}
     return(easy_add_transaction(tx, DB))
 def pushtx(DB):
     tx=tools.unpackage(DB['args'][0].decode('base64'))

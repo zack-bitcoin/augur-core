@@ -19,9 +19,6 @@ def cost_0(txs, DB):
     votecoin_cost = {}
     for Tx in filter(lambda t: DB['address'] == addr(t), txs):
         def spend_(total_cost=total_cost, votecoin_cost=votecoin_cost):
-            #global total_cost
-            #global votecoin_cost
-            tools.log('spend_')
             total_cost.append(custom.fee)
             if 'vote_id' not in Tx:
                 total_cost += [Tx['amount']]
@@ -30,7 +27,6 @@ def cost_0(txs, DB):
                     votecoin_cost[Tx['vote_id']]=0
                 votecoin_cost[Tx['vote_id']]+=Tx['amount']
         def buy_shares_(total_cost=total_cost):
-            #global total_cost
             cost = cost_to_buy_shares(Tx, DB)
             total_cost.append(custom.buy_shares_fee)
             total_cost.append(cost)
