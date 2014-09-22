@@ -8,7 +8,17 @@ from __future__ import division
 from numpy import *
 from numpy.linalg import *
 
-def WeightedMedian(data, weights):
+def mean(v): return sum(v)*1.0/len(v)
+def median_walker(so_far_w, limit, x, w, prev_x):
+    if so_far_w>limit: return prev_x
+    if so_far_w==limit: return mean([1.0*prev_x, x[0]])
+    return median_walker(so_far_w+w[0], limit, x[1:], w[1:], x[0])
+def WeightedMedian(x, w):
+    x, w=zip(*sorted(zip(x, w)))
+    return median_walker(0, sum(w)*1.0/2, x, w, x[0])
+
+
+def JackWeightedMedian(data, weights):
     """Calculate a weighted median.
 
     Args:

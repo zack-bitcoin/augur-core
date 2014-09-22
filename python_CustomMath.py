@@ -2,7 +2,7 @@ import copy
 def AsMatrix(v):
     #turns a vector into a 1-col matrix
     return map(lambda i: [i], v)
-def mean(v): return sum(v)/len(v)
+def mean(v): return sum(v)*1.0/len(v)
 def replace_na(x, m):
     if type(x) in [int, float]:
         return x
@@ -24,9 +24,7 @@ def median_walker(so_far_w, limit, x, w, prev_x):
     return median_walker(so_far_w+w[0], limit, x[1:], w[1:], x[0])
 def weighted_median(x, w):
     x, w=zip(*sorted(zip(x, w)))
-    total_weight=sum(w)
-    hw=total_weight/2
-    return median_walker(0, hw, x, w, x[0])
+    return median_walker(0, sum(w)*1.0/2, x, w, x[0])
 def switch_row_cols(m):
     out=[]
     for i in range(len(m[0])):
