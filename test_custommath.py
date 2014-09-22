@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 from custommath import *
+
 def TestWeightedMedian():
     data = [
         [7, 1, 2, 4, 10],
