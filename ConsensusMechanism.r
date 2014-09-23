@@ -2,9 +2,9 @@
 # This is the mechanism that, theoretically,
 # 1] allows the software to determine the state of Decisions truthfully, and
 # 2] only allows an efficient number of most-traded-upon-Decisions.
-try(setwd("~/GitHub/Truthcoin/lib"))
+#try(setwd("~/GitHub/Truthcoin/lib"))
 # To my knowledge, R does not feature 'automatic working directories' unless it is being run as a script
-source("consensus/CustomMath.r")
+#source("consensus/CustomMath.r")
 ## Functions:
 DemocracyRep <- function(X) {
 # Run this if no Reputations were given...gives everyone an equal share and equal vote.
@@ -60,6 +60,9 @@ print( cbind( AsMatrix(Rep), AsMatrix(Set1), AsMatrix(Set2), AsMatrix(AdjPrinCom
 }
 #Declared here, filled below (unless there was a perfect consensus).
 RowRewardWeighted <- Rep # (set this to uniform if you want a passive diffusion toward equality when people cooperate [not sure why you would]). Instead diffuses towards previous reputation (Smoothing does this anyway).
+#print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$REP")
+#print(Rep)
+#print(AdjPrinComp)
 if(max(abs(AdjPrinComp))!=0) RowRewardWeighted <- GetWeight( (AdjPrinComp * Rep/mean(Rep)) ) #Overwrite the inital declaration IFF there wasn't perfect consensus.
 #note: Rep/mean(Rep) is a correction ensuring Reputation is additive. Therefore, nothing can be gained by splitting/combining Reputation into single/multiple accounts.
 #Freshly-Calculated Reward (Reputation) - Exponential Smoothing
@@ -75,14 +78,14 @@ print( cbind( AsMatrix(RowRewardWeighted), AsMatrix(SmoothedR)) )
 Out <- list("FirstL"=FirstLoading,"OldRep"=Rep,"ThisRep"=RowRewardWeighted,"SmoothRep"=SmoothedR) #Keep the factors and time information along for the ride, they are interesting.
 return(Out)
 }
-# M <- matrix(nrow=3,byrow=TRUE,data=c(1,0,1,0,
-# 1,0,1,0,
-# 1,0,0,1))
+M <- matrix(nrow=3,byrow=TRUE,data=c(1,0,1,0,
+1,0,1,0,
+1,0,0,1))
 #
 # M2 <- matrix(nrow=3,byrow=TRUE,data=c(.80, .1, .72, 0,
 # .80, .1, .62, 0,
 # .43, .1, .00, 1))
-# > GetRewardWeights(M)
+#GetRewardWeights(M)
 # $FirstL
 # [1] 0.0000000 0.0000000 -0.7071068 0.7071068
 # $OldRep

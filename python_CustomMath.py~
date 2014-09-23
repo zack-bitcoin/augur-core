@@ -1,6 +1,0 @@
-def AsMatrix(v):
-    #turns a vector into a 1-col matrix
-    return map(lambda i: [i], v)
-def mean(v): return sum(v)/len(v)
-def MeanNA(v):
-    vf=filter(lambda x: type(x)==int)

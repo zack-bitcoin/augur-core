@@ -175,7 +175,8 @@ def FillNa(Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
         # Slightly complicated:
         print('decisions outcomes raw: ' +str(DecisionOutcomes_Raw))
         print('NAmat: ' +str(NAmat))
-        NAsToFill = dot(NAmat, diag(DecisionOutcomes_Raw[0]))
+        print('diag: ' +str(diag(DecisionOutcomes_Raw)))
+        NAsToFill = dot(NAmat, diag(DecisionOutcomes_Raw))
         
         # This builds a matrix whose columns j:
         #   NAmat was false (the observation wasn't missing) - have a value of Zero
