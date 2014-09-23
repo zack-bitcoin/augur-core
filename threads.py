@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads and packs up the database.
 """
 import miner, peer_recieve, time, threading, tools, custom, leveldb, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
