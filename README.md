@@ -5,20 +5,26 @@ adding abilities from the truthcoin project to basiccoin. https://github.com/psz
 
 Donations: 1GbpRPE83Vjg73KFvTVZ4EnS2qNkiLY5TT
 
-INSTALL (for ubuntu)
+INSTALL (for Ubuntu)
 
     sudo apt-get update
     sudo apt-get install python-leveldb python-numpy git
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW
 
+INSTALL (for Arch Linux)
+    sudo pacman -S python2-numpy python2-pip
+    sudo pip2 install leveldb
+    git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
+    cd Truthcoin-POW    
+
 To run a truthcoin node
 
-    python threads.py
+    python2 threads.py
 
 Then to talk to truthcoin from the terminal use:
 
-    python truthd.py
+    ./truthd.py
 
 It will take time to download the blockchain.
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import networking, sys, tools, custom#, threads
 
 def build_buy_shares():
