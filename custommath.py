@@ -7,18 +7,9 @@ Supporting math for the consensus mechanism.
 from __future__ import division
 from numpy import *
 from numpy.linalg import *
+import tools
 
-def mean(v): return sum(v)*1.0/len(v)
-def median_walker(so_far_w, limit, x, w, prev_x):
-    if so_far_w>limit: return prev_x
-    if so_far_w==limit: return mean([1.0*prev_x, x[0]])
-    return median_walker(so_far_w+w[0], limit, x[1:], w[1:], x[0])
-def WeightedMedian(x, w):
-    x, w=zip(*sorted(zip(x, w)))
-    return median_walker(0, sum(w)*1.0/2, x, w, x[0])
-
-
-def JackWeightedMedian(data, weights):
+def WeightedMedian(data, weights):
     """Calculate a weighted median.
 
     Args:
@@ -26,7 +17,6 @@ def JackWeightedMedian(data, weights):
       weights (list or numpy.array): weights
 
     """
-    # Sort the data and weight arrays, according to the weight array
     data, weights = array(data).squeeze(), array(weights).squeeze()
     s_data, s_weights = map(array, zip(*sorted(zip(data, weights))))
     midpoint = 0.5 * sum(s_weights)
@@ -139,6 +129,7 @@ def WeightedCov(Mat,Rep=-1):
     Coins = ma.copy(Rep)
     for i in range(len(Rep)):
         Coins[i] = (int( (Rep[i] * 1000000)[0] )) 
+       
     Mean = ma.average(Mat, axis=0, weights=hstack(Coins)) # Computing the weighted sample mean (fast, efficient and precise)
     XM = matrix( Mat-Mean ) # xm = X diff to mean
     sigma2 = matrix( 1/(sum(Coins)-1) * ma.multiply(XM, Coins).T.dot(XM) ); # Compute the unbiased weighted sample covariance

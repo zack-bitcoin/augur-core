@@ -143,8 +143,8 @@ c(x[k], x[k+1]);
 # > weighted.median(x=c(3,4,5),w=c(.2,.2,.4))
 # [1] 4.5
 Rescale <- function(UnscaledMatrix, ScalingData) {
-print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-print(ScalinData)
+#print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+#print(ScalinData)
 # Forces a matrix of raw (user-supplied) information (for example, # of House Seats, or DJIA) to conform to svd-appropriate range.
 # Practically, this is done by subtracting min and dividing by scaled-range (which itself is max-min).
 # Calulate multiplicative factors
@@ -254,6 +254,8 @@ print("Error: Weights must be equal to nrow(X)")
 return(NULL)
 }
 wCVM <- cov.wt(x=X, wt=Weights) # Weighted Covariance Matrix
+#print('WEIGHTED COVARIANCE')
+#print(wCVM)
 # http://en.wikipedia.org/wiki/Singular_value_decomposition
 L <- svd(wCVM$cov)$u[,1] # extract first Loading (first column of U matrix)
 S <- as.vector(scale(X,center=wCVM$center,scale= FALSE) %*% L) # manually calculate the first Score, using the input matrix, covariance matrix, and first loading

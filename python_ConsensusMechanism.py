@@ -42,11 +42,12 @@ def GetRewardWeights(M, Rep=-1, alpha=0.1):
 
 
 def GetRewardWeights(M, Rep=-1, Alpha=0.1):
-    if Rep=-1:
+    if Rep==-1:
+        print('Rep: ' +str(Rep))
         Rep=DemocracyCoin(M)
-    Results = WeightedPrinComp(M,Rep)
+    Results = python_CustomMath.WeightedPrinComp(M,Rep)
+    print('Results: '+str(Results))
     Rep = GetWeight(Rep)
-    print('Results')
     FirstLoading = Results['Loadings'] #The first loading is designed to indicate which Decisions were more 'agreed-upon' than others. 
     FirstScore   = Results['Scores'] #The scores show loadings on consensus (to what extent does this observation represent consensus?)
     a=abs(min(FirstScore))
@@ -65,4 +66,17 @@ def GetRewardWeights(M, Rep=-1, Alpha=0.1):
     if RefInd<=0: AdjPrinComp=Set1
     if RefInd>0: AdjPrinComp=Set2
     RowRewardWeighted=Rep
-    if(max(map(abs, AdjPrinComp)))!=0: RowRewardWeighted = GetWeight(A
+    print(AdjPrinComp)
+    if(max(map(abs, AdjPrinComp)))!=0: 
+        v=[]
+        m=mean(Rep)
+        for i in range(len(Rep)):
+            v.append(AdjPrinComp[i]*Rep[i]/m)
+        RowRewardWeighted = GetWeight(v)
+    SmoothedR=[]
+    for i in range(len(RowRewardWeighted)):
+        SmoothedR.append(Alpha*RowRewardWeighted[i]+(1-Alpha)*Rep[i])
+    return({'FirstL':FirstLoading, 'OldRep':Rep, 'ThisRep':RowRewardWeighted, 'Smoothrep':SmoothedR})
+
+m=[[1,0,1,0],[1,0,1,0],[1,0,0,1]]
+GetRewardWeights(m, Rep=[1,1,1])

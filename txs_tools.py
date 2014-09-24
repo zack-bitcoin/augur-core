@@ -1,8 +1,75 @@
 """These are functions that are exclusively used for the truthcoin aspects of the blockchain.
 tools.py contains functions that are used everywhere.
 """
-import blockchain, custom, math, tools
+import blockchain, custom, math, tools, numpy
 addr=tools.addr
+
+def weights(vote_id, DB, jury='default'):
+    out=[]
+    if jury=='default':
+        jury=tools.db_get(jury, DB)
+    if 'members' not in jury:
+        return 'error'
+    for member in jury['members']:
+        acc=tools.db_get(member, DB)
+        out.append([acc['votecoin'][vote_id]])
+    return out
+def decision_matrix(jury, decisions, DB):
+    matrix=[]
+    if 'members' not in jury:
+        tools.log('DECISION MATRIX ERROR UNINITIALIZED JURY')
+    for member in jury['members']:#empty
+        acc=tools.db_get(member, DB)
+        row=[]
+        for decision in decisions:
+            vote='unsure'
+            try:
+                vote=acc['votes'][decision]
+            except: pass
+            if vote=='yes': 
+                row.append(1)
+            elif vote=='no': 
+                row.append(0)
+            elif vote=='half': 
+                row.append(0.5)
+            else:
+                row.append(numpy.nan)
+        matrix.append(row)
+    return matrix
+def decisions_keepers(vote_id, jury, DB):
+    #this is returning something of length voters.
+    
+    wt=map(lambda x: x[0], weights(vote_id, DB, jury))
+    if wt=='error': return 'error'
+    total_weight=sum(wt)
+    matrix=decision_matrix(jury, jury['decisions'], DB)
+    #exclude decisions with insufficient participation*certainty
+    decisions=[]
+    if len(matrix)<3: 
+        return []
+    if len(matrix[0])<5:
+        return []
+    attendance=[]
+    certainty=[]
+    for decision in range(len(matrix[0])):
+        a=0
+        c=0
+        for juror in range(len(matrix)):
+            if not numpy.isnan(matrix[juror][decision]):
+                a+=wt[juror]
+                if matrix[juror][decision]==1:
+                    c+=wt[juror]
+            else:
+                c+=wt[juror]/2.0
+        attendance.append(a*1.0/total_weight)
+        certainty.append(abs(c-0.5)*2.0/total_weight)
+    out=[]
+    for i in range(len(certainty)):
+        if certainty[i]*attendance[i]>0.55:
+            out.append(jury['decisions'][i])
+        else:
+            tools.log('participation times certainty was too low to include this decision: ' +str(jury['decisions'][i]))
+    return out
 def cost_to_buy_shares(tx, DB):
     pm=tools.db_get(tx['PM_id'], DB)
     shares_purchased=pm['shares_purchased']
@@ -114,7 +181,10 @@ def initialize_to_zero_helper(loc, address, DB):
         tools.db_put(address , acc, DB)    
 def initialize_to_zero_votecoin(vote_id, address, DB):
     initialize_to_zero_helper(['votecoin', vote_id], address, DB)
-    if address not in tools.db_get(vote_id, DB)['members']:
+    jury=tools.db_get(vote_id, DB)
+    if 'members' not in jury:
+        tools.log('initialized to zero error')
+    if address not in jury['members']:
         adjust_list(['members'], vote_id, False, address, DB)
 def memory_leak_helper(loc, address, DB):
     acc=tools.db_get(address, DB)

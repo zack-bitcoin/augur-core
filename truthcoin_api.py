@@ -15,6 +15,7 @@ def easy_add_transaction(tx_orig, DB, privkey='default'):
     if 'pubkeys' not in tx:
         tx['pubkeys']=[tools.privtopub(privkey)]
     tx['signatures'] = [tools.sign(tools.det_hash(tx), privkey)]
+    tools.log('collect winnings 3')
     return(blockchain.add_tx(tx, DB))
 def help_(DB):      
     tell_about_command={
@@ -114,42 +115,31 @@ def reveal_vote(DB):
         return easy_add_transaction(tx, DB)
     else:
         return('you do not have any encrypted vote to decrypt')
-def decisions_keepers(vote_id, jury, DB):
-    matrix=txs_truthcoin.decision_matrix(jury, jury['decisions'], DB)
-    #exclude decisions with insufficient participation*certainty
-    decisions=[]
-    if len(matrix)<3: 
-        return []
-    if len(matrix[0])<5:
-        return []
-    tools.log('in decisions keepers jury: ' +str(jury))
-    weights=txs_truthcoin.weights(vote_id, DB, jury)
-    pc=txs_truthcoin.part_cert(matrix, weights)
-    tools.log('decisions keeprs pc: ' +str(pc))
-    for i in range(len(pc)):
-        if pc[i]>0.6:
-            decisions.append(jury['decisions'][i])
-        else:
-            tools.log('participation times certainty was not enough for this block: ' +str(pc[i]))
-    return decisions
 def SVD_consensus(DB):
     if len(DB['args'])<1:
         return('unique id for that branch?')
     vote_id=DB['args'][0]
     jury=tools.db_get(vote_id, DB)
-    tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':decisions_keepers(vote_id, jury, DB)}
+    k=txs_tools.decisions_keepers(vote_id, jury, DB)
+    if k=='error':
+        return('that jury does not exist yet')
+    tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':k}
     return(easy_add_transaction(tx, DB))
 def pushtx(DB):
     tx=tools.unpackage(DB['args'][0].decode('base64'))
     if len(DB['args'])==1:
         return easy_add_transaction(tx, DB)
     privkey=tools.det_hash(DB['args'][1])
-    tools.log('your brainwallet was: ' +str(DB['args'][1]))
     return easy_add_transaction(tx, DB, privkey)
 def collect_winnings(DB):
+    if len(DB['args'])<1:
+        return ('not enough arguments')
+    tools.log('collect_winnings 1')
     add=DB['address']
     acc=tools.db_get(add, DB)
-    tx={'type':'collect_winnings', 'PM_id':DB['args'][1], 'shares':acc['shares'][tx['PM_id']], 'address':add}
+    tx={'type':'collect_winnings', 'PM_id':DB['args'][0], 'address':add}
+    tx['shares']=acc['shares'][tx['PM_id']]
+    tools.log('collect_winnings 2')
     return easy_add_transaction(tx, DB)
 def blockcount(DB): return(str(DB['length']))
 def txs(DB):        return(str(DB['txs']))

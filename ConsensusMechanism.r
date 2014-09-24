@@ -31,6 +31,8 @@ print("")
 }
 #Rep=ReWeight(rep(1,nrow(M)))
 Results <- WeightedPrinComp(M,Rep)
+#print('#$$$$$$$$$$$$$4RESTULTS')
+#print(Results)
 FirstLoading <- Results$Loadings #The first loading is designed to indicate which Decisions were more 'agreed-upon' than others.
 FirstScore <- Results$Scores #The scores show loadings on consensus (to what extent does this observation represent consensus?)
 if(Verbose) { print("First Loading:"); print(FirstLoading); print("First Score:"); print(AsMatrix(FirstScore)) }
@@ -60,7 +62,7 @@ print( cbind( AsMatrix(Rep), AsMatrix(Set1), AsMatrix(Set2), AsMatrix(AdjPrinCom
 }
 #Declared here, filled below (unless there was a perfect consensus).
 RowRewardWeighted <- Rep # (set this to uniform if you want a passive diffusion toward equality when people cooperate [not sure why you would]). Instead diffuses towards previous reputation (Smoothing does this anyway).
-#print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$REP")
+#print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$APC")
 #print(Rep)
 #print(AdjPrinComp)
 if(max(abs(AdjPrinComp))!=0) RowRewardWeighted <- GetWeight( (AdjPrinComp * Rep/mean(Rep)) ) #Overwrite the inital declaration IFF there wasn't perfect consensus.
@@ -85,7 +87,7 @@ M <- matrix(nrow=3,byrow=TRUE,data=c(1,0,1,0,
 # M2 <- matrix(nrow=3,byrow=TRUE,data=c(.80, .1, .72, 0,
 # .80, .1, .62, 0,
 # .43, .1, .00, 1))
-#GetRewardWeights(M)
+print(GetRewardWeights(M))
 # $FirstL
 # [1] 0.0000000 0.0000000 -0.7071068 0.7071068
 # $OldRep
@@ -173,6 +175,10 @@ NAsToFill <- ( NAmat%*%diag(as.vector(DecisionOutcomes.Raw)) )
 # This builds a matrix whose columns j:
 # NAmat was false (the observation wasn't missing) ... have a value of Zero
 # NAmat was true (the observation was missing) ... have a value of the jth element of DecisionOutcomes.Raw (the 'current best guess')
+print('Mnew')
+print(Mnew)
+print('NAsToFill')
+print(NAsToFill)
 Mnew <- Mnew + NAsToFill
 #This replaces the NAs, which were zeros, with the predicted Decision outcome.
 if(Verbose) { print("Missing Values:"); print(NAmat) ; print("Imputed Values:"); print(NAsToFill)}
@@ -180,6 +186,8 @@ if(Verbose) { print("Missing Values:"); print(NAmat) ; print("Imputed Values:");
 MnewC <- Mnew
 ## Discriminate based on contract type
 #Fill ONLY Binary contracts by appropriately forcing predictions into their discrete (0,.5,1) slot. (reveals .5 coordination, continuous variables are more gameable).
+print('SSSSSSSSSSSSSSSSSSSSSSscaled index')
+print(ScaledIndex)
 MnewC[,!ScaledIndex] <- apply(Mnew[,!ScaledIndex], c(1,2), function(x) Catch(x,CatchP) )
 #
 }
@@ -216,6 +224,15 @@ Factory <- function(M0, Scales = BinaryScales(M0), Rep = DemocracyRep(M0), Catch
 ScaledIndex=as.logical( Scales["Scaled",] )
 MScaled <- Rescale(M0, Scales)
 #Handle Missing Values
+print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+print('MScaled')
+print(MScaled)
+print('Rep')
+print(Rep)
+print('ScaledIndex')
+print(ScaledIndex)
+print('CatchP')
+print(CatchP)
 Filled <- FillNa(MScaled, Rep, ScaledIndex, CatchP, Verbose)
 ## Consensus - Row Players
 # New Consensus Reward
@@ -288,17 +305,17 @@ Output[[5]] <- (1-PercentNA) #Using this to set inclusion fees.
 Output[[6]] <- Avg.Certainty #Using this to set Catch Parameter
 return(Output)
 }
-# M1 <- rbind(
-# c(1,1,0,0),
-# c(1,0,0,0),
-# c(1,1,0,0),
-# c(1,1,1,0),
-# c(0,0,1,1),
-# c(0,0,1,1))
+ M1 <- rbind(
+ c(1,1,0,NA),
+ c(1,0,0,0),
+ c(1,1,0,0),
+ c(1,1,1,0),
+ c(0,0,1,1),
+ c(0,0,1,1))
 #
 # row.names(M1) <- c("True", "Distort 1", "True", "Distort 2", "Liar", "Liar")
 # colnames(M1) <- c("C1.1","C2.1","C3.0","C4.0")
-# > Factory(M1)
+Factory(M1)
 # $Original
 # C1.1 C2.1 C3.0 C4.0
 # True 1 1 0 0

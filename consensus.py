@@ -12,7 +12,7 @@ from numpy import *
 from numpy.linalg import *
 from numpy.random import random_integers
 from custommath import *
-
+import tools
 __author__     = "Paul Sztorc and Jack Peterson"
 __maintainer__ = "Paul Sztorc"
 __email__      = "truthcoin@gmail.com"
@@ -58,9 +58,8 @@ def GetRewardWeights(M, Rep=-1, Alpha=.1, Verbose=False):
     
     Old = dot(Rep.T,M)
   
-    New1 = GetWeight(dot(Set1,M))
-    New2 = GetWeight(dot(Set2,M))
-    
+    New1 = dot(GetWeight(Set1),M)
+    New2 = dot(GetWeight(Set2),M)
     #Difference in Sum of squared errors, if >0, then New1 had higher errors (use New2), and conversely if <0 use 1.
     RefInd = sum( (New1-Old)**2) -  sum( (New2-Old)**2)
     
@@ -124,10 +123,11 @@ def GetDecisionOutcomes(Mtemp, ScaledIndex, Rep=-1, Verbose=False):
         # ("What these row-players had to say about the Decisions
         # they DID judge.")
         Col = Mtemp[-Mtemp[..., i].mask, i]
+
         # Discriminate Based on Contract Type
         if not ScaledIndex[i]:
             # Our Current best-guess for this Binary Decision (weighted average)
-            DecisionOutcomes_Raw.append(dot(map(int, Col), map(lambda i: i[0], Row)))
+            DecisionOutcomes_Raw.append(dot(Col, Row))
         else:
             # Our Current best-guess for this Scaled Decision (weighted median)
             wmed = WeightedMedian(Row[:,0], Col)
@@ -173,10 +173,7 @@ def FillNa(Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
         Mnew[NAmat] = 0  # Erase the NA's
 
         # Slightly complicated:
-        print('decisions outcomes raw: ' +str(DecisionOutcomes_Raw))
-        print('NAmat: ' +str(NAmat))
-        print('diag: ' +str(diag(DecisionOutcomes_Raw)))
-        NAsToFill = dot(NAmat, diag(DecisionOutcomes_Raw))
+        NAsToFill = dot(NAmat, diag(DecisionOutcomes_Raw[0]))
         
         # This builds a matrix whose columns j:
         #   NAmat was false (the observation wasn't missing) - have a value of Zero
@@ -193,9 +190,9 @@ def FillNa(Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
         # (0,.5,1) slot. (continuous variables can be gamed).
         rows, cols = Mnew.shape
         for i in range(rows):
-            if not ScaledIndex[i]:
-                for j in range(cols):
-                    Mnew[i][j] = Catch(j, CatchP)
+            for j in range(cols):
+                if not ScaledIndex[j]:
+                    Mnew[i][j] = Catch(Mnew[i][j], CatchP)
 
         if Verbose:
             print('Binned:')
@@ -315,7 +312,8 @@ def Factory(M0, Scales=None, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
     # # Combine Information
     # Row
     NAbonusR = GetWeight(ParticipationR)
-    RowBonus = NAbonusR * PercentNA + PlayerInfo['SmoothRep'] * (1 - PercentNA)
+    RowBonus = NAbonusR * PercentNA + PlayerInfo['SmoothRep'] * (1
+            - PercentNA)
 
     # Column
     NAbonusC = GetWeight(ParticipationC)
@@ -371,7 +369,7 @@ def Chain(X,N=2,ThisRep=-1):
 def DisplayResults(FactorObject):
     """Prints the results in a more-readable format. Requires pandas."""
     
-    #import pandas
+    import pandas
     
     q=FactorObject #shorten for convenience
     
@@ -394,7 +392,7 @@ def DisplayResults(FactorObject):
                    qA["ParticipationR"],
                    qA["RelativePart"],
                    qA["RowBonus"]])
-    #print( pandas.DataFrame(AData,ALabels).T )
+    print( pandas.DataFrame(AData,ALabels).T )
     
     print("")
     print("Decisions: ")
@@ -408,7 +406,7 @@ def DisplayResults(FactorObject):
                    qD["Certainty"],
                    qD["NAs Filled"],
                    qD["DecisionOutcome_Final"]])             
-    #print( pandas.DataFrame(DData,DLabels) )
+    print( pandas.DataFrame(DData,DLabels) )
     
     print("")
     print(" Participation: ",end='')
@@ -456,7 +454,6 @@ if __name__ == "__main__":
 
     print(time.asctime())
     InitVotesL = random_integers(0,1,(10000*100)).reshape(10000,100)
-    print('###################################RANDOM INTEGERS: ' +str(InitVotesL))
     VotesL = ma.masked_array(InitVotesL, isnan(InitVotesL))
     print(time.asctime())
 
