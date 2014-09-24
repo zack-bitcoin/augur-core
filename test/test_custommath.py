@@ -92,7 +92,7 @@ class TestCustommath(unittest.TestCase):
                     0.2,
                     0.26666666666666666]
         actual = custom.ReWeight(self.c2)
-        # self.assertListEqual(expected, list(actual.base))
+        self.assertListEqual(expected, list(actual.base))
 
     def test_ReverseMatrix(self):
         expected = np.array([[0, 0, 1, 1],
