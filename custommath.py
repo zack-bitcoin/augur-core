@@ -8,17 +8,16 @@ from __future__ import division
 from numpy import *
 from numpy.linalg import *
 
-def mean(v): return sum(v)*1.0/len(v)
-def median_walker(so_far_w, limit, x, w, prev_x):
-    if so_far_w>limit: return prev_x
-    if so_far_w==limit: return mean([1.0*prev_x, x[0]])
-    return median_walker(so_far_w+w[0], limit, x[1:], w[1:], x[0])
-def WeightedMedian(x, w):
-    x, w=zip(*sorted(zip(x, w)))
-    return median_walker(0, sum(w)*1.0/2, x, w, x[0])
+# def mean(v): return sum(v)*1.0/len(v)
+# def median_walker(so_far_w, limit, x, w, prev_x):
+#     if so_far_w>limit: return prev_x
+#     if so_far_w==limit: return mean([1.0*prev_x, x[0]])
+#     return median_walker(so_far_w+w[0], limit, x[1:], w[1:], x[0])
+# def WeightedMedian(x, w):
+#     x, w=zip(*sorted(zip(x, w)))
+#     return median_walker(0, sum(w)*1.0/2, x, w, x[0])
 
-
-def JackWeightedMedian(data, weights):
+def WeightedMedian(data, weights):
     """Calculate a weighted median.
 
     Args:
@@ -26,7 +25,6 @@ def JackWeightedMedian(data, weights):
       weights (list or numpy.array): weights
 
     """
-    # Sort the data and weight arrays, according to the weight array
     data, weights = array(data).squeeze(), array(weights).squeeze()
     s_data, s_weights = map(array, zip(*sorted(zip(data, weights))))
     midpoint = 0.5 * sum(s_weights)
@@ -50,14 +48,13 @@ def Rescale(UnscaledMatrix, Scales):
     scaled-range (which itself is max-min).
 
     """
-
     # Calulate multiplicative factors   
     InvSpan = []
     for scale in Scales:
         InvSpan.append(1 / float(scale["max"] - scale["min"]))
 
     # Recenter
-    OutMatrix = copy(UnscaledMatrix)
+    OutMatrix = ma.copy(UnscaledMatrix)
     cols = UnscaledMatrix.shape[1]
     for i in range(cols):
         OutMatrix[:,i] -= Scales[i]["min"]
@@ -124,7 +121,7 @@ def ReverseMatrix(Mat):  #tecnically an array now, sorry about the terminology c
     
 def DemocracyCoin(Mat):
     """For testing, easier to assume uniform coin distribution."""
-    print("NOTE: No coin distribution given, assuming democracy [one row, one vote].")
+    # print("NOTE: No coin distribution given, assuming democracy [one row, one vote].")
     Rep = GetWeight( array([[1]]*len(Mat) )) #Uniform weights if none were provided.
     return( Rep )
     
@@ -139,6 +136,7 @@ def WeightedCov(Mat,Rep=-1):
     Coins = ma.copy(Rep)
     for i in range(len(Rep)):
         Coins[i] = (int( (Rep[i] * 1000000)[0] )) 
+       
     Mean = ma.average(Mat, axis=0, weights=hstack(Coins)) # Computing the weighted sample mean (fast, efficient and precise)
     XM = matrix( Mat-Mean ) # xm = X diff to mean
     sigma2 = matrix( 1/(sum(Coins)-1) * ma.multiply(XM, Coins).T.dot(XM) ); # Compute the unbiased weighted sample covariance
@@ -155,114 +153,6 @@ def WeightedPrinComp(Mat,Rep=-1):
     S = dot(wCVM['Center'],SVD[0]).T[0]   #First Score
 
     return(L,S)
-    
-
-def CustomMathTest():
-    """Runs the functions in custommath.py to make sure that they are working properly."""    
-    
-    def CheckEqual(iterator):
-        return len(set(iterator)) <= 1
-    
-    print("")
-    print(" ..Testing.. ")
-    print("")
-    
-    Tests = []
-
-    #Setup
-    c = [1,2,3,nan,3]
-    c2 = ma.masked_array(c,isnan(c))
-    #Python has a less-comfortable handling of missing values.
-    c3 = [2,3,-1,4,0]
-    
-
-    print("Testing MeanNa...")
-    Expected = [1.0, 2.0, 3.0, 2.25, 3.0]
-    Actual = MeanNa(c2)
-    print(Expected)
-    print(Actual)
-    print(CheckEqual(Actual==Expected))
-    Tests.append(CheckEqual(Actual==Expected))
-    print("")
-    
-    print("Testing Catch...")
-    Expected = [0,1,.5,0]
-    Actual = [Catch(.4),Catch(.6),Catch(.4,.3),Catch(.4,.1)]
-    print(Expected)
-    print(Actual)
-    print(Actual==Expected)
-    Tests.append((Actual==Expected))
-    print("")
-    
-    print("Testing Influence...")
-    Expected = [array([ 0.88888889]), array([ 1.33333333]), array([ 1.]), array([ 1.33333333])]
-    Actual = Influence(GetWeight(c2))
-    print(Expected)
-    print(Actual)
-    Out = []
-    Flag=False
-    for i in range(len(Actual)):                  #rounding problems require an approximation
-        Out.append( (Actual[i]-Expected[i])**2)
-    if(sum(Out)<.000000000001):
-        Flag=True
-    print(Flag)
-    Tests.append(Flag)    
-    print("")
-    
-    print("Testing ReWeight...")
-    Expected = [0.08888888888888889,  0.17777777777777778,  0.26666666666666666,  0.2, 0.26666666666666666]
-    Actual = ReWeight(c2)
-    print(Expected)
-    print(Actual)
-    print(CheckEqual(Actual==Expected))
-    Tests.append(CheckEqual(Actual==Expected))
-    print("")
-    
-    Votes = array([[1,1,0,0], 
-                   [1,0,0,0],
-                   [1,1,0,0],
-                   [1,1,1,0],
-                   [0,0,1,1],
-                   [0,0,1,1]])
-                   
-    Votes = ma.masked_array(Votes,isnan(Votes))
-                
-    print("Testing ReverseMatrix...")
-    Expected = array([[0, 0, 1, 1],
-                   [0, 1, 1, 1],
-                   [0, 0, 1, 1],
-                   [0, 0, 0, 1],
-                   [1, 1, 0, 0],
-                   [1, 1, 0, 0]])
-    Actual = ReverseMatrix(Votes)
-    print(Expected)
-    print(Actual)
-    Flag=False
-    if(sum(Expected==Actual)==24):
-        Flag=True
-    print(Flag)
-    Tests.append(Flag)
-    print("")           
-    
-    print("Testing WeightedPrinComp...")
-    Expected = array([-0.81674714, -0.35969107, -0.81674714, -0.35969107,  1.17643821, 1.17643821])
-    Actual = WeightedPrinComp(Votes)[1]
-    Out = []
-    Flag=False
-    for i in range(len(Actual)):                 #rounding problems require an approximation
-        Out.append( (Actual[i]-Expected[i])**2)
-    if(sum(Out)<.000000000001):
-        Flag=True 
-    print(Flag)
-    Tests.append(Flag) 
-    print("")    
-    
-    print(" *** TEST RESULTS ***")
-    print(Tests)
-    print(CheckEqual(Tests))
-    
-    return(CheckEqual(Tests))
-
 
 if __name__ == "__main__":
-    CustomMathTest()
+    pass
