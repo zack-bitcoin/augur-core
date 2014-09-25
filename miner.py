@@ -12,6 +12,7 @@ import random
 import time
 import copy
 import sys
+import target
 def make_mint(pubkey, DB):
     address = tools.make_address([pubkey], 1)
     return {'type': 'mint',
@@ -19,26 +20,26 @@ def make_mint(pubkey, DB):
             'signatures': ['first_sig'],
             'count': tools.count(address, DB)}
 def genesis(pubkey, DB):
-    target = blockchain.target(DB)
+    target_ = target.target(DB)
     out = {'version': custom.version,
            'length': 0,
            'time': time.time(),
            'target': target,
-           'diffLength': blockchain.hexInvert(target),
+           'diffLength': blockchain.hexInvert(target_),
            'txs': [make_mint(pubkey, DB)]}
     out = tools.unpackage(tools.package(out))
     return out
 def make_block(prev_block, txs, pubkey, DB):
     leng = int(prev_block['length']) + 1
-    target = blockchain.target(DB, leng)
+    target_ = target.target(DB, leng)
     diffLength = blockchain.hexSum(prev_block['diffLength'],
-                                   blockchain.hexInvert(target))
+                                   blockchain.hexInvert(target_))
     out = {'version': custom.version,
            'txs': txs + [make_mint(pubkey, DB)],
            'length': leng,
            'time': time.time(),
            'diffLength': diffLength,
-           'target': target,
+           'target': target_,
            'prevHash': tools.det_hash(prev_block)}
     out = tools.unpackage(tools.package(out))
     return out

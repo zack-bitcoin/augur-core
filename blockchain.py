@@ -7,6 +7,7 @@ import networking
 import transactions
 import sys
 import tools
+import target
 
 def add_tx(tx, DB):
     # Attempt to add a new transaction into the pool.
@@ -73,50 +74,6 @@ def hexSum(a, b):
 def hexInvert(n):
     # Use double-size for division, to reduce information leakage.
     return tools.buffer_(str(hex(int('f' * 128, 16) / int(n, 16)))[2: -1], 64)
-def target(DB, length=0):
-    """ Returns the target difficulty at a paticular blocklength. """
-    if length == 0:
-        length = DB['length']
-    if length < 4:
-        return '0' * 4 + 'f' * 60  # Use same difficulty for first few blocks.
-    if length <= DB['length'] and str(length) in DB['targets']:
-        return DB['targets'][str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
-    def targetTimesFloat(target, number):
-        a = int(str(target), 16)
-        b = int(a * number)
-        return tools.buffer_(str(hex(b))[2: -1], 64)
-    def weights(length):
-        return [custom.inflection ** (length-i) for i in range(length)]
-    def estimate_target(DB):
-        """
-        We are actually interested in the average number of hashes required to
-        mine a block. number of hashes required is inversely proportional
-        to target. So we average over inverse-targets, and inverse the final
-        answer. """
-        def sumTargets(l):
-            if len(l) < 1:
-                return 0
-            while len(l) > 1:
-                l = [hexSum(l[0], l[1])] + l[2:]
-            return l[0]
-        targets = recent_blockthings('target', DB, custom.history_length)
-        w = weights(len(targets))
-        tw = sum(w)
-        targets = map(hexInvert, targets)
-        def weighted_multiply(i):
-            return targetTimesFloat(targets[i], w[i]/tw)
-        weighted_targets = [weighted_multiply(i) for i in range(len(targets))]
-        return hexInvert(sumTargets(weighted_targets))
-    def estimate_time(DB):
-        times = recent_blockthings('time', DB, custom.history_length)
-        blocklengths = [times[i] - times[i - 1] for i in range(1, len(times))]
-        w = weights(len(blocklengths))  # Geometric weighting
-        tw = sum(w)  # Normalization constant
-        return sum([w[i] * blocklengths[i] / tw for i in range(len(blocklengths))])
-    retarget = estimate_time(DB) / custom.blocktime(length)
-    return targetTimesFloat(estimate_target(DB), retarget)
-
-
 def add_block(block_pair, DB):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
@@ -160,7 +117,7 @@ def add_block(block_pair, DB):
         half_way = {u'nonce': block['nonce'], u'halfHash': tools.det_hash(a)}
         if tools.det_hash(half_way) > block['target']:
             return False
-        if block['target'] != target(DB, block['length']):
+        if block['target'] != target.target(DB, block['length']):
             return False
         earliest = median(recent_blockthings('time', DB, custom.mmm))
         if 'time' not in block:

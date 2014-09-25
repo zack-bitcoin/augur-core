@@ -36,8 +36,9 @@ def connect_socket(sock, ip, port):
         try:
             sock.connect((ip, port))
             return True
-        except:
-            pass
+        except Exception, e:
+            if e.errno==36:
+                return True
 def serve_forever(PORT, handler, heart_queue, DB):
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
