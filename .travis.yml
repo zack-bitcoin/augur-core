@@ -9,5 +9,4 @@ python:
 install:
   - "easy_install -U setuptools"
   - "pip install -r requirements.txt"
-script:
-  - python ConsensusMechanism.py
+script: echo
