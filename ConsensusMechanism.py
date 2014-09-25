@@ -56,4 +56,3 @@ if __name__ == "__main__":
     #m=[[0,0,0],[0,1,0],[0,0,1]]
     #print(dem_main(m))
     print(main(m, w))
-

@@ -143,7 +143,7 @@ def collect_winnings(DB):
     return easy_add_transaction(tx, DB)
 def blockcount(DB): return(str(DB['length']))
 def txs(DB):        return(str(DB['txs']))
-def difficulty(DB): return(str(blockchain.target(DB)))
+def difficulty(DB): return(str(target.target(DB)))
 def my_balance(DB, address='default'): 
     if address=='default':
         address=DB['address']
