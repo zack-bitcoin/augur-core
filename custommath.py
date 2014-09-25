@@ -7,7 +7,9 @@ Supporting math for the consensus mechanism.
 from __future__ import division
 from numpy import *
 from numpy.linalg import *
+import tools
 
+<<<<<<< HEAD
 # def mean(v): return sum(v)*1.0/len(v)
 # def median_walker(so_far_w, limit, x, w, prev_x):
 #     if so_far_w>limit: return prev_x
@@ -17,6 +19,8 @@ from numpy.linalg import *
 #     x, w=zip(*sorted(zip(x, w)))
 #     return median_walker(0, sum(w)*1.0/2, x, w, x[0])
 
+=======
+>>>>>>> develop
 def WeightedMedian(data, weights):
     """Calculate a weighted median.
 

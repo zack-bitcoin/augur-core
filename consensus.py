@@ -12,7 +12,7 @@ from numpy import *
 from numpy.linalg import *
 from numpy.random import random_integers
 from custommath import *
-
+import tools
 __author__     = "Paul Sztorc and Jack Peterson"
 __maintainer__ = "Paul Sztorc"
 __email__      = "truthcoin@gmail.com"
@@ -57,10 +57,16 @@ def GetRewardWeights(M, Rep=-1, Alpha=.1, Verbose=False):
     Set2 =  FirstScore-max(FirstScore) 
     
     Old = dot(Rep.T,M)
+<<<<<<< HEAD
 
     New1 = dot(GetWeight(Set1), M)
     New2 = dot(GetWeight(Set2), M)
     
+=======
+  
+    New1 = dot(GetWeight(Set1),M)
+    New2 = dot(GetWeight(Set2),M)
+>>>>>>> develop
     #Difference in Sum of squared errors, if >0, then New1 had higher errors (use New2), and conversely if <0 use 1.
     RefInd = sum( (New1-Old)**2) -  sum( (New2-Old)**2)
     
@@ -174,10 +180,7 @@ def FillNa(Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
         Mnew[NAmat] = 0  # Erase the NA's
 
         # Slightly complicated:
-        print('decisions outcomes raw: ' +str(DecisionOutcomes_Raw))
-        print('NAmat: ' +str(NAmat))
-        print('diag: ' +str(diag(DecisionOutcomes_Raw)))
-        NAsToFill = dot(NAmat, diag(DecisionOutcomes_Raw))
+        NAsToFill = dot(NAmat, diag(DecisionOutcomes_Raw[0]))
         
         # This builds a matrix whose columns j:
         #   NAmat was false (the observation wasn't missing) - have a value of Zero
@@ -315,7 +318,8 @@ def Factory(M0, Scales=None, Rep=-1, CatchP=.1, MaxRow=5000, Verbose=False):
     # Combine Information
     # Row
     NAbonusR = GetWeight(ParticipationR)
-    RowBonus = NAbonusR * PercentNA + PlayerInfo['SmoothRep'] * (1 - PercentNA)
+    RowBonus = NAbonusR * PercentNA + PlayerInfo['SmoothRep'] * (1
+            - PercentNA)
 
     # Column
     NAbonusC = GetWeight(ParticipationC)

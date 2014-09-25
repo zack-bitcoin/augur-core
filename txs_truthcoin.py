@@ -8,6 +8,7 @@ import custom
 import tools
 import blockchain
 import transactions
+import numpy
 addr=tools.addr
 E_check=tools.E_check
 is_number=tools.is_number
@@ -168,10 +169,15 @@ def part_cert(matrix, weights):
     tools.log('weights: ' +str(weights))
     result=ConsensusMechanism.main(matrix, weights)
     tools.log('after COnsensus')
+    tools.log('result: ' +str(result))
     participation=result['participation']
     certainty=result['certainty']
-    def mul(x, y): return float(x)*float(y)
-    return map(mul, participation, certainty)
+    out=[]
+    tools.log('participation: ' +str(participation))
+    tools.log('certainty: ' +str(certainty))
+    for i in range(len(certainty)):
+        out.append(float(participation)*float(certainty[i]))
+    return out
 def SVD_consensus_check(tx, txs, out, DB):
     if not E_check(tx, 'vote_id', [str, unicode]): return False    
     if not E_check(tx, 'decisions', [list]): return False    
@@ -185,18 +191,27 @@ def SVD_consensus_check(tx, txs, out, DB):
     if len(tx['decisions'])<5:
         out[0]+='need at least 5 decisions to compute SVD'
         return False
+    if not E_check(jury, 'members', [list]):
+        out[0]+='that jury has not been created yet'
+        return False
     if len(jury['members'])<3: 
         out[0]+='need at least 3 voters in order to compute SVD'
         return False
-    matrix=decision_matrix(jury, tx['decisions'], DB)
-    tools.log('tx: ' +str(tx))
-    w=weights(tx['vote_id'], DB, jury)
-    for i in part_cert(matrix, weights):
-        if i<0.6:
-            out[0]+='participation and certainty too low'
-            out[0]+='matrix: ' +str(matrix)
+    try:
+        matrix=txs_tools.decision_matrix(jury, tx['decisions'], DB)
+    except:
+        tools.log(sys.exc_info())
+        tools.log('matrix failure')
+        return False
+    w=txs_tools.weights(tx['vote_id'], DB, jury)
+    k=txs_tools.decisions_keepers(tx['vote_id'], jury, DB)
+    for decision in tx['decisions']:
+        if not decision in k:
+            out[0]+='one of the decisions has insufficient participation*certainty: ' +str(decision)
             return False
-    if not txs_tools.fee_check(tx, txs, DB): return False
+    if not txs_tools.fee_check(tx, txs, DB): 
+        out[0]+='you do not have enough money'
+        return False
     return True
 def prediction_market_check(tx, txs, out, DB):
     if not transactions.signature_check(tx):
@@ -243,7 +258,7 @@ def prediction_market_check(tx, txs, out, DB):
         out[0]+='PM_id too long'
         return False
     if tools.db_existence(tx['PM_id'], DB): 
-        out[0]+='PM: ' +str(tools.db_get(tx['PM_id'], DB))
+        #out[0]+='PM: ' +str(tools.db_get(tx['PM_id'], DB))
         out[0]+='this PM_id is already being used'
         return False
     for t in txs:
@@ -259,6 +274,7 @@ def prediction_market_check(tx, txs, out, DB):
 
 
 def buy_shares_check(tx, txs, out, DB):
+    #make sure that we can only buy the shares of undecided markets.
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
@@ -269,6 +285,9 @@ def buy_shares_check(tx, txs, out, DB):
         out[0]+='pm id error'
         return False
     pm=tools.db_get(tx['PM_id'], DB)
+    if 'decisions' not in pm:
+        out[0]+='that is not a prediction market yet'
+        return False
     if len(tx['buy'])!=len(pm['shares_purchased']):
         out[0]+='buy length error'
         return False
@@ -282,6 +301,14 @@ def buy_shares_check(tx, txs, out, DB):
     if not txs_tools.fee_check(tx, txs, DB):
         out[0]+='fee check error'
         return False
+    for dec in pm['decisions']:
+        decision = tools.db_get(dec, DB)
+        bad=True
+        if decision['state'] not in ['yes', 'no']:
+            bad=False
+        if bad:
+            out[0]+='this PM is already expired. you cannot buy shares.'
+            return False
     return True
 def collect_winnings_check(tx, txs, out, DB):
     if not transactions.signature_check(tx):
@@ -297,12 +324,16 @@ def collect_winnings_check(tx, txs, out, DB):
     if tx['PM_id'] not in acc['shares']:
         out[0]+='you do not own any shares for this PM'
         return False
-    if not E_check(tx, 'shares', acc['shares'][tx['PM_id']]):
+    if not tx['shares']==acc['shares'][tx['PM_id']]:
         out[0]+='that is not how many shares you have error'
+        return False
+    pm=tools.db_get(tx['PM_id'], DB)
+    if 'decisions' not in pm:
+        out[0]+='that is not a prediction market yet'
         return False
     for dec in pm['decisions']:
         decision = tools.db_get(dec, DB)
-        if decisions['state'] not in ['yes', 'no']:
+        if decision['state'] not in ['yes', 'no']:
             out[0]+='we have not yet reached consensus on the outcome of this market error'
             return False
     return True
@@ -353,50 +384,22 @@ def reveal_jury_vote(tx, DB):
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
     adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
-def weights(vote_id, DB, jury='default'):
-    out=[]
-    if jury=='default':
-        jury=tools.db_get(jury, DB)
-    for member in jury['members']:
-        acc=tools.db_get(member, DB)
-        out.append([acc['votecoin'][vote_id]])
-    return out
-def decision_matrix(jury, decisions, DB):
-    matrix=[]
-    for member in jury['members']:#empty
-        acc=tools.db_get(member, DB)
-        row=[]
-        for decision in decisions:
-            vote='unsure'
-            try:
-                vote=acc['votes'][decision]
-            except: pass
-            if vote=='yes': 
-                row.append(1)
-            elif vote=='no': 
-                row.append(0)
-            elif vote=='half': 
-                row.append(0.5)
-            else:
-                row.append('NA')
-        matrix.append(row)
-    return matrix
 def SVD_consensus(tx, DB):
     address=addr(tx)
     adjust_int(['count'], address, 1, DB)
     jury=tools.db_get(tx['vote_id'], DB)
-    matrix=decision_matrix(jury, tx['decisions'], DB)
-    w=weights(tx['vote_id'], DB, jury)
+    matrix=txs_tools.decision_matrix(jury, tx['decisions'], DB)
+    w=txs_tools.weights(tx['vote_id'], DB, jury)
     result=ConsensusMechanism.main(matrix, w)
     #create fee. If there are more decisions, then the fee is lower.
-    tools.log('matrix: ' +str(matrix))
-    tools.log(pprint.pformat(result))
+    #tools.log('matrix: ' +str(matrix))
+    #tools.log(pprint.pformat(result))
     for i in range(len(tx['decisions'])):
         adjust_list(['decisions'], tx['vote_id'], True, tx['decisions'][i], DB)
         new='yes'
         if float(result['outcome'][i])<0.5: 
             new='no'
-        adjust_string(['state'], decision, 'proposed', new, DB)
+        adjust_string(['state'], tx['decisions'][i], 'proposed', new, DB)
     #if a prediction market expires, then we should give 1/2 it's fees to votecoin holders, and 1/2 it's fees to the author
     #the prediction market may have unused seed capital. This seed capital should go to the author
 def prediction_market(tx, DB):#also used to increase liquidity of existing market, eventually

@@ -77,13 +77,16 @@ def main(pubkey, DB):
     workers = [new_worker(solution_queue) for _ in range(num_cores)]
     try:
         while True:
-            time.sleep(2)
-            if DB['stop']: return
-            if DB['mine']:
-                DB['heart_queue'].put('miner')
+            DB['heart_queue'].put('miner')
+            if DB['stop']: 
+                #restart_workers(workers)
+                return
+            elif DB['mine']:
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
+            else:
+                time.sleep(2)
     except:
-        print('miner main: ' +str(sys.exc_info()))
+        tools.log('miner main: ' +str(sys.exc_info()))
 def main_once(pubkey, DB, num_cores, solution_queue, workers):
     if DB['length']==-1:
         candidate_block = genesis(pubkey, DB)
@@ -94,7 +97,8 @@ def main_once(pubkey, DB, num_cores, solution_queue, workers):
     for worker in workers:
         worker['in_queue'].put(work)
         worker['in_queue'].put(work)
-    while solution_queue.empty():
+    start=time.time()
+    while solution_queue.empty() and time.time()<start+30:
         time.sleep(1)
     restart_workers(workers)
     while not solution_queue.empty():

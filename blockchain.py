@@ -42,10 +42,12 @@ def add_tx(tx, DB):
         if too_big_block(tx, txs):
             out[0]+='too many txs'
             return False
+        tools.log('before tx check')
         if not transactions.tx_check[tx['type']](tx, txs, out, DB):
             out[0]+= 'tx: ' + str(tx)
             return False
         return True
+    tools.log('attempt to add tx: ' +str(tx))
     if verify_tx(tx, DB['txs'], out):
         DB['txs'].append(tx)
         return('added tx: ' +str(tx))
@@ -263,9 +265,9 @@ def suggestion_txs(DB):
     try:
         return suggestions(DB, 'suggested_txs', add_tx)
     except:
-        print('suggestions txs error: ' +str(sys.exc_info()))
+        tools.log('suggestions txs error: ' +str(sys.exc_info()))
 def suggestion_blocks(DB): 
     try:
         return suggestions(DB, 'suggested_blocks', add_block)
     except:
-        print('suggestions blocks error: ' +str(sys.exc_info()))
+        tools.log('suggestions blocks error: ' +str(sys.exc_info()))
