@@ -53,14 +53,11 @@ def add_tx(tx, DB):
         return('added tx: ' +str(tx))
     else:
         return('failed to add tx because: '+out[0])
-targets = {}
-times = {}  # Stores blocktimes
 def recent_blockthings(key, DB, size, length=0):
-    # Grabs info from old blocks.
     if key == 'time':
-        storage = times
+        storage = DB['times']
     if key == 'target':
-        storage = targets
+        storage = DB['targets']
     def get_val(length):
         leng = str(length)
         if not leng in storage:
@@ -82,8 +79,8 @@ def target(DB, length=0):
         length = DB['length']
     if length < 4:
         return '0' * 4 + 'f' * 60  # Use same difficulty for first few blocks.
-    if length <= DB['length'] and str(length) in targets:
-        return targets[str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
+    if length <= DB['length'] and str(length) in DB['targets']:
+        return DB['targets'][str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
     def targetTimesFloat(target, number):
         a = int(str(target), 16)
         b = int(a * number)
@@ -227,11 +224,11 @@ def delete_block(DB):
     if DB['length'] < 0:
         return
     try:
-        targets.pop(str(DB['length']))
+        DB['targets'].pop(str(DB['length']))
     except:
         pass
     try:
-        times.pop(str(DB['length']))
+        DB['times'].pop(str(DB['length']))
     except:
         pass
     block = tools.db_get(DB['length'], DB)

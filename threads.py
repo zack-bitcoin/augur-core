@@ -14,6 +14,8 @@ if True:
     db = leveldb.LevelDB(custom.database_name)
     DB = {'stop':False,
           'mine':False,
+          'targets':{},
+          'times':{},
           'db': db,
           'txs': [],
           'suggested_blocks': suggested_blocks,

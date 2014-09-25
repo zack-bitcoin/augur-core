@@ -1,7 +1,7 @@
 """a python version of the R program at https://github.com/psztorc/Truthcoin
 """
 #import python_ConsensusMechanism as consensus
-import numpy, custommath, consensus, tools
+import numpy, tools, pyconsensus
 #import python_CustomMath as custommath
 
 def keep_nums(t):
@@ -17,11 +17,11 @@ def keep_nums(t):
 
 def main(m, weights):
     weights=numpy.array(weights)
-    weights=custommath.GetWeight(weights)
+    weights=pyconsensus.GetWeight(weights)
     a=numpy.array(m)
     k=keep_nums(m)
     a=numpy.ma.masked_array(a, mask=k)
-    a=consensus.Factory(a, Rep=weights)
+    a=pyconsensus.Factory(a, Rep=weights)
     return {'outcome':a['Decisions']['DecisionOutcome_Final'],
             'author_bonus':a['Decisions']['Author Bonus'],
             'participation':a['Participation'],
