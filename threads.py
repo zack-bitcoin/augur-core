@@ -3,11 +3,9 @@
 import miner, peer_recieve, time, threading, tools, custom, leveldb, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
 
 def main(brainwallet):
-    i_queue=multiprocessing.Queue()
-    o_queue=multiprocessing.Queue()
     heart_queue=multiprocessing.Queue()
     suggested_blocks=multiprocessing.Queue()
-    o_queue.put('''Truthshell, use 'help help' to learn about the help system''')
+    #o_queue.put('''Truthshell, use 'help help' to learn about the help system''')
     db = leveldb.LevelDB(custom.database_name)
     DB = {'stop':False,
           'mine':False,
@@ -23,20 +21,6 @@ def main(brainwallet):
           'diffLength': '0'}
     DB['privkey']=tools.det_hash(brainwallet)
     DB['pubkey']=tools.privtopub(DB['privkey'])
-    '''
-    if 'brain_wallet' in dir(custom):
-        DB['privkey']=tools.det_hash(custom.brain_wallet)
-        DB['pubkey']=tools.privtopub(DB['privkey'])
-    elif 'pubkey' in dir(custom):
-        DB['pubkey']=custom.pubkey
-    else:
-        pubkey=raw_input('what is your pubkey or brainwallet? (pubkey can be generated using "./truth_cli.py new_address") (miners should put brainwallet, security-conscious should put pubkey)\n')
-        if len(pubkey)!=130:
-            DB['privkey']=tools.det_hash(pubkey)
-            DB['pubkey']=tools.privtopub(DB['privkey'])
-        else:
-            DB['pubkey']=pubkey
-    '''
     DB['address']=tools.make_address([DB['pubkey']], 1)
     def len_f(i, DB):
         if not tools.db_existence(str(i), DB): return i-1

@@ -49,7 +49,6 @@ def give_block(peer, DB, block_count_peer):
     b=bounds(block_count_peer+1, DB['length'])
     for i in range(b[0], b[1]):
         blocks.append(tools.db_get(i, DB))
-    #tools.log('pushing blocks: ' +str(blocks))
     cmd(peer, {'type': 'pushblock',
                'blocks': blocks})
     return 0
@@ -77,13 +76,6 @@ def exponential_random(weights):
     tot=sum(weights)
     r=random.random()*tot
     return grab(r, weights)
-'''
-def exponential_random(size, chance):
-    while True:
-        for i in range(size):
-            if random.random()<chance:
-                return i
-'''
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     DB['peers_ranked']=[]
@@ -96,7 +88,6 @@ def main(peers, DB):
                 main_once(peers, DB)
     except:
         tools.log('main peers check: ' +str(sys.exc_info()))
-
 def main_once(peers, DB):
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
         time.sleep(4)
