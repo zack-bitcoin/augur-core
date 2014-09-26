@@ -2,7 +2,8 @@
 """
 import miner, peer_recieve, time, threading, tools, custom, leveldb, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
 
-def main(brainwallet):
+#def main(brainwallet):
+if True:
     heart_queue=multiprocessing.Queue()
     suggested_blocks=multiprocessing.Queue()
     #o_queue.put('''Truthshell, use 'help help' to learn about the help system''')
@@ -19,7 +20,9 @@ def main(brainwallet):
           'memoized_votes':{},
           'peers_ranked':[],
           'diffLength': '0'}
-    DB['privkey']=tools.det_hash(brainwallet)
+    #DB['privkey']=tools.det_hash(brainwallet)
+    print('pw: ' +str(sys.argv[1]))
+    DB['privkey']=tools.det_hash(sys.argv[1])
     DB['pubkey']=tools.privtopub(DB['privkey'])
     DB['address']=tools.make_address([DB['pubkey']], 1)
     def len_f(i, DB):

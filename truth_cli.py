@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import networking, sys, tools, custom, os, multiprocessing, threads#, threads
+import networking, sys, tools, custom, os, multiprocessing#, threads
 
 def build_buy_shares():
     tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?\n>'))}
@@ -46,9 +46,11 @@ def main():
         tx=build_buy_shares()
         run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
     elif c[0]=='start':
-        p=raw_input('what is your password?')
-        p=multiprocessing.Process(target=threads.main, args=(p, ))
-        p.start()
+        p=raw_input('what is your password?\n')
+        #p=multiprocessing.Process(target=threads.main, args=(p, ))
+        os.system('python threads.py ' +str(p) + ' &')
+        #p.daemon=False
+        #p.start()
         #subprocess.call(['python', 'threads.py', p, '&'])
         #os.system('python threads.py &')
     elif c[0]=='new_address':
