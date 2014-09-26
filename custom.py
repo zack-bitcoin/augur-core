@@ -3,7 +3,7 @@ import tools, hashlib
 peers = [['192.241.212.114', 8900]]
 database_name = 'DB.db'
 port=8900
-truthd_port=8800
+api_port=8800
 version = "VERSION2"
 #if you want to boot up more quickly without having to type your brainwallet or pubkey, then uncomment and update one of the following 2 lines.
 #brain_wallet='brainwalletInsecureChangeThis'

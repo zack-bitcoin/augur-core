@@ -19,33 +19,35 @@ def easy_add_transaction(tx_orig, DB, privkey='default'):
     return(blockchain.add_tx(tx, DB))
 def help_(DB):      
     tell_about_command={
-        'help':'type "./truthd.py help <cmd>" to learn about <cmd>. type "./truthd.py commands" to get a list of all truthshell commands',
+        'help':'type "./truth_cli.py help <cmd>" to learn about <cmd>. type "./truth_cli.py commands" to get a list of all truthshell commands',
         'commands':'returns a list of the truthshell commands',
-        'new_address':'type "./truthd.py new_address <brain>" to make a new privkey, pubkey, and address using the brain wallet=<brain>. If you want to use this address, you need to copy/paste the pubkey into the file custom.py',
-        'create_jury':'If you want to create a jury called "bitcoin", then type: ./truthd.py create_jury bitcoin.',
+        'start':'type "./truth_cli.py start" to start truthcoin node',
+        'new_address':'type "./truth_cli.py new_address <brain>" to make a new privkey, pubkey, and address using the brain wallet=<brain>. If you want to use this address, you need to copy/paste the pubkey into the file custom.py',
+        'create_jury':'If you want to create a jury called "bitcoin", then type: ./truth_cli.py create_jury bitcoin.',
         'DB_print':'prints the database that is shared between threads',
         'info':'prints the contents of an entree in the hashtable. If you want to know what the first block was: info 0, if you want to know about a particular address <addr>: info <addr>, if you want to know about yourself: info my_address',
         'my_address':'tells you your own address',
         'spend':'spends money, in satoshis, to an address <addr>. Example: spend 1000 11j9csj9802hc982c2h09ds',
         'votecoin_spend':'spend votecoins from jury <jury>, to address <addr>. Example: votecoin_spend 1000 <jury> <addr>',
-        'ask_decision': 'If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truthd.py ask_decision <jury> weather_question_203 what will the weather be tomorrow',
+        'ask_decision': 'If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truth_cli.py ask_decision <jury> weather_question_203 what will the weather be tomorrow',
         'vote_on_decision':'If you want to vote in jury <jury>, and you want to vote on decision <decision>, and you want to vote "yes", for example: vote_on_decision <jury> <decision> yes',
         'reveal_vote':'If you want to reveal your vote for the decision with the unique identifier <decision> which was asked ofjury <jury>, then: reveal_vote <jury> <decision>',
         'SVD_consensus':'If you want to resolve decisions asked of jury <jury>, then: SVD_consensus <jury>',
-        'make_PM':'example: ./truthd.py make_PM',
-        'buy_shares':'example: ./truthd.py buy_shares"',
+        'make_PM':'example: ./truth_cli.py make_PM',
+        'buy_shares':'example: ./truth_cli.py buy_shares"',
         'collect_winnings':'To transform your winning shares from prediction market <PM> into truthcoin: collect_winnings <PM>',
         'blockcount':'returns the number of blocks since the genesis block',
         'txs':'returns a list of the zeroth confirmation transactions that are expected to be included in the next block',
         'difficulty':'returns current difficulty',
         'my_balance':'the amount of truthcoin that you own',
-        #'wait_till_block':'to stop the truthshell until block 100 has passed, type: "./truthd.py wait_till_block 100". Any additional words that you type are saved until block 100, and they are executed at that time.',
-        'balance':'if you want to know the balance for address <addr>, type: ./truthd.py balance <addr>',
+        #'wait_till_block':'to stop the truthshell until block 100 has passed, type: "./truth_cli.py wait_till_block 100". Any additional words that you type are saved until block 100, and they are executed at that time.',
+        'balance':'if you want to know the balance for address <addr>, type: ./truth_cli.py balance <addr>',
         'log':'records the following words into the file "log.py"',
         'stop':'This is the correct way to stop truthcoin. If you turn off in any other way, then you are likely to corrupt your database, and you have to redownload all the blocks again.',
-        'mine':'turn the miner on/off. Example to turn on: "./truthd.py mine on", example to turn off: "./truthd.py mine off"',
+        'mine':'turn the miner on/off. Example to turn on: "./truth_cli.py mine on", example to turn off: "./truth_cli.py mine off"',
         'DB':'returns a database of information that is shared between threads',
-        'pushtx':'publishes this transaction to the blockchain, will automatically sign the transaction if necessary: ./truthd.py pushtx tx privkey'
+        'pushtx':'publishes this transaction to the blockchain, will automatically sign the transaction if necessary: ./truth_cli.py pushtx tx privkey',
+        'peers':'tells you your list of peers'
     }
     if len(DB['args'])==0:
         return("needs 2 words. example: 'help help'")
@@ -57,6 +59,8 @@ def create_jury(DB):
     if len(DB['args'])<1:
         return('not enough inputs')
     return easy_add_transaction({'type': 'create_jury', 'vote_id': DB['args'][0]}, DB)
+def peers(DB):
+    return(str(DB['peers_ranked']))
 def DB_print(DB):
     return(str(DB))
 def info(DB): 
@@ -163,12 +167,12 @@ def mine(DB):
         return('miner is now turned off')
     elif 'privkey' in DB: 
         DB['mine']=True
-        return ('miner on. (use "./truthd.py mine off" to turn off)')
+        return ('miner on. (use "./truth_cli.py mine off" to turn off)')
     else:
         return('there is no private key with which to sign blocks. If you want to mine, you need to uncomment the "brain_wallet" line in custom.py')
 def pass_(DB): return ' '
 def error_(DB): return error
-Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':error_, 'buy_shares':error_, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'mine':mine}
+Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':error_, 'buy_shares':error_, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'mine':mine, 'peers':peers}
 def main(DB, heart_queue):
     def responder(dic):
         command=dic['command']
@@ -179,9 +183,9 @@ def main(DB, heart_queue):
             except:
                 out='truthcoin api main failure : ' +str(sys.exc_info())
         else: 
-            out=str(command[0]) + ' is not a command. use "./truthd.py commands" to get the list of truthshell commands. use "./truthd.py help help" to learn about the help tool.'
+            out=str(command[0]) + ' is not a command. use "./truth_cli.py commands" to get the list of truthshell commands. use "./truth_cli.py help help" to learn about the help tool.'
         return out
     try:
-        return networking.serve_forever(custom.truthd_port, responder, heart_queue, DB)
+        return networking.serve_forever(custom.api_port, responder, heart_queue, DB)
     except:
         print('api error: ' +str(sys.exc_info()))

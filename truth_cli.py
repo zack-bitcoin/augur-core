@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import networking, sys, tools, custom#, threads
+import networking, sys, tools, custom, os, multiprocessing, threads#, threads
 
 def build_buy_shares():
     tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?\n>'))}
@@ -45,6 +45,12 @@ def main():
     elif c[0]=='buy_shares':
         tx=build_buy_shares()
         run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
+    elif c[0]=='start':
+        p=raw_input('what is your password?')
+        p=multiprocessing.Process(target=threads.main, args=(p, ))
+        p.start()
+        #subprocess.call(['python', 'threads.py', p, '&'])
+        #os.system('python threads.py &')
     elif c[0]=='new_address':
         if len(c)<2:
             print('what is your brain wallet? not enough inputs.')
@@ -59,13 +65,13 @@ def main():
     else:
         run_command(p)
 def run_command(p):
-    peer=['127.0.0.1', custom.truthd_port]
+    peer=['127.0.0.1', custom.api_port]
     response=networking.send_command(peer, p, 5)
     if tools.can_unpack(response):
         response=tools.unpackage(response)
     if type(response)==type({'a':1}) and 'error' in response:
         print('response was: ' +str(response))
-        print('truthcoin is probably off. Use command: "python threads.py" to turn it on. (you may need to reboot it a couple times to get it working)')
+        print('truthcoin is probably off. Use command: "./truth_cli.py start" to turn it on.')
     else:
         print(response)
 
