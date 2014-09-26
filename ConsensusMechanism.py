@@ -1,7 +1,7 @@
 """a python version of the R program at https://github.com/psztorc/Truthcoin
 """
 #import python_ConsensusMechanism as consensus
-import numpy, tools, pyconsensus
+import numpy, tools, pc
 #import python_CustomMath as custommath
 
 def keep_nums(t):
@@ -14,18 +14,29 @@ def keep_nums(t):
         return False
     else:
         return True
+def GetWeight(Vec, AddMean=0):
+    """Takes an array (vector in practice), and returns proportional
+    distance from zero."""
+    New = abs(Vec)       #Absolute Value
+    if AddMean == 1:     #Add the mean to each element of the vector
+        New = New + mean(New)
+    if sum(New) == 0:    #Catch an error here
+        New = New + 1
+    New = New/sum(New)   #Normalize
+    return(New)
 
 def main(m, weights):
     weights=numpy.array(weights)
-    weights=pyconsensus.GetWeight(weights)
+    #weights=GetWeight(weights)
     a=numpy.array(m)
     k=keep_nums(m)
     a=numpy.ma.masked_array(a, mask=k)
-    a=pyconsensus.Factory(a, Rep=weights)
+    oracle = pc.Oracle(votes=a, weights=weights)
+    a=oracle.consensus()
     return {'outcome':a['Decisions']['DecisionOutcome_Final'],
             'author_bonus':a['Decisions']['Author Bonus'],
             'participation':a['Participation'],
-            'certainty':map(lambda x: x[0], a['Decisions']['Certainty']),
+            'certainty':numpy.array(a['Decisions']['Certainty']),
             'votecoin_bonus_for_voters':a['Agents']['SmoothRep'],
             'truthcoin_bonus_for_voters':a['Agents']['RowBonus']}
 

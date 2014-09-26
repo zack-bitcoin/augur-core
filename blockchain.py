@@ -48,7 +48,7 @@ def add_tx(tx, DB):
             out[0]+= 'tx: ' + str(tx)
             return False
         return True
-    tools.log('attempt to add tx: ' +str(tx))
+    #tools.log('attempt to add tx: ' +str(tx))
     if verify_tx(tx, DB['txs'], out):
         DB['txs'].append(tx)
         return('added tx: ' +str(tx))
