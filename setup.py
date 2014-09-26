@@ -5,7 +5,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name="pyconsensus",
+    name="Truthcoin-POW",
     version="0.1",
     description="Even-more-experimental implementation of Truthcoin",
     author="Zack Hess",

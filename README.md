@@ -1,8 +1,6 @@
 Truthcoin-POW
 =============
 
-[![Build Status](https://travis-ci.org/tensorjack/skunkworks.svg?branch=master)](https://travis-ci.org/tensorjack/skunkworks)
-
 adding abilities from the truthcoin project to basiccoin. https://github.com/psztorc/Truthcoin
 
 Donations: 1GbpRPE83Vjg73KFvTVZ4EnS2qNkiLY5TT
