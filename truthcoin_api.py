@@ -1,6 +1,6 @@
 """This is the internal API for truthshell. These are the words that are used to interact with truthcoin.
 """
-import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking, txs_truthcoin
+import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking, txs_truthcoin, target
 def easy_add_transaction(tx_orig, DB, privkey='default'):
     tx = copy.deepcopy(tx_orig)
     try:

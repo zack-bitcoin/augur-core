@@ -24,7 +24,7 @@ def genesis(pubkey, DB):
     out = {'version': custom.version,
            'length': 0,
            'time': time.time(),
-           'target': target,
+           'target': target_,
            'diffLength': blockchain.hexInvert(target_),
            'txs': [make_mint(pubkey, DB)]}
     out = tools.unpackage(tools.package(out))
