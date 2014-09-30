@@ -40,7 +40,6 @@ def help_(DB):
         'txs':'returns a list of the zeroth confirmation transactions that are expected to be included in the next block',
         'difficulty':'returns current difficulty',
         'my_balance':'the amount of truthcoin that you own',
-        #'wait_till_block':'to stop the truthshell until block 100 has passed, type: "./truth_cli.py wait_till_block 100". Any additional words that you type are saved until block 100, and they are executed at that time.',
         'balance':'if you want to know the balance for address <addr>, type: ./truth_cli.py balance <addr>',
         'log':'records the following words into the file "log.py"',
         'stop':'This is the correct way to stop truthcoin. If you turn off in any other way, then you are likely to corrupt your database, and you have to redownload all the blocks again.',
@@ -160,7 +159,7 @@ def log(DB): tools.log(accumulate_words(DB['args'])[1:])
 def stop_(DB): 
     DB['stop']=True
     return('turning off all threads')
-def commands(DB): return str(Do.keys())
+def commands(DB): return str(sorted(Do.keys()+['start', 'new_address', 'make_PM', 'buy_shares']))
 def mine(DB):
     if len(DB['args'])>0 and DB['args'][0]=='off': 
         DB['mine']=False
@@ -172,7 +171,7 @@ def mine(DB):
         return('there is no private key with which to sign blocks. If you want to mine, you need to uncomment the "brain_wallet" line in custom.py')
 def pass_(DB): return ' '
 def error_(DB): return error
-Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'make_PM':error_, 'buy_shares':error_, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'mine':mine, 'peers':peers}
+Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'mine':mine, 'peers':peers}
 def main(DB, heart_queue):
     def responder(dic):
         command=dic['command']

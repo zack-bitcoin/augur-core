@@ -1,6 +1,10 @@
 #!/usr/bin/env python
-import networking, sys, tools, custom, os, multiprocessing#, threads
+import networking, sys, tools, custom, os, multiprocessing, threads
 
+def daemonize(f):
+    pid=os.fork()
+    if pid==0: f()
+    else: sys.exit(0)
 def build_buy_shares():
     tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?\n>'))}
     num_states=int(raw_input('how many states does this pm have?\n>'))
@@ -47,12 +51,7 @@ def main():
         run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
     elif c[0]=='start':
         p=raw_input('what is your password?\n')
-        #p=multiprocessing.Process(target=threads.main, args=(p, ))
-        os.system('python threads.py ' +str(p) + ' &')
-        #p.daemon=False
-        #p.start()
-        #subprocess.call(['python', 'threads.py', p, '&'])
-        #os.system('python threads.py &')
+        daemonize(lambda: threads.main(p))
     elif c[0]=='new_address':
         if len(c)<2:
             print('what is your brain wallet? not enough inputs.')
