@@ -1,17 +1,19 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads and packs up the database.
 """
-import miner, peer_recieve, time, threading, tools, custom, leveldb, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
+import miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
+#import leveldb
+import ht
 
 def main(brainwallet):
     print('starting truthcoin')
     heart_queue=multiprocessing.Queue()
     suggested_blocks=multiprocessing.Queue()
-    db = leveldb.LevelDB(custom.database_name)
+    #db = leveldb.LevelDB(custom.database_name)
     DB = {'stop':False,
           'mine':False,
           'targets':{},
           'times':{},
-          'db': db,
+          #'db': db,
           'txs': [],
           'suggested_blocks': suggested_blocks,
           'suggested_txs': Queue.Queue(),
@@ -28,6 +30,7 @@ def main(brainwallet):
     DB['length']=len_f(0, DB)
     DB['diffLength']='0'
     if DB['length']>-1:
+        print('thing: ' +str(tools.db_get(str(DB['length']), DB)))
         DB['diffLength']=tools.db_get(str(DB['length']), DB)['diffLength']
     worker_tasks = [
         #all these workers share memory DB
@@ -75,6 +78,6 @@ def main(brainwallet):
         worker.join()
     for cmd in cmds:
         cmd.join()
-    del DB['db']
+    #del DB['db']
     sys.exit(1)
 

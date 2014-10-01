@@ -9,14 +9,13 @@ Donations: 1GbpRPE83Vjg73KFvTVZ4EnS2qNkiLY5TT
 for Ubuntu
 
     sudo apt-get update
-    sudo apt-get install python-leveldb python-numpy git
+    sudo apt-get install python-numpy git
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW
 
 for Arch Linux)
 
     sudo pacman -S python2-numpy python2-pip
-    sudo pip2 install leveldb
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW    
 

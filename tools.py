@@ -1,6 +1,6 @@
 """A bunch of functions that are used by multiple threads.
 """
-import pt, hashlib, re, subprocess, time, copy
+import pt, hashlib, re, subprocess, time, copy, ht
 from json import dumps as package, loads as unpackage
 #from collections import OrderedDict
 
@@ -94,6 +94,19 @@ def kill_processes_using_ports(ports):
             subprocess.Popen(['kill', '-9', pid])
 default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
 def db_get(n, DB):
+    n=str(n)
+    out=ht.get(n)
+    if out=='undefined':
+        return default_entry
+    return out
+def db_put(key, dic, DB): return ht.put(str(key), dic)
+def db_delete(key, DB): return db_put(key, 'n', DB)
+def db_existence(key, DB):
+    n=str(key)
+    out=ht.get(n)
+    return not out=='undefined'
+'''
+def db_get(n, DB):
     n = str(n)
     try:
         return unpackage(DB['db'].Get(n))
@@ -109,6 +122,7 @@ def db_existence(key, DB):
         return not a==default_entry
     except:
         return False
+'''
 def count(address, DB):
     # Returns the number of transactions that pubkey has broadcast.
     def zeroth_confirmation_txs(address, DB):
