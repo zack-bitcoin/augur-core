@@ -205,8 +205,11 @@ def delete_block(DB):
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
 def suggestions(DB, s, f, t, a):
+    heart_time=time.time()
     while True:
-        DB['heart_queue'].put(s)
+        if time.time()-heart_time>10:
+            DB['heart_queue'].put(s)
+            heart_time=time.time()
         for i in range(100):
             if i%t==0:
                 time.sleep(a)

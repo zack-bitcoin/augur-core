@@ -20,7 +20,7 @@ def download_blocks(peer, DB, peers_block_count, length):
     #tools.log('bounds requested: ' +str(b))
     blocks = cmd(peer, {'type': 'rangeRequest',
                         'range': b})
-    tools.log('recieved: ' +str(len(blocks)) +' at time : ' +str(time.time()))
+    #tools.log('recieved: ' +str(len(blocks)) +' at time : ' +str(time.time()))
     if not isinstance(blocks, list):
         return []
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
@@ -91,7 +91,7 @@ def main_once(peers, DB):
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
         while not DB['suggested_blocks'].empty():
             time.sleep(0.1)
-        tools.log('suggested_blocks emptied at : ' +str(time.time()))
+        #tools.log('suggested_blocks emptied at : ' +str(time.time()))
         DB['heart_queue'].put('peers check')
         i=exponential_random(map(lambda x: x[1], DB['peers_ranked']))
         t1=time.time()
