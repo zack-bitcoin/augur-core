@@ -60,7 +60,6 @@ def serve_forever(PORT, handler, heart_queue, DB):
 def serve_once(PORT, handler, heart_queue, server):
     heart_queue.put('server: '+str(PORT))
     time.sleep(0.1)
-    #try:
     try:
         client, addr = server.accept()
     except:
@@ -80,8 +79,6 @@ def serve_once(PORT, handler, heart_queue, server):
     except:
         pass
     client.close()
-    #except:
-    #    pass
 def connect(msg, host, port, response_time=1):
     if len(msg) < 1 or len(msg) > MAX_MESSAGE_SIZE:
         tools.log('wrong sized message')

@@ -204,11 +204,12 @@ def delete_block(DB):
         DB['diffLength'] = block['diffLength']
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
-def suggestions(DB, s, f):
+def suggestions(DB, s, f, t, a):
     while True:
         DB['heart_queue'].put(s)
         for i in range(100):
-            time.sleep(0.01)
+            if i%t==0:
+                time.sleep(a)
             if DB['stop']: return
             if not DB[s].empty():
                 try:
@@ -217,11 +218,11 @@ def suggestions(DB, s, f):
                     tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
 def suggestion_txs(DB): 
     try:
-        return suggestions(DB, 'suggested_txs', add_tx)
+        return suggestions(DB, 'suggested_txs', add_tx, 1, 0.05)
     except:
         tools.log('suggestions txs error: ' +str(sys.exc_info()))
 def suggestion_blocks(DB): 
     try:
-        return suggestions(DB, 'suggested_blocks', add_block)
+        return suggestions(DB, 'suggested_blocks', add_block, 5, 0.01)
     except:
         tools.log('suggestions blocks error: ' +str(sys.exc_info()))

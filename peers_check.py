@@ -17,10 +17,10 @@ def bounds(length, peers_block_count):
     return [max(length - 2, 0), end+1]
 def download_blocks(peer, DB, peers_block_count, length):
     b=bounds(length, peers_block_count['length'])
-    tools.log('bounds requested: ' +str(b))
+    #tools.log('bounds requested: ' +str(b))
     blocks = cmd(peer, {'type': 'rangeRequest',
                         'range': b})
-    tools.log('recieved: ' +str(len(blocks)))
+    tools.log('recieved: ' +str(len(blocks)) +' at time : ' +str(time.time()))
     if not isinstance(blocks, list):
         return []
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
@@ -29,7 +29,6 @@ def download_blocks(peer, DB, peers_block_count, length):
             blockchain.delete_block(DB)
     for block in blocks:
         DB['suggested_blocks'].put([block, peer])
-    time.sleep(1)
     return 0
 def ask_for_txs(peer, DB):
     txs = cmd(peer, {'type': 'txs'})
@@ -90,9 +89,10 @@ def main(peers, DB):
         tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(peers, DB):
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
-        time.sleep(4)
+        while not DB['suggested_blocks'].empty():
+            time.sleep(0.1)
+        tools.log('suggested_blocks emptied at : ' +str(time.time()))
         DB['heart_queue'].put('peers check')
-        #i=exponential_random(len(DB['peers_ranked']), 0.4)
         i=exponential_random(map(lambda x: x[1], DB['peers_ranked']))
         t1=time.time()
         r=peer_check(DB['peers_ranked'][i][0], DB)
