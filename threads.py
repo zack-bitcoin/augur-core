@@ -60,7 +60,6 @@ def main(brainwallet):
         cmd=multiprocessing.Process(target=process['target'], args=process['args'])
         cmd.start()
         cmds.append(cmd)
-        time.sleep(1)
     def start_worker_proc(**kwargs):
         daemon=kwargs.pop('daemon', True)
         proc = threading.Thread(**kwargs)
