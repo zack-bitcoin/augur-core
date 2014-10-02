@@ -27,7 +27,10 @@ def genesis(pubkey, DB):
            'target': target_,
            'diffLength': blockchain.hexInvert(target_),
            'txs': [make_mint(pubkey, DB)]}
-    out = tools.unpackage(tools.package(out))
+    try:
+        out = tools.unpackage(tools.package(out))
+    except:
+        print('could not unpackage: ' +str(out))
     return out
 def make_block(prev_block, txs, pubkey, DB):
     leng = int(prev_block['length']) + 1
@@ -41,7 +44,10 @@ def make_block(prev_block, txs, pubkey, DB):
            'diffLength': diffLength,
            'target': target_,
            'prevHash': tools.det_hash(prev_block)}
-    out = tools.unpackage(tools.package(out))
+    try:
+        out = tools.unpackage(tools.package(out))
+    except:
+        print('could not unpackage: ' +str(out))
     return out
 def POW(block, restart_signal):
     halfHash = tools.det_hash(block)

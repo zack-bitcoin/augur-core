@@ -90,7 +90,10 @@ def connect(msg, host, port, response_time=1):
         s.close()
         return ({'error':'cannot connect: '+str(host)})
     msg['version'] = custom.version
-    sendall(s, tools.package(msg))
+    try:
+        sendall(s, tools.package(msg))
+    except:
+        return({'error':'cannot connect on mac: ' +str(host)})
     response=recvall(s, MAX_MESSAGE_SIZE, response_time)
     s.close()
     try:
