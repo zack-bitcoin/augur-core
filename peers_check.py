@@ -89,6 +89,7 @@ def main(peers, DB):
         tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(peers, DB):
         DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
+        time.sleep(0.5)
         while not DB['suggested_blocks'].empty():
             time.sleep(0.1)
         #tools.log('suggested_blocks emptied at : ' +str(time.time()))
