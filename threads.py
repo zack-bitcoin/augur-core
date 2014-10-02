@@ -21,7 +21,7 @@ def main(brainwallet):
           'memoized_votes':{},
           'peers_ranked':[],
           'diffLength': '0'}
-    DB['privkey']=tools.det_hash(sys.argv[1])
+    DB['privkey']=tools.det_hash(brainwallet)
     DB['pubkey']=tools.privtopub(DB['privkey'])
     DB['address']=tools.make_address([DB['pubkey']], 1)
     def len_f(i, DB):
