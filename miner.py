@@ -33,7 +33,11 @@ def genesis(pubkey, DB):
         print('could not unpackage: ' +str(out))
     return out
 def make_block(prev_block, txs, pubkey, DB):
-    leng = int(prev_block['length']) + 1
+    try:
+        leng = int(prev_block['length']) + 1
+    except:
+        tools.log('prev block: ' +str(prev_block))
+        error('here')
     target_ = target.target(DB, leng)
     diffLength = blockchain.hexSum(prev_block['diffLength'],
                                    blockchain.hexInvert(target_))
