@@ -4,7 +4,7 @@ peers = [['192.241.212.114', 8900]]
 database_name = 'DB.db'
 port=8900
 api_port=8800
-version = "VERSIOn"
+version = "VERSIoN"
 #if you want to boot up more quickly without having to type your brainwallet or pubkey, then uncomment and update one of the following 2 lines.
 #brain_wallet='brainwalletInsecureChangeThis'
 #pubkey='045f822change_this_insecurea86eb5cdfbbe58198da7ef669f895ab992dd57a2d33337df6a6d763380225887be2cca4c1bb5791808f43cc353db89a70faae37'
@@ -29,4 +29,4 @@ history_length = 400
 inflection = 0.985
 download_many = 100  # Max number of blocks to request from a peer at the same time.
 max_download = 58000
-def blocktime(length): return 2
+def blocktime(length): return 60
