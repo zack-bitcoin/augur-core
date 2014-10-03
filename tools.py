@@ -133,3 +133,10 @@ def count(address, DB):
     current = db_get(address, DB)['count']
     zeroth=zeroth_confirmation_txs(address, DB)
     return current+zeroth
+def fork_check(newblocks, DB):
+    block = tools.db_get(DB['length'], DB)
+    recent_hash = tools.det_hash(block)
+    #their_hashes = map(tools.det_hash, newblocks)
+    their_hashes = map(lambda x: x['prevHash'], newblocks)
+    print('fork check: '+str(newblocks[0]))
+    return (recent_hash not in their_hashes) and DB['length']>=newblocks[0]['length']-1

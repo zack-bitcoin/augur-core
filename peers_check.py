@@ -4,12 +4,6 @@ This file explains how we initiate interactions with our peers.
 import time, networking, tools, blockchain, custom, random, sys
 def cmd(peer, x):
     return networking.send_command(peer, x)
-def fork_check(newblocks, DB):
-    block = tools.db_get(DB['length'], DB)
-    recent_hash = tools.det_hash(block)
-    #their_hashes = map(tools.det_hash, newblocks)
-    their_hashes = map(lambda x: x['prevHash'], newblocks)
-    return (recent_hash not in their_hashes) and DB['length']>=newblocks[0]['length']-1
 def bounds(length, peers_block_count):
     if peers_block_count - length > custom.download_many:
         end = length + custom.download_many - 1
@@ -32,7 +26,7 @@ def download_blocks(peer, DB, peers_block_count, length):
         return []
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
         # peer might trick us into deleting everything over and over.
-        if fork_check(blocks, DB):
+        if tools.fork_check(blocks, DB):
             #tools.log('fork check')
             blockchain.delete_block(DB)
     for block in blocks:
