@@ -97,7 +97,7 @@ def db_get(n, DB):
     n=str(n)
     out=ht.get(n)
     if out=='undefined':
-        return default_entry
+        return copy.deepcopy(default_entry)
     return out
 def db_put(key, dic, DB): return ht.put(str(key), dic)
 def db_delete(key, DB): return db_put(key, 'n', DB)

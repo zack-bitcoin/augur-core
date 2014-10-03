@@ -68,3 +68,7 @@ if __name__ == "__main__":
         print(i)
     for i in range(10):
         print(get(str(i*10)))
+    for i in range(1000):
+        if get('a'+str(i))!='n':
+            print('error on: a'+str(i))
+
