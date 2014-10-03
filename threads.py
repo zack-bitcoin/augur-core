@@ -30,7 +30,7 @@ def main(brainwallet):
     DB['length']=len_f(0, DB)
     DB['diffLength']='0'
     if DB['length']>-1:
-        print('thing: ' +str(tools.db_get(str(DB['length']), DB)))
+        #print('thing: ' +str(tools.db_get(str(DB['length']), DB)))
         DB['diffLength']=tools.db_get(str(DB['length']), DB)['diffLength']
     worker_tasks = [
         #all these workers share memory DB
