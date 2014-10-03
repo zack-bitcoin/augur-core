@@ -24,6 +24,6 @@ history_length = 400
 # This constant is selected such that the 50 most recent blocks count for 1/2 the
 # total weight.
 inflection = 0.985
-download_many = 100  # Max number of blocks to request from a peer at the same time.
+download_many = 50  # Max number of blocks to request from a peer at the same time.
 max_download = 58000
 def blocktime(length): return 60

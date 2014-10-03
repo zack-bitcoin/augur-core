@@ -120,14 +120,10 @@ def add_block(block_pair, DB):
         if block['target'] != target.target(DB, block['length']):
             return False
         earliest = median(recent_blockthings('time', DB, custom.mmm))
-        if 'time' not in block:
-            return False
-        if block['time'] > time.time():
-            return False
-        if block['time'] < earliest:
-            return False
-        if tx_check(block['txs']):
-            return False
+        if 'time' not in block: return False
+        if block['time'] > time.time()+60*6: return False
+        if block['time'] < earliest: return False
+        if tx_check(block['txs']): return False
         return True
     if type(block_pair)==type([1,2,3]):
         block=block_pair[0]

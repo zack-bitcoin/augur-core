@@ -16,16 +16,23 @@ def bounds(length, peers_block_count):
         end = peers_block_count
     return [max(length - 2, 0), end+1]
 def download_blocks(peer, DB, peers_block_count, length):
-    b=bounds(length, peers_block_count['length'])
-    #tools.log('bounds requested: ' +str(b))
+    b=[max(0, length), min(peers_block_count['length'], length+custom.download_many)]
+    tools.log('asked for: ' +str(b))
+    tools.log('peer: ' +str(peer))
+    tools.log('peer:  ' +str(peers_block_count))
+    tools.log('length: ' +str(length))
     blocks = cmd(peer, {'type': 'rangeRequest',
                         'range': b})
-    #tools.log('recieved: ' +str(len(blocks)) +' at time : ' +str(time.time()))
+    if type(blocks)!=list:
+        tools.log('unable to download blocks that time')
+        return 0
+    tools.log('range ' +str(blocks[0]['length']) + ' ' + str(blocks[-1]['length']))
     if not isinstance(blocks, list):
         return []
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
         # peer might trick us into deleting everything over and over.
         if fork_check(blocks, DB):
+            tools.log('fork check')
             blockchain.delete_block(DB)
     for block in blocks:
         DB['suggested_blocks'].put([block, peer])
@@ -45,7 +52,8 @@ def give_block(peer, DB, block_count_peer):
     #           'block': tools.db_get(block_count_l + 1,
     #                                 DB)})
     blocks=[]
-    b=bounds(block_count_peer+1, DB['length'])
+    #b=bounds(block_count_peer+1, DB['length'])
+    b=[max(block_count_peer+1, 0), min(DB['length'], block_count_peer+custom.download_many)]
     for i in range(b[0], b[1]):
         blocks.append(tools.db_get(i, DB))
     cmd(peer, {'type': 'pushblock',
@@ -64,8 +72,14 @@ def peer_check(peer, DB):
     if them < us:
         return give_block(peer, DB, block_count['length'])
     if us == them:
-        return ask_for_txs(peer, DB)
-    return download_blocks(peer, DB, block_count, length)
+        try:
+            return ask_for_txs(peer, DB)
+        except:
+            tools.log('ask for tx error')
+    try:
+        return download_blocks(peer, DB, block_count, length)
+    except:
+        tools.log('peer check bottom')
 def exponential_random(weights):
     def grab(r, weights, counter=0):
         if len(weights)==0: return counter
