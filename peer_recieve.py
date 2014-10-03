@@ -32,6 +32,9 @@ def pushtx(dic, DB):
     return 'success'
 def pushblock(dic, DB):
     if 'blocks' in dic:
+        for i in range(20):
+            if tools.fork_check(dic['blocks'], DB):
+                blockchain.delete_block(DB)
         for block in dic['blocks']:
             DB['suggested_blocks'].put([block, dic['peer']])
     else:

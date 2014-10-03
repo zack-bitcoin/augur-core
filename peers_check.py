@@ -7,8 +7,9 @@ def cmd(peer, x):
 def fork_check(newblocks, DB):
     block = tools.db_get(DB['length'], DB)
     recent_hash = tools.det_hash(block)
-    their_hashes = map(tools.det_hash, newblocks)
-    return recent_hash not in their_hashes
+    #their_hashes = map(tools.det_hash, newblocks)
+    their_hashes = map(lambda x: x['prevHash'], newblocks)
+    return (recent_hash not in their_hashes) and DB['length']>=newblocks[0]['length']-1
 def bounds(length, peers_block_count):
     if peers_block_count - length > custom.download_many:
         end = length + custom.download_many - 1
