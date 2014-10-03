@@ -3,7 +3,7 @@ import ht, arr
 def put(key, value): return ht.put(key, arr.append(value))
 def get(key): 
     a=ht.get(key)
-    if a=='undefined': return a
+    if a=='n': return 'undefined'
     return arr.lookup(a)
 if __name__ == "__main__":
     print('testing hashtable')

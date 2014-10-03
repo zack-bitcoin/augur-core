@@ -24,9 +24,9 @@ def download_blocks(peer, DB, peers_block_count, length):
     blocks = cmd(peer, {'type': 'rangeRequest',
                         'range': b})
     if type(blocks)!=list:
-        tools.log('unable to download blocks that time')
+        #tools.log('unable to download blocks that time')
         return 0
-    tools.log('range ' +str(blocks[0]['length']) + ' ' + str(blocks[-1]['length']))
+    #tools.log('range ' +str(blocks[0]['length']) + ' ' + str(blocks[-1]['length']))
     if not isinstance(blocks, list):
         return []
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
