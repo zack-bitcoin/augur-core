@@ -39,13 +39,15 @@ def connect_socket(sock, ip, port):
         except Exception, e:
             if e.errno==36:
                 return True
-def serve_forever(PORT, handler, heart_queue, DB):
+def serve_forever(PORT, handler, heart_queue, DB, internal_flag=False):
     server = socket.socket()
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     time.sleep(2)
     heart_queue.put('server: '+str(PORT))
+    if internal_flag: IP='localhost'
+    else: IP='0.0.0.0'
     try:
-        server.bind(('0.0.0.0', PORT))
+        server.bind((IP, PORT))
     except:
         tools.kill_processes_using_ports([str(PORT)])
         return serve_forever(PORT, handler, heart_queue, DB)
