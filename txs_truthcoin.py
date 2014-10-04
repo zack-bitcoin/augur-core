@@ -413,7 +413,7 @@ def prediction_market(tx, DB):#also used to increase liquidity of existing marke
     pm['shares_purchased']=[]
     for i in range(len(tx['states'])): pm['shares_purchased'].append(0)
     symmetric_put(tx['PM_id'], pm, DB)
-    tools.log('created PM: '+str(tx['PM_id']))
+    #tools.log('created PM: '+str(tx['PM_id']))
     #has a 'buy_shares' inside of it, eventually
 def buy_shares(tx, DB):
     address = addr(tx)
