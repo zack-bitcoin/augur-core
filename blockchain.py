@@ -83,6 +83,7 @@ def add_block(block_pair, DB):
         return sorted(mylist)[len(mylist) / 2]
 
     def block_check(block, DB):
+        def log_(txt): pass #return tools.log(txt)
         def tx_check(txs):
             start = copy.deepcopy(txs)
             out = []
@@ -99,30 +100,45 @@ def add_block(block_pair, DB):
         if not isinstance(block, dict): return False
         if 'error' in block: return False
         if not tools.E_check(block, 'length', [int]):
+            log_('no length')
             return False
         length = DB['length']
         if int(block['length']) != int(length) + 1:
+            log_('wrong longth')
             return False
         if block['diffLength'] != hexSum(DB['diffLength'],
                                          hexInvert(block['target'])):
+            log_('diflength error')
             return False
         if length >= 0:
             if tools.det_hash(tools.db_get(length, DB)) != block['prevHash']:
+                log_('det hash error')
                 return False
         a = copy.deepcopy(block)
         a.pop('nonce')
         if u'target' not in block.keys():
+            log_('target error')
             return False
         half_way = {u'nonce': block['nonce'], u'halfHash': tools.det_hash(a)}
         if tools.det_hash(half_way) > block['target']:
+            log_('det hash error 2')
             return False
         if block['target'] != target.target(DB, block['length']):
+            log_('wrong target')
             return False
         earliest = median(recent_blockthings('time', DB, custom.mmm))
-        if 'time' not in block: return False
-        if block['time'] > time.time()+60*6: return False
-        if block['time'] < earliest: return False
-        if tx_check(block['txs']): return False
+        if 'time' not in block: 
+            log_('no time')
+            return False
+        if block['time'] > time.time()+60*6: 
+            log_('too late')
+            return False
+        if block['time'] < earliest: 
+            log_('too early')
+            return False
+        if tx_check(block['txs']): 
+            log_('tx check')
+            return False
         return True
     if type(block_pair)==type([1,2,3]):
         block=block_pair[0]
