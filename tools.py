@@ -7,13 +7,14 @@ from json import dumps as package, loads as unpackage
 def heart_monitor(queue):
     beats={}
     while True:
-        time.sleep(0.01)
+        time.sleep(0.5)
         t=time.time()
         for beat in beats:
             if t-beats[beat]>30:
                 beats[beat]=t
                 log('thread has an error: ' +str(beat))
-        if not(queue.empty()):
+        while not(queue.empty()):
+            time.sleep(0.01)
             beat=queue.get(False)
             #log('heart monitor: ' +str(beat))
             if beat=='stop': return

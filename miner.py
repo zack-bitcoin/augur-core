@@ -85,7 +85,7 @@ def main(pubkey, DB):
             elif DB['mine']:
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
             else:
-                time.sleep(0.1)
+                time.sleep(1)
     except:
         tools.log('miner main: ' +str(sys.exc_info()))
 def main_once(pubkey, DB, num_cores, solution_queue, workers):

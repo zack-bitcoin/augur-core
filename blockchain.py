@@ -43,7 +43,6 @@ def add_tx(tx, DB):
         if too_big_block(tx, txs):
             out[0]+='too many txs'
             return False
-        tools.log('before tx check')
         if not transactions.tx_check[tx['type']](tx, txs, out, DB):
             out[0]+= 'tx: ' + str(tx)
             return False
@@ -200,28 +199,27 @@ def delete_block(DB):
         DB['diffLength'] = block['diffLength']
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
-def suggestions(DB, s, f, t, a):
+def suggestions(DB, s, f):
     heart_time=time.time()
     while True:
         if time.time()-heart_time>10:
             DB['heart_queue'].put(s)
             heart_time=time.time()
-        for i in range(100):
-            if i%t==0:
-                time.sleep(a)
-            if DB['stop']: return
-            if not DB[s].empty():
-                try:
-                    f(DB[s].get(False), DB)
-                except:
-                    tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
+        time.sleep(0.5)
+        while not DB[s].empty():
+            time.sleep(0.002)
+            try:
+                f(DB[s].get(False), DB)
+            except:
+                tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
+                error()
 def suggestion_txs(DB): 
     try:
-        return suggestions(DB, 'suggested_txs', add_tx, 1, 0.05)
+        return suggestions(DB, 'suggested_txs', add_tx)
     except:
         tools.log('suggestions txs error: ' +str(sys.exc_info()))
 def suggestion_blocks(DB): 
     try:
-        return suggestions(DB, 'suggested_blocks', add_block, 5, 0.01)
+        return suggestions(DB, 'suggested_blocks', add_block)
     except:
         tools.log('suggestions blocks error: ' +str(sys.exc_info()))
