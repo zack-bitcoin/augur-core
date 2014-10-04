@@ -13,21 +13,16 @@ def bounds(length, peers_block_count):
 def download_blocks(peer, DB, peers_block_count, length):
     b=[max(0, length), min(peers_block_count['length'], length+custom.download_many)]
     #tools.log('asked for: ' +str(b))
-    #tools.log('peer: ' +str(peer))
-    #tools.log('peer:  ' +str(peers_block_count))
-    #tools.log('length: ' +str(length))
     blocks = cmd(peer, {'type': 'rangeRequest',
                         'range': b})
     if type(blocks)!=list:
         #tools.log('unable to download blocks that time')
         return 0
-    #tools.log('range ' +str(blocks[0]['length']) + ' ' + str(blocks[-1]['length']))
     if not isinstance(blocks, list):
         return []
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
         # peer might trick us into deleting everything over and over.
         if tools.fork_check(blocks, DB):
-            #tools.log('fork check')
             blockchain.delete_block(DB)
     for block in blocks:
         DB['suggested_blocks'].put([block, peer])
