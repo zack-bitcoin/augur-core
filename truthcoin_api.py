@@ -59,7 +59,7 @@ def create_jury(DB):
         return('not enough inputs')
     return easy_add_transaction({'type': 'create_jury', 'vote_id': DB['args'][0]}, DB)
 def peers(DB):
-    return(str(DB['peers_ranked']))
+    return(str(db_get('peers_ranked')))
 def DB_print(DB):
     return(str(DB))
 def info(DB): 
