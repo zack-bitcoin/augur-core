@@ -178,7 +178,7 @@ def add_block(block_pair, DB):
         orphans = tools.db_get('txs')
         tools.db_put('txs', [])
         for tx in block['txs']:
-            DB['add_block']=True
+            tools.db_put('add_block', True)
             transactions.update[tx['type']](tx, DB)
         for tx in orphans:
             add_tx(tx, DB)
@@ -222,7 +222,7 @@ def delete_block(DB):
     tools.db_put('txs', [])
     for tx in block['txs']:
         orphans.append(tx)
-        DB['add_block']=False
+        tools.db_put('add_block', False)
         transactions.update[tx['type']](tx, DB)
     tools.db_delete(length, DB)
     length-=1

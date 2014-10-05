@@ -17,7 +17,7 @@ def easy_add_transaction(tx_orig, DB, privkey='default'):
     tx['signatures'] = [tools.sign(tools.det_hash(tx), privkey)]
     tools.log('collect winnings 3')
     return(blockchain.add_tx(tx, DB))
-def help_(DB):      
+def help_(DB, args):      
     tell_about_command={
         'help':'type "./truth_cli.py help <cmd>" to learn about <cmd>. type "./truth_cli.py commands" to get a list of all truthshell commands',
         'commands':'returns a list of the truthshell commands',
@@ -48,53 +48,53 @@ def help_(DB):
         'pushtx':'publishes this transaction to the blockchain, will automatically sign the transaction if necessary: ./truth_cli.py pushtx tx privkey',
         'peers':'tells you your list of peers'
     }
-    if len(DB['args'])==0:
+    if len(args)==0:
         return("needs 2 words. example: 'help help'")
     try:
-        return tell_about_command[DB['args'][0]]    
+        return tell_about_command[args[0]]    
     except:
-        return(str(DB['args'][0])+' is not yet documented')
-def create_jury(DB): 
-    if len(DB['args'])<1:
+        return(str(args[0])+' is not yet documented')
+def create_jury(DB, args): 
+    if len(args)<1:
         return('not enough inputs')
-    return easy_add_transaction({'type': 'create_jury', 'vote_id': DB['args'][0]}, DB)
-def peers(DB):
-    return(str(db_get('peers_ranked')))
-def DB_print(DB):
+    return easy_add_transaction({'type': 'create_jury', 'vote_id': args[0]}, DB)
+def peers(DB, args):
+    return(str(tools.db_get('peers_ranked')))
+def DB_print(DB, args):
     return(str(DB))
-def info(DB): 
-    if len(DB['args'])<1:
+def info(DB, args): 
+    if len(args)<1:
         return ('not enough inputs')
-    if DB['args'][0]=='my_address':
+    if args[0]=='my_address':
         address=DB['address']
     else:
-        address=DB['args'][0]
+        address=args[0]
     return(str(tools.db_get(address, DB)))   
-def my_address(DB):
+def my_address(DB, args):
     return(str(DB['address']))
-def spend(DB): 
-    if len(DB['args'])<2:
+def spend(DB, args): 
+    if len(args)<2:
         return('not enough inputs')
-    return easy_add_transaction({'type': 'spend', 'amount': int(DB['args'][0]), 'to':DB['args'][1]}, DB)
-def votecoin_spend(DB):
-    if len(DB['args'])<3:
+    return easy_add_transaction({'type': 'spend', 'amount': int(args[0]), 'to':args[1]}, DB)
+def votecoin_spend(DB, args):
+    if len(args)<3:
         return('not enough inputs')
-    tx = {'type': 'spend', 'amount':int(DB['args'][0]), 'to': DB['args'][2], 'vote_id':DB['args'][1]}
+    tx = {'type': 'spend', 'amount':int(args[0]), 'to': args[2], 'vote_id':args[1]}
     return easy_add_transaction(tx, DB)
 def accumulate_words(l, out=''):
     if len(l)>0: return accumulate_words(l[1:], out+' '+l[0])
     return out
-def ask_decision(DB):
-    if len(DB['args'])<3:
+def ask_decision(DB, args):
+    if len(args)<3:
         return('not enough inputs')
-    #print('DB args: ' +str(DB['args']))
-    tx={'type':'propose_decision', 'vote_id':DB['args'][0], 'decision_id':DB['args'][1], 'txt':accumulate_words(DB['args'][1:])[1:]}
+    #print('DB args: ' +str(args))
+    tx={'type':'propose_decision', 'vote_id':args[0], 'decision_id':args[1], 'txt':accumulate_words(args[1:])[1:]}
     return easy_add_transaction(tx, DB)
-def vote_on_decision(DB):
-    if len(DB['args'])<3:
+def vote_on_decision(DB, args):
+    if len(args)<3:
         return('not enough inputs')
-    decision_id=DB['args'][1]
-    answer=DB['args'][2]
+    decision_id=args[1]
+    answer=args[2]
     acc=tools.db_get(DB['address'], DB)
     value=[answer, str(random.random())+str(random.random())]
     answer_hash=tools.det_hash(value)
@@ -105,67 +105,67 @@ def vote_on_decision(DB):
     old_vote='unsure'
     if decision_id in acc['votes']: #this is always False...
         old_vote=acc['votes'][decision_id]
-    tx={'type':'jury_vote', 'vote_id':DB['args'][0], 'decision_id':decision_id, 'old_vote':old_vote, 'new_vote':answer_hash}
+    tx={'type':'jury_vote', 'vote_id':args[0], 'decision_id':decision_id, 'old_vote':old_vote, 'new_vote':answer_hash}
     return easy_add_transaction(tx, DB)
-def reveal_vote(DB):
-    if len(DB['args'])<2:
+def reveal_vote(DB, args):
+    if len(args)<2:
         return('not enough inputs')
     acc=tools.db_get(DB['address'], DB)
-    decision_id=DB['args'][1]
+    decision_id=args[1]
     if decision_id in acc['votes']:
         answer_hash=acc['votes'][decision_id]
         m=tools.db_get('memoized_votes')
         if answer_hash not in m:
             return('reveal vote error')
         a=m[answer_hash]
-        tx={'type':'reveal_jury_vote', 'vote_id':DB['args'][0], 'decision_id':decision_id, 'old_vote':answer_hash, 'new_vote':a[0], 'secret':a[1]}
+        tx={'type':'reveal_jury_vote', 'vote_id':args[0], 'decision_id':decision_id, 'old_vote':answer_hash, 'new_vote':a[0], 'secret':a[1]}
         return easy_add_transaction(tx, DB)
     else:
         return('you do not have any encrypted vote to decrypt')
-def SVD_consensus(DB):
-    if len(DB['args'])<1:
+def SVD_consensus(DB, args):
+    if len(args)<1:
         return('unique id for that branch?')
-    vote_id=DB['args'][0]
+    vote_id=args[0]
     jury=tools.db_get(vote_id, DB)
     k=txs_tools.decisions_keepers(vote_id, jury, DB)
     if k=='error':
         return('that jury does not exist yet')
     tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':k}
     return(easy_add_transaction(tx, DB))
-def pushtx(DB):
-    tx=tools.unpackage(DB['args'][0].decode('base64'))
-    if len(DB['args'])==1:
+def pushtx(DB, args):
+    tx=tools.unpackage(args[0].decode('base64'))
+    if len(args)==1:
         return easy_add_transaction(tx, DB)
-    privkey=tools.det_hash(DB['args'][1])
+    privkey=tools.det_hash(args[1])
     return easy_add_transaction(tx, DB, privkey)
-def collect_winnings(DB):
-    if len(DB['args'])<1:
+def collect_winnings(DB, args):
+    if len(args)<1:
         return ('not enough arguments')
     tools.log('collect_winnings 1')
     add=DB['address']
     acc=tools.db_get(add, DB)
-    tx={'type':'collect_winnings', 'PM_id':DB['args'][0], 'address':add}
+    tx={'type':'collect_winnings', 'PM_id':args[0], 'address':add}
     tx['shares']=acc['shares'][tx['PM_id']]
     tools.log('collect_winnings 2')
     return easy_add_transaction(tx, DB)
-def blockcount(DB): return(str(tools.db_get('length')))
-def txs(DB):        return(str(tools.db_get('txs')))
-def difficulty(DB): return(str(target.target(DB)))
-def my_balance(DB, address='default'): 
+def blockcount(DB, args): return(str(tools.db_get('length')))
+def txs(DB, args):        return(str(tools.db_get('txs')))
+def difficulty(DB, args): return(str(target.target(DB)))
+def my_balance(DB, args, address='default'): 
     if address=='default':
         address=DB['address']
     return(str(tools.db_get(address, DB)['amount']-txs_tools.cost_0(tools.db_get('txs'), DB)['truthcoin_cost']))
-def balance(DB): 
-    if len(DB['args'])<1:
+def balance(DB, args): 
+    if len(args)<1:
         return('what address do you want the balance for?')
-    return(str(my_balance(DB, DB['args'][0])))
-def log(DB): tools.log(accumulate_words(DB['args'])[1:])
-def stop_(DB): 
+    return(str(my_balance(DB, args, args[0])))
+def log(DB, args): tools.log(accumulate_words(args)[1:])
+def stop_(DB, args): 
     tools.db_put('stop', True)
     return('turning off all threads')
-def commands(DB): return str(sorted(Do.keys()+['start', 'new_address', 'make_PM', 'buy_shares']))
-def mine(DB):
-    if len(DB['args'])>0 and DB['args'][0]=='off': 
+def commands(DB, args): return str(sorted(Do.keys()+['start', 'new_address', 'make_PM', 'buy_shares']))
+def mine(DB, args):
+    if len(args)>0 and args[0]=='off': 
         tools.db_put('mine', False)
         return('miner is now turned off')
     elif 'privkey' in DB: 
@@ -173,16 +173,16 @@ def mine(DB):
         return ('miner on. (use "./truth_cli.py mine off" to turn off)')
     else:
         return('there is no private key with which to sign blocks. If you want to mine, you need to uncomment the "brain_wallet" line in custom.py')
-def pass_(DB): return ' '
-def error_(DB): return error
+def pass_(DB, args): return ' '
+def error_(DB, args): return error
 Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'mine':mine, 'peers':peers}
 def main(DB, heart_queue):
     def responder(dic):
         command=dic['command']
         if command[0] in Do: 
-            DB['args']=command[1:]
+            args=command[1:]
             try:
-                out=Do[command[0]](DB)
+                out=Do[command[0]](DB, args)
             except:
                 out='truthcoin api main failure : ' +str(sys.exc_info())
         else: 
