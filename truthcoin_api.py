@@ -4,12 +4,12 @@ import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, ti
 def easy_add_transaction(tx_orig, DB, privkey='default'):
     tx = copy.deepcopy(tx_orig)
     try:
-        tx['count'] = tools.count(DB['address'], DB)
+        tx['count'] = tools.count(tools.db_get('address'), DB)
     except:
         tx['count'] = 1
     if privkey=='default':
-        if 'privkey' in DB:
-            privkey=DB['privkey']
+        if tools.db_existence('privkey'):
+            privkey=tools.db_get('privkey')
         else:
             return('no private key is known, so the tx cannot be signed. Here is the tx: \n'+str(tools.package(tx_orig).encode('base64').replace('\n', '')))
     if 'pubkeys' not in tx:
@@ -66,12 +66,12 @@ def info(DB, args):
     if len(args)<1:
         return ('not enough inputs')
     if args[0]=='my_address':
-        address=DB['address']
+        address=tools.db_get('address')
     else:
         address=args[0]
     return(str(tools.db_get(address, DB)))   
 def my_address(DB, args):
-    return(str(DB['address']))
+    return(str(tools.db_get('address')))
 def spend(DB, args): 
     if len(args)<2:
         return('not enough inputs')
@@ -95,7 +95,7 @@ def vote_on_decision(DB, args):
         return('not enough inputs')
     decision_id=args[1]
     answer=args[2]
-    acc=tools.db_get(DB['address'], DB)
+    acc=tools.db_get(tools.db_get('address'), DB)
     value=[answer, str(random.random())+str(random.random())]
     answer_hash=tools.det_hash(value)
     m=tools.db_get('memoized_votes')
@@ -110,7 +110,7 @@ def vote_on_decision(DB, args):
 def reveal_vote(DB, args):
     if len(args)<2:
         return('not enough inputs')
-    acc=tools.db_get(DB['address'], DB)
+    acc=tools.db_get(tools.db_get('address'), DB)
     decision_id=args[1]
     if decision_id in acc['votes']:
         answer_hash=acc['votes'][decision_id]
@@ -142,7 +142,7 @@ def collect_winnings(DB, args):
     if len(args)<1:
         return ('not enough arguments')
     tools.log('collect_winnings 1')
-    add=DB['address']
+    add=tools.db_get('address')
     acc=tools.db_get(add, DB)
     tx={'type':'collect_winnings', 'PM_id':args[0], 'address':add}
     tx['shares']=acc['shares'][tx['PM_id']]
@@ -153,7 +153,7 @@ def txs(DB, args):        return(str(tools.db_get('txs')))
 def difficulty(DB, args): return(str(target.target(DB)))
 def my_balance(DB, args, address='default'): 
     if address=='default':
-        address=DB['address']
+        address=tools.db_get('address')
     return(str(tools.db_get(address, DB)['amount']-txs_tools.cost_0(tools.db_get('txs'), DB)['truthcoin_cost']))
 def balance(DB, args): 
     if len(args)<1:

@@ -84,7 +84,8 @@ def cost_0(txs, DB):
     #cost of the zeroth confirmation transactions
     total_cost = []
     votecoin_cost = {}
-    for Tx in filter(lambda t: DB['address'] == addr(t), txs):
+    address=tools.db_get('address')
+    for Tx in filter(lambda t: address == addr(t), txs):
         def spend_(total_cost=total_cost, votecoin_cost=votecoin_cost):
             total_cost.append(custom.fee)
             if 'vote_id' not in Tx:

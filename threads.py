@@ -1,6 +1,6 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
-import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
+import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing
 def main(brainwallet):
     print('starting truthcoin')
     DB = {
@@ -19,55 +19,36 @@ def main(brainwallet):
         tools.db_put('mine', False)
         tools.db_put('diffLength', '0')
     tools.db_put('stop', False)
-    DB['privkey']=tools.det_hash(brainwallet)
-    DB['pubkey']=tools.privtopub(DB['privkey'])
-    DB['address']=tools.make_address([DB['pubkey']], 1)
-    worker_tasks = [
-        #all these workers share memory DB
-        #if any one gets blocked, then they are all blocked.
-        {'target': peers_check.main,
-         'args': (custom.peers, DB),
-         'daemon': True},
-        {'target': truthcoin_api.main,
-         'args': (DB, DB['heart_queue']),
-         'daemon':True},
-        {'target': blockchain.main,
-         'args': (DB,),
-         'daemon': True},
-        {'target': miner.main,
-         'args': (DB['pubkey'], DB),
-         'daemon': False},
-        {'target': networking.serve_forever,
-         'args': (custom.port, lambda d: peer_recieve.main(d, DB), DB['heart_queue'], DB),
-         'daemon': True}
-    ]
-    processes= [#this thread does NOT share memory with the rest.
+    privkey=tools.det_hash(brainwallet)
+    tools.db_put('privkey', privkey)
+    pubkey=tools.privtopub(privkey)
+    tools.db_put('address', tools.make_address([pubkey], 1))
+    processes= [
         {'target':tools.heart_monitor,
-         'args':(DB['heart_queue'], )}
+         'args':(DB['heart_queue'], )},
+        {'target': peers_check.main,
+         'args': (custom.peers, DB)},
+        {'target': truthcoin_api.main,
+         'args': (DB, DB['heart_queue'])},
+        {'target': blockchain.main,
+         'args': (DB,)},
+        {'target': miner.main,
+         'args': (pubkey, DB)},
+        {'target': networking.serve_forever,
+         'args': (custom.port, lambda d: peer_recieve.main(d, DB), DB['heart_queue'], DB)}
     ]
     cmds=[]
     for process in processes:
         cmd=multiprocessing.Process(target=process['target'], args=process['args'])
         cmd.start()
         cmds.append(cmd)
-    def start_worker_proc(**kwargs):
-        daemon=kwargs.pop('daemon', True)
-        proc = threading.Thread(**kwargs)
-        proc.daemon = daemon
-        proc.start()
-        return proc
-    workers = [start_worker_proc(**task_info) for task_info in worker_tasks]
     while not tools.db_get('stop'):
         time.sleep(0.5)
     tools.log('about to stop threads')
     DB['heart_queue'].put('stop')
-    for worker in workers:
-        tools.log('stopped a thread')
-        worker.join()
     for cmd in cmds:
         tools.log('stopped a thread')
         cmd.join()
-    #del DB['db']
     tools.log('all threads stopped')
     print('all threads stopped')
     sys.exit(1)
