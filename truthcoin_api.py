@@ -98,7 +98,10 @@ def vote_on_decision(DB):
     acc=tools.db_get(DB['address'], DB)
     value=[answer, str(random.random())+str(random.random())]
     answer_hash=tools.det_hash(value)
-    DB['memoized_votes'][answer_hash]=value
+    m=tools.db_get('memoized_votes')
+    m[answer_hash]=value
+    tools.db_put('memoized_votes', m)
+    #DB['memoized_votes'][answer_hash]=value
     old_vote='unsure'
     if decision_id in acc['votes']: #this is always False...
         old_vote=acc['votes'][decision_id]
@@ -111,9 +114,10 @@ def reveal_vote(DB):
     decision_id=DB['args'][1]
     if decision_id in acc['votes']:
         answer_hash=acc['votes'][decision_id]
-        if answer_hash not in DB['memoized_votes']:
+        m=tools.db_get('memoized_votes')
+        if answer_hash not in m:
             return('reveal vote error')
-        a=DB['memoized_votes'][answer_hash]
+        a=m[answer_hash]
         tx={'type':'reveal_jury_vote', 'vote_id':DB['args'][0], 'decision_id':decision_id, 'old_vote':answer_hash, 'new_vote':a[0], 'secret':a[1]}
         return easy_add_transaction(tx, DB)
     else:
@@ -144,7 +148,7 @@ def collect_winnings(DB):
     tx['shares']=acc['shares'][tx['PM_id']]
     tools.log('collect_winnings 2')
     return easy_add_transaction(tx, DB)
-def blockcount(DB): return(str(DB['length']))
+def blockcount(DB): return(str(tools.db_get('length')))
 def txs(DB):        return(str(tools.db_get('txs')))
 def difficulty(DB): return(str(target.target(DB)))
 def my_balance(DB, address='default'): 

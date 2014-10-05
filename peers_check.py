@@ -28,7 +28,7 @@ def ask_for_txs(peer, DB):
     return 0
 def give_block(peer, DB, block_count_peer):
     blocks=[]
-    b=[max(block_count_peer+1, 0), min(DB['length'], block_count_peer+custom.download_many)]
+    b=[max(block_count_peer+1, 0), min(tools.db_get('length'), block_count_peer+custom.download_many)]
     for i in range(b[0], b[1]+1):
         blocks.append(tools.db_get(i, DB))
     cmd(peer, {'type': 'pushblock',
@@ -40,7 +40,7 @@ def peer_check(peer, DB):
         return
     if 'error' in block_count.keys():
         return
-    length = DB['length']
+    length = tools.db_get('length')
     diffLength= tools.db_get('diffLength')
     size = max(len(diffLength), len(block_count['diffLength']))
     us = tools.buffer_(diffLength, size)

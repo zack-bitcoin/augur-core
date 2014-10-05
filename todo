@@ -1,3 +1,5 @@
+prefix all the database keys.
+
 multithreaded
 
 lets remember blockcount and difflength for each peer. We should only download from the longest chain.

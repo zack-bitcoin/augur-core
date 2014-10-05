@@ -4,37 +4,24 @@ import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys,
 def main(brainwallet):
     print('starting truthcoin')
     DB = {
-        #'txs': [],
         'reward_peers_queue':multiprocessing.Queue(),
         'suggested_blocks': multiprocessing.Queue(),
         'suggested_txs': multiprocessing.Queue(),
         'heart_queue': multiprocessing.Queue(),
-        'memoized_votes':{}
     }
-    tools.db_put('txs', [])
-    tools.db_put('peers_ranked', [])
-    tools.db_put('targets', {})
-    tools.db_put('times', {})
+    if not tools.db_existence(0):
+        tools.db_put('length', -1)
+        tools.db_put('memoized_votes', {})
+        tools.db_put('txs', [])
+        tools.db_put('peers_ranked', [])
+        tools.db_put('targets', {})
+        tools.db_put('times', {})
+        tools.db_put('mine', False)
+        tools.db_put('diffLength', '0')
     tools.db_put('stop', False)
-    tools.db_put('mine', False)
     DB['privkey']=tools.det_hash(brainwallet)
     DB['pubkey']=tools.privtopub(DB['privkey'])
     DB['address']=tools.make_address([DB['pubkey']], 1)
-    def len_f(i, DB):
-        if not tools.db_existence(str(i), DB): return i-1
-        return len_f(i+1, DB)
-    DB['length']=len_f(0, DB)
-    tools.db_put('diffLength', '0')
-    if DB['length']>-1:
-        '''
-        {'target': blockchain.suggestion_txs,
-         'args': (DB,),
-         'daemon': True},
-        {'target': blockchain.suggestion_blocks,
-         'args': (DB,),
-         'daemon': True},
-        '''
-        tools.db_put('diffLength', tools.db_get(str(DB['length']), DB)['diffLength'])
     worker_tasks = [
         #all these workers share memory DB
         #if any one gets blocked, then they are all blocked.
@@ -82,5 +69,6 @@ def main(brainwallet):
         cmd.join()
     #del DB['db']
     tools.log('all threads stopped')
+    print('all threads stopped')
     sys.exit(1)
 

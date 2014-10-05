@@ -70,7 +70,7 @@ def recent_blockthings(key, DB, size, length=0):
             storage.pop(str(end))
             return clean_up(storage, end-1)
     if length == 0:
-        length = DB['length']
+        length = tools.db_get('length')
     start = max((length-size), 0)
     clean_up(storage, length-max(custom.mmm, custom.history_length))
     return map(get_val, range(start, length))
@@ -109,7 +109,7 @@ def add_block(block_pair, DB):
         if not tools.E_check(block, 'length', [int]):
             log_('no length')
             return False
-        length = DB['length']
+        length =tools.db_get('length')
         if int(block['length']) != int(length) + 1:
             log_('wrong longth')
             return False
@@ -173,7 +173,7 @@ def add_block(block_pair, DB):
                 pass
             '''
         tools.db_put(block['length'], block, DB)
-        DB['length'] = block['length']
+        tools.db_put('length', block['length'])
         tools.db_put('diffLength', block['diffLength'])
         orphans = tools.db_get('txs')
         tools.db_put('txs', [])
@@ -202,35 +202,35 @@ def add_block(block_pair, DB):
 
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """
-    if DB['length'] < 0:
+    length=tools.db_get('length')
+    if length < 0:
         return
     try:
         ts=tools.db_get('targets')
-        ts.pop(str(DB['length']))
+        ts.pop(str(length))
         db_put(ts)
-        #DB['targets'].pop(str(DB['length']))
     except:
         pass
     try:
         ts=tools.db_get('times')
-        ts.pop(str(DB['length']))
+        ts.pop(str(length))
         db_put(ts)
-        #DB['times'].pop(str(DB['length']))
     except:
         pass
-    block = tools.db_get(DB['length'], DB)
+    block = tools.db_get(length, DB)
     orphans = tools.db_get('txs')
     tools.db_put('txs', [])
     for tx in block['txs']:
         orphans.append(tx)
         DB['add_block']=False
         transactions.update[tx['type']](tx, DB)
-    tools.db_delete(DB['length'], DB)
-    DB['length'] -= 1
-    if DB['length'] == -1:
+    tools.db_delete(length, DB)
+    length-=1
+    tools.db_put('length', length)
+    if length == -1:
         tools.db_put('diffLength', '0')
     else:
-        block = tools.db_get(DB['length'], DB)
+        block = tools.db_get(length, DB)
         tools.db_put('diffLength', block['diffLength'])
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)

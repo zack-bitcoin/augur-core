@@ -89,10 +89,11 @@ def main(pubkey, DB):
     except:
         tools.log('miner main: ' +str(sys.exc_info()))
 def main_once(pubkey, DB, num_cores, solution_queue, workers):
-    if DB['length']==-1:
+    length=tools.db_get('length')
+    if length==-1:
         candidate_block = genesis(pubkey, DB)
     else:
-        prev_block = tools.db_get(DB['length'], DB)
+        prev_block = tools.db_get(length, DB)
         candidate_block = make_block(prev_block, tools.db_get('txs'), pubkey, DB)
     work = candidate_block
     for worker in workers:

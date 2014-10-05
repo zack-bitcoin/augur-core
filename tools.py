@@ -73,7 +73,7 @@ def E_check(dic, key, type_):
         if not dic[key] == type_[0]: return E_check(dic, key, type_[1:])
     return True
 def reveal_time_p(DB, n=10):
-    return DB['length']%20>=(20-n)
+    return tools.db_get('length')%20>=(20-n)
 def is_number(s):
     try:
         int(s)
@@ -134,7 +134,8 @@ def count(address, DB):
     zeroth=zeroth_confirmation_txs(address, DB)
     return current+zeroth
 def fork_check(newblocks, DB):
-    block = db_get(DB['length'], DB)
+    length=db_get('length')
+    block = db_get(length, DB)
     recent_hash = det_hash(block)
     their_hashes = map(lambda x: x['prevHash'] if x['length']>0 else 0, newblocks)
-    return (recent_hash not in their_hashes) and DB['length']>=newblocks[0]['length']-1
+    return (recent_hash not in their_hashes) and length>=newblocks[0]['length']-1

@@ -1,12 +1,13 @@
 import blockchain, custom, tools
 def target(DB, length=0):
     """ Returns the target difficulty at a paticular blocklength. """
+    db_length=tools.db_get('length')
     if length == 0:
-        length = DB['length']
+        length = tools.db_get('length')
     if length < 4:
         return '0' * 4 + 'f' * 60  # Use same difficulty for first few blocks.
     trgs=tools.db_get('targets')
-    if length <= DB['length'] and str(length) in trgs:
+    if length <= db_length and str(length) in trgs:
         return trgs[str(length)]  # Memoized, This is a small memory leak. It takes up more space linearly over time. but every time you restart the program, it gets cleaned out.
     def targetTimesFloat(target, number):
         a = int(str(target), 16)
