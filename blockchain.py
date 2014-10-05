@@ -263,6 +263,7 @@ def f(blocks_queue, txs_queue, heart_queue, DB):
     heart_time=time.time()
     while True:
         time.sleep(0.5)
+        if tools.db_get('stop'): return
         while not bb() or not tb():
             t=time.time()
             if t-heart_time>10:

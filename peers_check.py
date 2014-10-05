@@ -68,10 +68,10 @@ def exponential_random(weights):
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
+    p=tools.db_get('peers_ranked')
     for peer in peers:
-        p=tools.db_get('peers_ranked')
         p.append([peer, 5])
-        tools.db_put('peers_ranked', p)
+    tools.db_put('peers_ranked', p)
     try:
         while True:
             if tools.db_get('stop'): return
@@ -104,6 +104,7 @@ def main(peers, DB):
         tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(peers, DB):
     #DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
+    DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
     pr=sorted(pr, key=lambda r: r[1])
     if DB['suggested_blocks'].empty():

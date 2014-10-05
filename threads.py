@@ -38,6 +38,9 @@ def main(brainwallet):
     worker_tasks = [
         #all these workers share memory DB
         #if any one gets blocked, then they are all blocked.
+        {'target': peers_check.main,
+         'args': (custom.peers, DB),
+         'daemon': True},
         {'target': truthcoin_api.main,
          'args': (DB, DB['heart_queue']),
          'daemon':True},
@@ -47,9 +50,6 @@ def main(brainwallet):
         {'target': miner.main,
          'args': (DB['pubkey'], DB),
          'daemon': False},
-        {'target': peers_check.main,
-         'args': (custom.peers, DB),
-         'daemon': True},
         {'target': networking.serve_forever,
          'args': (custom.port, lambda d: peer_recieve.main(d, DB), DB['heart_queue'], DB),
          'daemon': True}

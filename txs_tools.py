@@ -131,6 +131,41 @@ def fee_check(tx, txs, DB):
             tools.log('not enough votecoin: ' +str(v_id))
             return False
     return True
+db={}
+def put_x(s):
+    def f(d, x): return tools.db_put(x+s, d)
+    return f
+def get_x(s): return (lambda x: tools.db_get(x+s))
+def existence_x(s): return (lambda x: tools.db_existence(x+s))
+verbs=[put_x, get_x, existence_x]
+verb_names=['get', 'put', 'existence']
+adj=['jury', 'pm', 'dec', 'block', 'addr']
+prefix=['j_', 'p_', 'd_', 'b_', '']
+for v in range(len(verbs)):
+    db[verb_names[v]]={}
+    for a in range(len(adj)):
+        db[verb_names[v]][adj[a]]=verbs[v](prefix[a])
+'''
+def put_x(s, d, x): return db_put(x+s, d)
+def put_jury(s, d): return put_x(s, d, 'j_')
+def put_pm(s, d): return put_x(s, d, 'p_')
+def put_dec(s, d): return put_x(s, d, 'd_')
+def put_block(n, d): return put_x(s, d, 'b_')
+def put_addr(n, d): return db_put(s, d)
+def get_x(s, x): return db_get(x+s)
+def get_jury(s): return get_x(s, 'j_')
+def get_pm(s): return get_x(s, 'p_')
+def get_dec(s): return get_x(s, 'd_')
+def get_block(n): return get_x(s, 'b_')
+def get_addr(n): return db_get(s)
+def existence_x(s, x): return db_existence(x+s)
+def existence_jury(s): return existence_x(s, 'j_')
+def existence_pm(s): return existence_x(s, 'p_')
+def existence_dec(s): return existence_x(s, 'd_')
+def existence_block(s): return existence_x(s, 'b_')
+def existence_addr(n): return db_existence(s)
+'''
+
 def get_(loc, thing): 
     if loc==[]: return thing
     return get_(loc[1:], thing[loc[0]])

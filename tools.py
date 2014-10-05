@@ -95,12 +95,11 @@ def kill_processes_using_ports(ports):
             subprocess.Popen(['kill', '-9', pid])
 default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
 def db_get(n, DB={}):
-    n=str(n)
     out=ht.get(n)
     if out=='undefined':
         return copy.deepcopy(default_entry)
     return out
-def db_put(key, dic, DB={}): return ht.put(str(key), dic)
+def db_put(key, dic, DB={}): return ht.put(key, dic)
 def db_delete(key, DB={}): return db_put(key, 'n', DB)
 def db_existence(key, DB={}):
     n=str(key)
