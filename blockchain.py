@@ -54,20 +54,18 @@ def add_tx(tx, DB):
     else:
         return('failed to add tx because: '+out[0])
 def recent_blockthings(key, DB, size, length=0):
-    if key == 'time':
-        storage = tools.db_get('times')
-    if key == 'target':
-        storage = tools.db_get('targets')
+    storage = tools.db_get(key)
     def get_val(length):
         leng = str(length)
         if not leng in storage:
-            storage[leng] = tools.db_get(leng, DB)[key]
+            storage[leng] = tools.db_get(leng, DB)[key[:-1]]
+            tools.db_put(key, storage)
         return storage[leng]
     def clean_up(storage, end):
         if end<0: return
-        if not end in storage: return
+        if not str(end) in storage: return
         else:
-            storage.pop(end)
+            storage.pop(str(end))
             return clean_up(storage, end-1)
     if length == 0:
         length = DB['length']
@@ -133,7 +131,7 @@ def add_block(block_pair, DB):
         if block['target'] != target.target(DB, block['length']):
             log_('wrong target')
             return False
-        earliest = median(recent_blockthings('time', DB, custom.mmm))
+        earliest = median(recent_blockthings('times', DB, custom.mmm))
         if 'time' not in block: 
             log_('no time')
             return False

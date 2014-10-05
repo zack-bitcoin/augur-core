@@ -26,7 +26,7 @@ def target(DB, length=0):
             while len(l) > 1:
                 l = [blockchain.hexSum(l[0], l[1])] + l[2:]
             return l[0]
-        targets = blockchain.recent_blockthings('target', DB, custom.history_length)
+        targets = blockchain.recent_blockthings('targets', DB, custom.history_length)
         w = weights(len(targets))
         tw = sum(w)
         targets = map(blockchain.hexInvert, targets)
@@ -35,7 +35,7 @@ def target(DB, length=0):
         weighted_targets = [weighted_multiply(i) for i in range(len(targets))]
         return blockchain.hexInvert(sumTargets(weighted_targets))
     def estimate_time(DB):
-        times = blockchain.recent_blockthings('time', DB, custom.history_length)
+        times = blockchain.recent_blockthings('times', DB, custom.history_length)
         blocklengths = [times[i] - times[i - 1] for i in range(1, len(times))]
         w = weights(len(blocklengths))  # Geometric weighting
         tw = sum(w)  # Normalization constant
