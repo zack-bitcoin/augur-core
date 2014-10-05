@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import random, hashlib, os
+import random, hashlib, os, time
 from json import dumps as package, loads as unpackage
 page_size=50
 default_db='000000'
@@ -20,7 +20,11 @@ def write_page(file, txt):
         make_file(file[0:4])
     return raw_write_page(file, txt)
 def raw_read_page(file):
-    with open('db/'+file, 'r') as myfile: return unpackage(myfile.read())
+    try:
+        with open('db/'+file, 'r') as myfile: return unpackage(myfile.read())
+    except:
+        time.sleep(0.0001)
+        return raw_read_page(file)
 def read_page(file):
     file=n_to_file(file)
     return raw_read_page(file)

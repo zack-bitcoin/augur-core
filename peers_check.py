@@ -11,13 +11,13 @@ def bounds(length, peers_block_count):
         end = peers_block_count
     return [max(length - 2, 0), end+1]
 def download_blocks(peer, DB, peers_block_count, length):
-    b=[max(0, length), min(peers_block_count['length'], length+custom.download_many)]
+    b=[max(0, length-10), min(peers_block_count['length'], length+custom.download_many)]
     #tools.log('asked for: ' +str(b))
     blocks = cmd(peer, {'type': 'rangeRequest',
                         'range': b})
     if type(blocks)!=list:
         #tools.log('unable to download blocks that time')
-        return 0
+        return -1
     if not isinstance(blocks, list):
         return []
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
@@ -30,7 +30,7 @@ def download_blocks(peer, DB, peers_block_count, length):
 def ask_for_txs(peer, DB):
     txs = cmd(peer, {'type': 'txs'})
     if not isinstance(txs, list):
-        return []
+        return -1
     for tx in txs:
         DB['suggested_txs'].put(tx)
     pushers = [x for x in DB['txs'] if x not in txs]
@@ -69,43 +69,76 @@ def peer_check(peer, DB):
     try:
         return download_blocks(peer, DB, block_count, length)
     except:
-        tools.log('peer check bottom')
+        tools.log('could not download blocks')
 def exponential_random(weights):
     def grab(r, weights, counter=0):
         if len(weights)==0: return counter
         if r<weights[0]: return counter
         else: return grab(r-weights[0], weights[1:], counter+1)
+    #tools.log('weights: ' +str(weights))
     weights=map(lambda x: 1.0/x, weights)
     tot=sum(weights)
     r=random.random()*tot
     return grab(r, weights)
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
-    DB['peers_ranked']=[]
+    #DB['peers_ranked']=[]
     for peer in peers:
-        DB['peers_ranked'].append([peer, 5])
+        p=tools.db_get('peers_ranked')
+        p.append([peer, 5])
+        tools.db_put('peers_ranked', p)
     try:
         while True:
-            if DB['stop']: return
+            if tools.db_get('stop'): return
             if len(peers)>0:
                 main_once(peers, DB)
+            while not DB['reward_peers_queue'].empty():
+                q=DB['reward_peers_queue'].get()
+                p=q['peer']
+                d=q['do']
+                pr=tools.db_get('peers_ranked')
+                i=0
+                j='empty'
+                for p in pr:
+                    if p[0]==peer:
+                        j=i
+                    i+=1
+                if j!='empty':
+                    if d=='reward':
+                        #listen more to people who give us good blocks.
+                        pr[j][1]*=0.1
+                    elif d=='punish':
+                        #listen less to people who give us bad blocks.
+                        pr[j][1]*=0.8
+                        pr[j][1]+=0.2*60
+                    tools.db_put('peers_ranked', pr)
+                else:
+                    #maybe this peer should be added to our list of peers?
+                    pass
     except:
         tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(peers, DB):
-        DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
-        if DB['suggested_blocks'].empty():
-            time.sleep(10)
-        while not DB['suggested_blocks'].empty():
-            time.sleep(0.1)
-        #tools.log('suggested_blocks emptied at : ' +str(time.time()))
-        DB['heart_queue'].put('peers check')
-        i=exponential_random(map(lambda x: x[1], DB['peers_ranked']))
-        t1=time.time()
-        r=peer_check(DB['peers_ranked'][i][0], DB)
-        t2=time.time()
-        DB['peers_ranked'][i][1]*=0.8
-        if r==0:
-            DB['peers_ranked'][i][1]+=0.2*(t2-t1)
-        else:
-            DB['peers_ranked'][i][1]+=0.2*30
-        DB['heart_queue'].put('peers check')
+    #DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
+    pr=tools.db_get('peers_ranked')
+    pr=sorted(pr, key=lambda r: r[1])
+    if DB['suggested_blocks'].empty():
+        time.sleep(10)
+    i=0
+    while not DB['suggested_blocks'].empty():
+        i+=1
+        time.sleep(0.1)
+        if i%100==0: 
+            DB['heart_queue'].put('peers check')
+    #tools.log('suggested_blocks emptied at : ' +str(time.time()))
+    DB['heart_queue'].put('peers check')
+    i=exponential_random(map(lambda x: x[1], pr))
+    t1=time.time()
+    r=peer_check(pr[i][0], DB)
+    t2=time.time()
+    pr[i][1]*=0.8
+    if r==0:
+        pr[i][1]+=0.2*(t2-t1)
+    else:
+        pr[i][1]+=0.2*30
+    tools.db_put('peers_ranked', pr)
+    DB['heart_queue'].put('peers check')

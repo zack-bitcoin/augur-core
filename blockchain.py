@@ -55,17 +55,24 @@ def add_tx(tx, DB):
         return('failed to add tx because: '+out[0])
 def recent_blockthings(key, DB, size, length=0):
     if key == 'time':
-        storage = DB['times']
+        storage = tools.db_get('times')
     if key == 'target':
-        storage = DB['targets']
+        storage = tools.db_get('targets')
     def get_val(length):
         leng = str(length)
         if not leng in storage:
             storage[leng] = tools.db_get(leng, DB)[key]
         return storage[leng]
+    def clean_up(storage, end):
+        if end<0: return
+        if not end in storage: return
+        else:
+            storage.pop(end)
+            return clean_up(storage, end-1)
     if length == 0:
         length = DB['length']
-    start = (length-size) if (length-size) >= 0 else 0
+    start = max((length-size), 0)
+    clean_up(storage, length-max(custom.mmm, custom.history_length))
     return map(get_val, range(start, length))
 def hexSum(a, b):
     # Sum of numbers expressed as hexidecimal strings
@@ -151,7 +158,10 @@ def add_block(block_pair, DB):
         #tools.log('add_block: ' + str(block))
         i=0
         j='empty'
+        #instead we should put a message on a queue, and let the peers_check thread adjust the peers_ranking.
         if peer != False:
+            #DB['reward_peers_queue'].put({'peer':peer, 'do':'reward'})
+            '''
             for p in DB['peers_ranked']:
                 if p[0]==peer:
                     j=i
@@ -161,6 +171,7 @@ def add_block(block_pair, DB):
             else:
                 #maybe this peer should be added to our list of peers?
                 pass
+            '''
         tools.db_put(block['length'], block, DB)
         DB['length'] = block['length']
         DB['diffLength'] = block['diffLength']
@@ -175,6 +186,8 @@ def add_block(block_pair, DB):
         i=0
         j='empty'
         if peer != False:
+            #DB['reward_peers_queue'].put({'peer':peer, 'do':'punish'})
+            '''
             for p in DB['peers_ranked']:
                 if p[0]==peer:
                     j=i
@@ -185,18 +198,24 @@ def add_block(block_pair, DB):
             else:
                 #maybe this peer should be added to our list of peers?
                 pass
-
+            '''
 
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """
     if DB['length'] < 0:
         return
     try:
-        DB['targets'].pop(str(DB['length']))
+        ts=tools.db_get('targets')
+        ts.pop(str(DB['length']))
+        db_put(ts)
+        #DB['targets'].pop(str(DB['length']))
     except:
         pass
     try:
-        DB['times'].pop(str(DB['length']))
+        ts=tools.db_get('times')
+        ts.pop(str(DB['length']))
+        db_put(ts)
+        #DB['times'].pop(str(DB['length']))
     except:
         pass
     block = tools.db_get(DB['length'], DB)
@@ -215,6 +234,7 @@ def delete_block(DB):
         DB['diffLength'] = block['diffLength']
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
+'''
 def suggestions(DB, s, f):
     heart_time=time.time()
     while True:
@@ -229,6 +249,27 @@ def suggestions(DB, s, f):
             except:
                 tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
                 error()
+'''
+def f(blocks_queue, txs_queue, heart_queue, DB):
+    def bb(): return blocks_queue.empty()
+    def tb(): return txs_queue.empty()
+    def ff(queue, g, b, s):
+        while not b():
+            time.sleep(0.0001)
+            try:
+                g(queue.get(False), DB)
+            except:
+                tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
+    heart_time=time.time()
+    while True:
+        time.sleep(0.5)
+        while not bb() or not tb():
+            t=time.time()
+            if t-heart_time>10:
+                heart_time=t
+            ff(blocks_queue, add_block, bb, 'block')
+            ff(txs_queue, add_tx, tb, 'tx')
+'''                    
 def suggestion_txs(DB): 
     try:
         return suggestions(DB, 'suggested_txs', add_tx)
@@ -239,3 +280,7 @@ def suggestion_blocks(DB):
         return suggestions(DB, 'suggested_blocks', add_block)
     except:
         tools.log('suggestions blocks error: ' +str(sys.exc_info()))
+'''
+def main(DB):
+    return f(DB['suggested_blocks'], DB['suggested_txs'], DB['heart_queue'], DB)
+    

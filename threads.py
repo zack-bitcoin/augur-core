@@ -1,6 +1,6 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads and packs up the database.
 """
-import miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
+import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
 #import leveldb
 import ht
 
@@ -9,18 +9,22 @@ def main(brainwallet):
     heart_queue=multiprocessing.Queue()
     suggested_blocks=multiprocessing.Queue()
     #db = leveldb.LevelDB(custom.database_name)
-    DB = {'stop':False,
-          'mine':False,
-          'targets':{},
-          'times':{},
+    DB = {#'targets':{},
+          #'times':{},
           #'db': db,
-          'txs': [],
-          'suggested_blocks': suggested_blocks,
-          'suggested_txs': Queue.Queue(),
-          'heart_queue': heart_queue,
-          'memoized_votes':{},
-          'peers_ranked':[],
-          'diffLength': '0'}
+        'txs': [],
+        'reward_peers_queue':multiprocessing.Queue(),
+        'suggested_blocks': suggested_blocks,
+        'suggested_txs': multiprocessing.Queue(),
+        'heart_queue': heart_queue,
+        'memoized_votes':{},
+        #'peers_ranked':[],
+        'diffLength': '0'}
+    tools.db_put('peers_ranked', [])
+    tools.db_put('targets', {})
+    tools.db_put('times', {})
+    tools.db_put('stop', False)
+    tools.db_put('mine', False)
     DB['privkey']=tools.det_hash(brainwallet)
     DB['pubkey']=tools.privtopub(DB['privkey'])
     DB['address']=tools.make_address([DB['pubkey']], 1)
@@ -30,6 +34,14 @@ def main(brainwallet):
     DB['length']=len_f(0, DB)
     DB['diffLength']='0'
     if DB['length']>-1:
+        '''
+        {'target': blockchain.suggestion_txs,
+         'args': (DB,),
+         'daemon': True},
+        {'target': blockchain.suggestion_blocks,
+         'args': (DB,),
+         'daemon': True},
+        '''
         #print('thing: ' +str(tools.db_get(str(DB['length']), DB)))
         DB['diffLength']=tools.db_get(str(DB['length']), DB)['diffLength']
     worker_tasks = [
@@ -38,10 +50,7 @@ def main(brainwallet):
         {'target': truthcoin_api.main,
          'args': (DB, heart_queue),
          'daemon':True},
-        {'target': blockchain.suggestion_txs,
-         'args': (DB,),
-         'daemon': True},
-        {'target': blockchain.suggestion_blocks,
+        {'target': blockchain.main,
          'args': (DB,),
          'daemon': True},
         {'target': miner.main,
@@ -70,14 +79,17 @@ def main(brainwallet):
         proc.start()
         return proc
     workers = [start_worker_proc(**task_info) for task_info in worker_tasks]
-    while not DB['stop']:
+    while not tools.db_get('stop'):
         time.sleep(0.5)
-    tools.log('stopping all threads...')
+    tools.log('about to stop threads')
     DB['heart_queue'].put('stop')
     for worker in workers:
+        tools.log('stopped a thread')
         worker.join()
     for cmd in cmds:
+        tools.log('stopped a thread')
         cmd.join()
     #del DB['db']
+    tools.log('all threads stopped')
     sys.exit(1)
 

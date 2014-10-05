@@ -137,7 +137,7 @@ def get_(loc, thing):
 def set_(loc, dic, val):
     get_(loc[:-1], dic)[loc[-1]] = val
     return dic
-def adjust(location, pubkey, DB, f):#location shouldn't be here.
+def adjust(pubkey, DB, f):#location shouldn't be here.
     acc = tools.db_get(pubkey, DB)
     f(acc)
     tools.db_put(pubkey, acc, DB)    
@@ -145,14 +145,14 @@ def adjust_int(key, pubkey, amount, DB):
     def f(acc, amount=amount):
         if not DB['add_block']: amount=-amount
         set_(key, acc, (get_(key, acc) + amount))
-    adjust(key, pubkey, DB, f)
+    adjust(pubkey, DB, f)
 def adjust_string(location, pubkey, old, new, DB):
     def f(acc, old=old, new=new):
         current=get_(location, acc)
         if DB['add_block']: 
             set_(location, acc, new)
         else: set_(location, acc, old)
-    adjust(location, pubkey, DB, f)
+    adjust(pubkey, DB, f)
 def adjust_dict(location, pubkey, remove, dic, DB):
     def f(acc, remove=remove, dic=dic):
         current=get_(location, acc)
@@ -161,7 +161,7 @@ def adjust_dict(location, pubkey, remove, dic, DB):
         else: 
             current.pop(dic.keys()[0])
         set_(location, acc, current)
-    adjust(location, pubkey, DB, f)    
+    adjust(pubkey, DB, f)    
 def adjust_list(location, pubkey, remove, item, DB):
     def f(acc, remove=remove, item=item):
         current=get_(location, acc)
@@ -170,7 +170,7 @@ def adjust_list(location, pubkey, remove, item, DB):
         else: 
             current.remove(item)
         set_(location, acc, current)
-    adjust(location, pubkey, DB, f)    
+    adjust(pubkey, DB, f)    
 def symmetric_put(id_, dic, DB):
     if DB['add_block']: tools.db_put(id_, dic, DB)
     else: tools.db_delete(id_, DB)

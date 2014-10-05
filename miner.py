@@ -79,10 +79,10 @@ def main(pubkey, DB):
     try:
         while True:
             DB['heart_queue'].put('miner')
-            if DB['stop']: 
+            if tools.db_get('stop'): 
                 #restart_workers(workers)
                 return
-            elif DB['mine']:
+            elif tools.db_get('mine'):
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
             else:
                 time.sleep(1)

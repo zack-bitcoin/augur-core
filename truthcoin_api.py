@@ -157,15 +157,15 @@ def balance(DB):
     return(str(my_balance(DB, DB['args'][0])))
 def log(DB): tools.log(accumulate_words(DB['args'])[1:])
 def stop_(DB): 
-    DB['stop']=True
+    tools.db_put('stop', True)
     return('turning off all threads')
 def commands(DB): return str(sorted(Do.keys()+['start', 'new_address', 'make_PM', 'buy_shares']))
 def mine(DB):
     if len(DB['args'])>0 and DB['args'][0]=='off': 
-        DB['mine']=False
+        tools.db_put('mine', False)
         return('miner is now turned off')
     elif 'privkey' in DB: 
-        DB['mine']=True
+        tools.db_put('mine', True)
         return ('miner on. (use "./truth_cli.py mine off" to turn off)')
     else:
         return('there is no private key with which to sign blocks. If you want to mine, you need to uncomment the "brain_wallet" line in custom.py')

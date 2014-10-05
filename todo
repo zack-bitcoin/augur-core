@@ -1,4 +1,5 @@
-each user should have different salt for database keys
+lets remember blockcount and difflength for each peer. We should only download from the longest chain.
+If we find out that someone lied about how long their chain is, then we should stop listening to them.
 
 mini blockchain
 
