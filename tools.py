@@ -130,7 +130,7 @@ def count(address, DB):
         def is_zero_conf(t):
             other_address=make_address(t['pubkeys'], len(t['signatures']))
             return address == other_address
-        return len(filter(is_zero_conf, DB['txs']))
+        return len(filter(is_zero_conf, db_get('txs')))
     current = db_get(address, DB)['count']
     zeroth=zeroth_confirmation_txs(address, DB)
     return current+zeroth

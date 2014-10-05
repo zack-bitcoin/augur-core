@@ -48,8 +48,10 @@ def add_tx(tx, DB):
             return False
         return True
     #tools.log('attempt to add tx: ' +str(tx))
-    if verify_tx(tx, DB['txs'], out):
-        DB['txs'].append(tx)
+    T=tools.db_get('txs')
+    if verify_tx(tx, T, out):
+        T.append(tx)
+        tools.db_put('txs', T)
         return('added tx: ' +str(tx))
     else:
         return('failed to add tx because: '+out[0])
@@ -111,7 +113,7 @@ def add_block(block_pair, DB):
         if int(block['length']) != int(length) + 1:
             log_('wrong longth')
             return False
-        if block['diffLength'] != hexSum(DB['diffLength'],
+        if block['diffLength'] != hexSum(tools.db_get('diffLength'),
                                          hexInvert(block['target'])):
             log_('diflength error')
             return False
@@ -172,9 +174,9 @@ def add_block(block_pair, DB):
             '''
         tools.db_put(block['length'], block, DB)
         DB['length'] = block['length']
-        DB['diffLength'] = block['diffLength']
-        orphans = copy.deepcopy(DB['txs'])
-        DB['txs'] = []
+        tools.db_put('diffLength', block['diffLength'])
+        orphans = tools.db_get('txs')
+        tools.db_put('txs', [])
         for tx in block['txs']:
             DB['add_block']=True
             transactions.update[tx['type']](tx, DB)
@@ -217,8 +219,8 @@ def delete_block(DB):
     except:
         pass
     block = tools.db_get(DB['length'], DB)
-    orphans = copy.deepcopy(DB['txs'])
-    DB['txs'] = []
+    orphans = tools.db_get('txs')
+    tools.db_put('txs', [])
     for tx in block['txs']:
         orphans.append(tx)
         DB['add_block']=False
@@ -226,10 +228,10 @@ def delete_block(DB):
     tools.db_delete(DB['length'], DB)
     DB['length'] -= 1
     if DB['length'] == -1:
-        DB['diffLength'] = '0'
+        tools.db_put('diffLength', '0')
     else:
         block = tools.db_get(DB['length'], DB)
-        DB['diffLength'] = block['diffLength']
+        tools.db_put('diffLength', block['diffLength'])
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
 '''

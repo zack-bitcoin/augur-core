@@ -145,12 +145,12 @@ def collect_winnings(DB):
     tools.log('collect_winnings 2')
     return easy_add_transaction(tx, DB)
 def blockcount(DB): return(str(DB['length']))
-def txs(DB):        return(str(DB['txs']))
+def txs(DB):        return(str(tools.db_get('txs')))
 def difficulty(DB): return(str(target.target(DB)))
 def my_balance(DB, address='default'): 
     if address=='default':
         address=DB['address']
-    return(str(tools.db_get(address, DB)['amount']-txs_tools.cost_0(DB['txs'], DB)['truthcoin_cost']))
+    return(str(tools.db_get(address, DB)['amount']-txs_tools.cost_0(tools.db_get('txs'), DB)['truthcoin_cost']))
 def balance(DB): 
     if len(DB['args'])<1:
         return('what address do you want the balance for?')

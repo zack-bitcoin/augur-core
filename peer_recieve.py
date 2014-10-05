@@ -11,7 +11,7 @@ def blockCount(dic, DB):
     length = DB['length']
     if length >= 0:
         return {'length': length,
-                'diffLength': DB['diffLength']}
+                'diffLength': tools.db_get('diffLength')}
     else:
         return {'length': -1, 'diffLength': '0'}
 def rangeRequest(dic, DB):
@@ -26,7 +26,7 @@ def rangeRequest(dic, DB):
         counter += 1
     return out
 def txs(dic, DB):
-    return DB['txs']
+    return tools.db_get('txs')
 def pushtx(dic, DB):
     DB['suggested_txs'].put(dic['tx'])
     return 'success'

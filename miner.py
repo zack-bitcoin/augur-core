@@ -93,7 +93,7 @@ def main_once(pubkey, DB, num_cores, solution_queue, workers):
         candidate_block = genesis(pubkey, DB)
     else:
         prev_block = tools.db_get(DB['length'], DB)
-        candidate_block = make_block(prev_block, DB['txs'], pubkey, DB)
+        candidate_block = make_block(prev_block, tools.db_get('txs'), pubkey, DB)
     work = candidate_block
     for worker in workers:
         worker['in_queue'].put(work)

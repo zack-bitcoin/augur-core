@@ -1,25 +1,17 @@
-"""This program starts all the threads going. When it hears a kill signal, it kills all the threads and packs up the database.
+"""This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
 import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, Queue
-#import leveldb
-import ht
-
 def main(brainwallet):
     print('starting truthcoin')
-    heart_queue=multiprocessing.Queue()
-    suggested_blocks=multiprocessing.Queue()
-    #db = leveldb.LevelDB(custom.database_name)
-    DB = {#'targets':{},
-          #'times':{},
-          #'db': db,
-        'txs': [],
+    DB = {
+        #'txs': [],
         'reward_peers_queue':multiprocessing.Queue(),
-        'suggested_blocks': suggested_blocks,
+        'suggested_blocks': multiprocessing.Queue(),
         'suggested_txs': multiprocessing.Queue(),
-        'heart_queue': heart_queue,
-        'memoized_votes':{},
-        #'peers_ranked':[],
-        'diffLength': '0'}
+        'heart_queue': multiprocessing.Queue(),
+        'memoized_votes':{}
+    }
+    tools.db_put('txs', [])
     tools.db_put('peers_ranked', [])
     tools.db_put('targets', {})
     tools.db_put('times', {})
@@ -32,7 +24,7 @@ def main(brainwallet):
         if not tools.db_existence(str(i), DB): return i-1
         return len_f(i+1, DB)
     DB['length']=len_f(0, DB)
-    DB['diffLength']='0'
+    tools.db_put('diffLength', '0')
     if DB['length']>-1:
         '''
         {'target': blockchain.suggestion_txs,
@@ -42,13 +34,12 @@ def main(brainwallet):
          'args': (DB,),
          'daemon': True},
         '''
-        #print('thing: ' +str(tools.db_get(str(DB['length']), DB)))
-        DB['diffLength']=tools.db_get(str(DB['length']), DB)['diffLength']
+        tools.db_put('diffLength', tools.db_get(str(DB['length']), DB)['diffLength'])
     worker_tasks = [
         #all these workers share memory DB
         #if any one gets blocked, then they are all blocked.
         {'target': truthcoin_api.main,
-         'args': (DB, heart_queue),
+         'args': (DB, DB['heart_queue']),
          'daemon':True},
         {'target': blockchain.main,
          'args': (DB,),
@@ -60,12 +51,12 @@ def main(brainwallet):
          'args': (custom.peers, DB),
          'daemon': True},
         {'target': networking.serve_forever,
-         'args': (custom.port, lambda d: peer_recieve.main(d, DB), heart_queue, DB),
+         'args': (custom.port, lambda d: peer_recieve.main(d, DB), DB['heart_queue'], DB),
          'daemon': True}
     ]
     processes= [#this thread does NOT share memory with the rest.
         {'target':tools.heart_monitor,
-         'args':(heart_queue, )}
+         'args':(DB['heart_queue'], )}
     ]
     cmds=[]
     for process in processes:
