@@ -80,24 +80,24 @@ adjust_int=txs_tools.adjust_int
 adjust_dict=txs_tools.adjust_dict
 adjust_list=txs_tools.adjust_list
 symmetric_put=txs_tools.symmetric_put
-def mint(tx, DB):
+def mint(tx, DB, add_block):
     address = tools.addr(tx)
-    adjust_int(['amount'], address, custom.block_reward, DB)
-    adjust_int(['count'], address, 1, DB)
-def spend(tx, DB):
+    adjust_int(['amount'], address, custom.block_reward, DB, add_block)
+    adjust_int(['count'], address, 1, DB, add_block)
+def spend(tx, DB, add_block):
     address = tools.addr(tx)
     if 'vote_id' in tx:
-        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], address, DB)
-        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], tx['to'], DB)
-        adjust_int(['votecoin', tx['vote_id']], address, -tx['amount'], DB)
-        adjust_int(['votecoin', tx['vote_id']], tx['to'], tx['amount'], DB)
-        txs_tools.memory_leak_votecoin(tx['vote_id'], address, DB)#this should get rid of any zeros in the jury so we don't leak memory.
-        txs_tools.memory_leak_votecoin(tx['vote_id'], tx['to'], DB)#this should get rid of any zeros in the jury so we don't leak memory.
+        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], address, DB, add_block)
+        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], tx['to'], DB, add_block)
+        adjust_int(['votecoin', tx['vote_id']], address, -tx['amount'], DB, add_block)
+        adjust_int(['votecoin', tx['vote_id']], tx['to'], tx['amount'], DB, add_block)
+        txs_tools.memory_leak_votecoin(tx['vote_id'], address, DB, add_block)#this should get rid of any zeros in the jury so we don't leak memory.
+        txs_tools.memory_leak_votecoin(tx['vote_id'], tx['to'], DB, add_block)#this should get rid of any zeros in the jury so we don't leak memory.
     else:
-        adjust_int(['amount'], address, -tx['amount'], DB)
-        adjust_int(['amount'], tx['to'], tx['amount'], DB)
-    adjust_int(['amount'], address, -custom.fee, DB)
-    adjust_int(['count'], address, 1, DB)
+        adjust_int(['amount'], address, -tx['amount'], DB, add_block)
+        adjust_int(['amount'], tx['to'], tx['amount'], DB, add_block)
+    adjust_int(['amount'], address, -custom.fee, DB, add_block)
+    adjust_int(['count'], address, 1, DB, add_block)
 update = {'mint':mint,
           'spend':spend,
           'create_jury':tt.create_jury,

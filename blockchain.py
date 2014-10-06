@@ -59,9 +59,14 @@ def recent_blockthings(key, DB, size, length=0):
     storage = tools.db_get(key)
     def get_val(length):
         leng = str(length)
-        if not leng in storage:
-            storage[leng] = tools.db_get(leng, DB)[key[:-1]]
-            tools.db_put(key, storage)
+        if not leng in storage:            
+            try:
+                storage[leng] = tools.db_get(leng, DB)[key[:-1]]
+                tools.db_put(key, storage)
+            except:
+                tools.log('storage: ' +str(storage))
+                tools.log('leng: ' +str(leng))
+                error()
         return storage[leng]
     def clean_up(storage, end):
         if end<0: return
@@ -162,8 +167,7 @@ def add_block(block_pair, DB):
         orphans = tools.db_get('txs')
         tools.db_put('txs', [])
         for tx in block['txs']:
-            tools.db_put('add_block', True)
-            transactions.update[tx['type']](tx, DB)
+            transactions.update[tx['type']](tx, DB, True)
         for tx in orphans:
             add_tx(tx, DB)
 def delete_block(DB):
@@ -189,7 +193,7 @@ def delete_block(DB):
     for tx in block['txs']:
         orphans.append(tx)
         tools.db_put('add_block', False)
-        transactions.update[tx['type']](tx, DB)
+        transactions.update[tx['type']](tx, DB, False)
     tools.db_delete(length, DB)
     length-=1
     tools.db_put('length', length)

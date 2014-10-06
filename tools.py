@@ -133,9 +133,9 @@ def count(address, DB):
     current = db_get(address, DB)['count']
     zeroth=zeroth_confirmation_txs(address, DB)
     return current+zeroth
-def fork_check(newblocks, DB):
-    length=db_get('length')
-    block = db_get(length, DB)
+def fork_check(newblocks, DB, length, block):
+    #length=db_get('length')
+    #block = db_get(length, DB)
     recent_hash = det_hash(block)
     their_hashes = map(lambda x: x['prevHash'] if x['length']>0 else 0, newblocks)
     return (recent_hash not in their_hashes) and length>=newblocks[0]['length']-1

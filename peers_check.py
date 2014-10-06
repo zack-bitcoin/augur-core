@@ -8,9 +8,11 @@ def download_blocks(peer, DB, peers_block_count, length):
     blocks = cmd(peer, {'type': 'rangeRequest', 'range': b})
     if type(blocks)!=list: return -1
     if not isinstance(blocks, list): return []
+    length=tools.db_get('length')
+    block=tools.db_get(length)
     for i in range(20):  # Only delete a max of 20 blocks, otherwise a
         # peer might trick us into deleting everything over and over.
-        if tools.fork_check(blocks, DB):
+        if tools.fork_check(blocks, DB, length, block):
             blockchain.delete_block(DB)
     for block in blocks:
         DB['suggested_blocks'].put([block, peer])
@@ -55,10 +57,10 @@ def peer_check(i, peers, DB):
             return ask_for_txs(peer, DB)
         except:
             tools.log('ask for tx error')
-    try:
-        return download_blocks(peer, DB, block_count, length)
-    except:
-        tools.log('could not download blocks')
+    #try:
+    return download_blocks(peer, DB, block_count, length)
+    #except:
+    #    tools.log('could not download blocks')
 def exponential_random(r, i=0):
     if random.random()<r: return i
     return exponential_random(r, i+1)
@@ -69,19 +71,19 @@ def main(peers, DB):
     for peer in peers:
         p.append([peer, 5, '0', 0])
     tools.db_put('peers_ranked', p)
-    try:
-        while True:
-            if tools.db_get('stop'): return
-            if len(peers)>0:
-                main_once(peers, DB)
-    except:
-        tools.log('main peers check: ' +str(sys.exc_info()))
+    #try:
+    while True:
+        if tools.db_get('stop'): return
+        if len(peers)>0:
+            main_once(peers, DB)
+    #except:
+    #    tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(peers, DB):
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
     pr=sorted(pr, key=lambda r: r[2])
     pr.reverse()
-    if DB['suggested_blocks'].empty():
+    if DB['suggested_blocks'].empty() and tools.db_get('length')>100:
         time.sleep(10)
     i=0
     while not DB['suggested_blocks'].empty():

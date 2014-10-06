@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import random, hashlib, os, time
+import random, hashlib, os
 from json import dumps as package, loads as unpackage
 page_size=50
 default_db='000000'
@@ -23,7 +23,6 @@ def raw_read_page(file):
     try:
         with open('db/'+file, 'r') as myfile: return unpackage(myfile.read())
     except:
-        time.sleep(0.0001)
         return raw_read_page(file)
 def read_page(file):
     file=n_to_file(file)
@@ -35,7 +34,7 @@ def get(key, file=default_db):
     a=get_raw(key, file)
     if 'page' in a: return get(key, a['page'])
     if 'key' in a and a['key']==key: return a['value']
-    return 'n'
+    else: return 'undefined'
 def get_raw(key, file):
     a=read_page(file)[key_hash(key+file)]
     return {'value':'undefined'} if a=='n' else a
@@ -74,7 +73,4 @@ if __name__ == "__main__":
         print(i)
     for i in range(10):
         print(get(str(i*10)))
-    for i in range(1000):
-        if get('a'+str(i))!='n':
-            print('error on: a'+str(i))
 

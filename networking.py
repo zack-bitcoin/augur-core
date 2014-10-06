@@ -53,12 +53,12 @@ def serve_forever(PORT, handler, heart_queue, DB, internal_flag=False):
         return serve_forever(PORT, handler, heart_queue, DB)
     server.listen(100)
     server.setblocking(0)
-    try:
-        while True:
-            if tools.db_get('stop'): return
-            serve_once(PORT, handler, heart_queue, server)
-    except:
-        print('serve forever error: ' +str(sys.exc_info()))
+    #try:
+    while True:
+        if tools.db_get('stop'): return
+        serve_once(PORT, handler, heart_queue, server)
+    #except:
+    #    print('serve forever error: ' +str(sys.exc_info()))
 def serve_once(PORT, handler, heart_queue, server):
     heart_queue.put('server: '+str(PORT))
     time.sleep(0.1)

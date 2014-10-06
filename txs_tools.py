@@ -177,58 +177,58 @@ def adjust(pubkey, DB, f):#location shouldn't be here.
     acc = tools.db_get(pubkey, DB)
     f(acc)
     tools.db_put(pubkey, acc, DB)    
-def adjust_int(key, pubkey, amount, DB):
+def adjust_int(key, pubkey, amount, DB, add_block):
     def f(acc, amount=amount):
-        if not tools.db_get('add_block'): amount=-amount
+        if not add_block: amount=-amount
         set_(key, acc, (get_(key, acc) + amount))
     adjust(pubkey, DB, f)
-def adjust_string(location, pubkey, old, new, DB):
+def adjust_string(location, pubkey, old, new, DB, add_block):
     def f(acc, old=old, new=new):
         current=get_(location, acc)
-        if tools.db_get('add_block'): 
+        if add_block: 
             set_(location, acc, new)
         else: set_(location, acc, old)
     adjust(pubkey, DB, f)
-def adjust_dict(location, pubkey, remove, dic, DB):
+def adjust_dict(location, pubkey, remove, dic, DB, add_block):
     def f(acc, remove=remove, dic=dic):
         current=get_(location, acc)
-        if remove != (tools.db_get('add_block')):# 'xor' and '!=' are the same.
+        if remove != add_block:# 'xor' and '!=' are the same.
             current=dict(dic.items() + current.items())
         else: 
             current.pop(dic.keys()[0])
         set_(location, acc, current)
     adjust(pubkey, DB, f)    
-def adjust_list(location, pubkey, remove, item, DB):
+def adjust_list(location, pubkey, remove, item, DB, add_block):
     def f(acc, remove=remove, item=item):
         current=get_(location, acc)
-        if remove != (tools.db_get('add_block')):# 'xor' and '!=' are the same.
+        if remove != (add_block):# 'xor' and '!=' are the same.
             current.append(item)
         else: 
             current.remove(item)
         set_(location, acc, current)
     adjust(pubkey, DB, f)    
-def symmetric_put(id_, dic, DB):
-    if tools.db_get('add_block'): tools.db_put(id_, dic, DB)
+def symmetric_put(id_, dic, DB, add_block):
+    if add_block: tools.db_put(id_, dic, DB)
     else: tools.db_delete(id_, DB)
 def initialize_to_zero_helper(loc, address, DB):
     acc=tools.db_get(address, DB)
     if loc[1] not in acc[loc[0]]:
         acc[loc[0]][loc[1]]=0
         tools.db_put(address , acc, DB)    
-def initialize_to_zero_votecoin(vote_id, address, DB):
+def initialize_to_zero_votecoin(vote_id, address, DB, add_block):
     initialize_to_zero_helper(['votecoin', vote_id], address, DB)
     jury=tools.db_get(vote_id, DB)
     if 'members' not in jury:
         tools.log('initialized to zero error')
     if address not in jury['members']:
-        adjust_list(['members'], vote_id, False, address, DB)
-def memory_leak_helper(loc, address, DB):
+        adjust_list(['members'], vote_id, False, address, DB, add_block)
+def memory_leak_helper(loc, address, DB, add_block):
     acc=tools.db_get(address, DB)
     bool_=get_(loc, acc)==0
     if bool_:
-        adjust_dict(loc, address, True, {loc[-1]: 0}, DB)
+        adjust_dict(loc, address, True, {loc[-1]: 0}, DB, add_block)
     return bool_
-def memory_leak_votecoin(vote_id, address, DB):
-    bool_=memory_leak_helper(['votecoin', vote_id], address, DB)
+def memory_leak_votecoin(vote_id, address, DB, add_block):
+    bool_=memory_leak_helper(['votecoin', vote_id], address, DB, add_block)
     if bool_:
-        adjust_list(['members'], vote_id, True, address, DB)
+        adjust_list(['members'], vote_id, True, address, DB, add_block)

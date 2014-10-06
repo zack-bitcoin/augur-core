@@ -271,8 +271,6 @@ def prediction_market_check(tx, txs, out, DB):
         out[0]+='you do not have enough money'
         return False
     return True
-
-
 def buy_shares_check(tx, txs, out, DB):
     #make sure that we can only buy the shares of undecided markets.
     if not transactions.signature_check(tx):
@@ -342,51 +340,51 @@ adjust_dict=txs_tools.adjust_dict
 adjust_list=txs_tools.adjust_list
 adjust_string=txs_tools.adjust_string
 symmetric_put=txs_tools.symmetric_put
-def create_jury(tx, DB):
+def create_jury(tx, DB, add_block):
     #specify when voting rounds end.
     address=addr(tx)
-    adjust_int(['count'], address, 1, DB)
-    adjust_int(['amount'], address, -custom.create_jury_fee, DB)
-    adjust_dict(['votecoin'], address, False, {tx['vote_id']: 6**4}, DB)
+    adjust_int(['count'], address, 1, DB, add_block)
+    adjust_int(['amount'], address, -custom.create_jury_fee, DB, add_block)
+    adjust_dict(['votecoin'], address, False, {tx['vote_id']: 6**4}, DB, add_block)
     jury={'decisions':[], 'members':[address]}
-    symmetric_put(tx['vote_id'], jury, DB)
-def propose_decision(tx, DB):
+    symmetric_put(tx['vote_id'], jury, DB, add_block)
+def propose_decision(tx, DB, add_block):
     address=addr(tx)
-    adjust_int(['count'], address, 1, DB)
-    adjust_list(['decisions'], tx['vote_id'], False, tx['decision_id'], DB)
-    adjust_int(['amount'], address, -custom.propose_decision_fee, DB)
+    adjust_int(['count'], address, 1, DB, add_block)
+    adjust_list(['decisions'], tx['vote_id'], False, tx['decision_id'], DB, add_block)
+    adjust_int(['amount'], address, -custom.propose_decision_fee, DB, add_block)
     decision={'state':'proposed',#proposed, yes, no
               'txt':tx['txt']}
-    symmetric_put(tx['decision_id'], decision, DB)
-def jury_vote(tx, DB):
+    symmetric_put(tx['decision_id'], decision, DB, add_block)
+def jury_vote(tx, DB, add_block):
     address=addr(tx)
     acc=tools.db_get(address, DB)
     if tx['decision_id'] not in acc['votes']:
         acc['votes'][tx['decision_id']]='unsure'
         tools.db_put(address, acc, DB)
-    adjust_int(['count'], address, 1, DB)
-    adjust_int(['amount'], address, -custom.jury_vote_fee, DB)
-    adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
-def slasher_jury_vote(tx, DB):
+    adjust_int(['count'], address, 1, DB, add_block)
+    adjust_int(['amount'], address, -custom.jury_vote_fee, DB, add_block)
+    adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB, add_block)
+def slasher_jury_vote(tx, DB, add_block):
     address=addr(tx)
-    adjust_int(['count'], address, 1, DB)
+    adjust_int(['count'], address, 1, DB, add_block)
     victim=addr(tx['reveal'])
     decision=tx['reveal']['decision_id']
     decision=tools.db_get(decision, DB)
-    txs_tools.initialize_to_zero_votecoin(tx['vote_id'], address, DB)
-    txs_tools.initialize_to_zero_votecoin(tx['vote_id'], victim, DB)
-    adjust_int(['votecoin',decision['vote_id']], victim, -tx['amount'], DB)
-    adjust_int(['votecoin',decision['vote_id']], address, (4*tx['amount'])/5, DB)
-    tx_tools.memory_leak_votecoin(tx['vote_id'], address, DB)
-    tx_tools.memory_leak_votecoin(tx['vote_id'], victim, DB)
+    txs_tools.initialize_to_zero_votecoin(tx['vote_id'], address, DB, add_block)
+    txs_tools.initialize_to_zero_votecoin(tx['vote_id'], victim, DB, add_block)
+    adjust_int(['votecoin',decision['vote_id']], victim, -tx['amount'], DB, add_block)
+    adjust_int(['votecoin',decision['vote_id']], address, (4*tx['amount'])/5, DB, add_block)
+    tx_tools.memory_leak_votecoin(tx['vote_id'], address, DB, add_block)
+    tx_tools.memory_leak_votecoin(tx['vote_id'], victim, DB, add_block)
     #remove votecoins from victim, give 4/5ths to address.
-def reveal_jury_vote(tx, DB):    
+def reveal_jury_vote(tx, DB, add_block):    
     address=addr(tx)
-    adjust_int(['count'], address, 1, DB)
-    adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB)
-def SVD_consensus(tx, DB):
+    adjust_int(['count'], address, 1, DB, add_block)
+    adjust_string(['votes', tx['decision_id']], address, tx['old_vote'], tx['new_vote'], DB, add_block)
+def SVD_consensus(tx, DB, add_block):
     address=addr(tx)
-    adjust_int(['count'], address, 1, DB)
+    adjust_int(['count'], address, 1, DB, add_block)
     jury=tools.db_get(tx['vote_id'], DB)
     matrix=txs_tools.decision_matrix(jury, tx['decisions'], DB)
     w=txs_tools.weights(tx['vote_id'], DB, jury)
@@ -395,48 +393,47 @@ def SVD_consensus(tx, DB):
     #tools.log('matrix: ' +str(matrix))
     #tools.log(pprint.pformat(result))
     for i in range(len(tx['decisions'])):
-        adjust_list(['decisions'], tx['vote_id'], True, tx['decisions'][i], DB)
+        adjust_list(['decisions'], tx['vote_id'], True, tx['decisions'][i], DB, add_block)
         new='yes'
         if float(result['outcome'][i])<0.5: 
             new='no'
-        adjust_string(['state'], tx['decisions'][i], 'proposed', new, DB)
+        adjust_string(['state'], tx['decisions'][i], 'proposed', new, DB, add_block)
     #if a prediction market expires, then we should give 1/2 it's fees to votecoin holders, and 1/2 it's fees to the author
     #the prediction market may have unused seed capital. This seed capital should go to the author
-def prediction_market(tx, DB):#also used to increase liquidity of existing market, eventually
+def prediction_market(tx, DB, add_block):#also used to increase liquidity of existing market, eventually
     address=addr(tx)
-    adjust_int(['count'], address, 1, DB)
-    adjust_int(['amount'], address, int(-tx['B']*math.log(len(tx['states']))), DB)
+    adjust_int(['count'], address, 1, DB, add_block)
+    adjust_int(['amount'], address, int(-tx['B']*math.log(len(tx['states']))), DB, add_block)
     pm={}
     for i in ['fees', 'B', 'states', 'states_combinatory', 'decisions']:
         pm[i]=tx[i]
     pm['author']=address
     pm['shares_purchased']=[]
     for i in range(len(tx['states'])): pm['shares_purchased'].append(0)
-    symmetric_put(tx['PM_id'], pm, DB)
+    symmetric_put(tx['PM_id'], pm, DB, add_block)
     #tools.log('created PM: '+str(tx['PM_id']))
     #has a 'buy_shares' inside of it, eventually
-def buy_shares(tx, DB):
+def buy_shares(tx, DB, add_block):
     address = addr(tx)
     acc = tools.db_get(address, DB)
-    adjust_int(['count'], address, 1, DB)
-    #tx={'buy':[10, -5, 0, 0, 0], PM_id:''} this would buy 10 shares of the first state, and sell 5 of the second.
+    adjust_int(['count'], address, 1, DB, add_block)
     cost=txs_tools.cost_to_buy_shares(tx, DB)
     fee=int(abs(cost*0.01))
-    adjust_int(['fees'], tx['PM_id'], fee, DB)
-    adjust_int(['amount'], address, -fee, DB)
-    adjust_int(['amount'], address, -cost, DB)
+    adjust_int(['fees'], tx['PM_id'], fee, DB, add_block)
+    adjust_int(['amount'], address, -fee, DB, add_block)
+    adjust_int(['amount'], address, -cost, DB, add_block)
     all_zeros=[]
     for i in tx['buy']: all_zeros.append(0)
     dic={tx['PM_id']:all_zeros}
     if tx['PM_id'] not in acc['shares']:#initialize to zero
-        adjust_dict(['shares'], address, False, dic, DB)
+        adjust_dict(['shares'], address, False, dic, DB, add_block)
     for i in range(len(tx['buy'])):
-        adjust_int(['shares_purchased', i], tx['PM_id'], tx['buy'][i], DB)
-        adjust_int(['shares', tx['PM_id'], i], address, tx['buy'][i], DB)
+        adjust_int(['shares_purchased', i], tx['PM_id'], tx['buy'][i], DB, add_block)
+        adjust_int(['shares', tx['PM_id'], i], address, tx['buy'][i], DB, add_block)
     acc = tools.db_get(address, DB)
     if acc['shares'][tx['PM_id']]==all_zeros:
-        adjust_dict(['shares'], address, True, dic, DB)
-def collect_winnings(tx, DB):
+        adjust_dict(['shares'], address, True, dic, DB, add_block)
+def collect_winnings(tx, DB, add_block):
     address = addr(tx)
     acc = tools.db_get(address, DB)
     pm = tools.db_get(tx['PM_id'], DB)
@@ -450,8 +447,8 @@ def collect_winnings(tx, DB):
     else_=True
     for i in range(decs):
         if pm['states_combinatory'][i]==outcome_combination:
-            adjust_int(['amount'], address, tx['shares'][i], DB)
+            adjust_int(['amount'], address, tx['shares'][i], DB, add_block)
             else_=False
     if else_:
-        adjust_int(['amount'], address, tx['shares'][-1], DB)
-    adjust_dict(['shares'], address, True, {tx['PM_id']:tx['shares']}, DB)
+        adjust_int(['amount'], address, tx['shares'][-1], DB, add_block)
+    adjust_dict(['shares'], address, True, {tx['PM_id']:tx['shares']}, DB, add_block)
