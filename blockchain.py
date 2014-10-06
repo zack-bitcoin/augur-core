@@ -60,7 +60,14 @@ def recent_blockthings(key, DB, size, length=0):
     def get_val(length):
         leng = str(length)
         if not leng in storage:            
-            storage[leng] = tools.db_get(leng, DB)[key[:-1]]
+            try:
+                storage[leng] = tools.db_get(leng, DB)[key[:-1]]
+            except:
+                print('leng: ' +str(leng))
+                print('key: ' +str(key))
+                print('db_get: ' +str(tools.db_get(leng, DB)))
+                print('storage: ' +str(storage))
+                error()
             tools.db_put(key, storage)
         return storage[leng]
     def clean_up(storage, end):
@@ -110,6 +117,9 @@ def add_block(block_pair, DB):
             log_('no length')
             return False
         length =tools.db_get('length')
+        if type(block['length'])!=type(1): 
+            log_('wrong length type')
+            return False
         if int(block['length']) != int(length) + 1:
             log_('wrong longth')
             return False
@@ -173,13 +183,13 @@ def delete_block(DB):
     try:
         ts=tools.db_get('targets')
         ts.pop(str(length))
-        db_put(ts)
+        tools.db_put('targets', ts)
     except:
         pass
     try:
         ts=tools.db_get('times')
         ts.pop(str(length))
-        db_put(ts)
+        tools.db_put('times', ts)
     except:
         pass
     block = tools.db_get(length, DB)

@@ -54,8 +54,9 @@ def serve_forever(PORT, handler, heart_queue, DB, internal_flag=False):
     server.listen(100)
     server.setblocking(0)
     #try:
+    t0=time.time()
     while True:
-        if tools.db_get('stop'): return
+        if time.time()>(t0+10000) and tools.db_get('stop'): return
         serve_once(PORT, handler, heart_queue, server)
     #except:
     #    print('serve forever error: ' +str(sys.exc_info()))
@@ -76,8 +77,9 @@ def serve_once(PORT, handler, heart_queue, server):
     if type(data)==type('string'):
         data=tools.unpackage(data)
     data['peer']=peer
+    after=handler(data)
     try:
-        sendall(client, tools.package(handler(data)))
+        sendall(client, tools.package(after))
     except:
         pass
     client.close()

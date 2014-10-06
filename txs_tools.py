@@ -132,6 +132,7 @@ def fee_check(tx, txs, DB):
             tools.log('not enough votecoin: ' +str(v_id))
             return False
     return True
+'''
 db={}
 def put_x(s):
     def f(d, x): return tools.db_put(x+s, d)
@@ -146,7 +147,6 @@ for v in range(len(verbs)):
     db[verb_names[v]]={}
     for a in range(len(adj)):
         db[verb_names[v]][adj[a]]=verbs[v](prefix[a])
-'''
 def put_x(s, d, x): return db_put(x+s, d)
 def put_jury(s, d): return put_x(s, d, 'j_')
 def put_pm(s, d): return put_x(s, d, 'p_')

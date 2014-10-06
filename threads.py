@@ -1,14 +1,40 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
-import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing
+import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, database
 def main(brainwallet, pubkey_flag=False):
     print('starting truthcoin')
+    if not pubkey_flag:
+        privkey=tools.det_hash(brainwallet)
+        pubkey=tools.privtopub(privkey)
+    else:
+        pubkey=brainwallet
     DB = {
         'reward_peers_queue':multiprocessing.Queue(),
         'suggested_blocks': multiprocessing.Queue(),
         'suggested_txs': multiprocessing.Queue(),
         'heart_queue': multiprocessing.Queue(),
     }
+    processes= [
+        {'target': database.main,
+         'args': (DB['heart_queue'],)},
+        {'target': peers_check.main,
+         'args': (custom.peers, DB)},
+        {'target':tools.heart_monitor,
+         'args':(DB['heart_queue'], )},
+        {'target': blockchain.main,
+         'args': (DB,)},
+        {'target': truthcoin_api.main,
+         'args': (DB, DB['heart_queue'])},
+        #{'target': miner.main,
+        # 'args': (pubkey, DB)},
+        {'target': networking.serve_forever,
+         'args': (custom.port, lambda d: peer_recieve.main(d, DB), DB['heart_queue'], DB)}
+    ]
+    cmds=[]
+    for process in processes:
+        cmd=multiprocessing.Process(target=process['target'], args=process['args'])
+        cmd.start()
+        cmds.append(cmd)
     if not tools.db_existence(0):
         tools.db_put('length', -1)
         tools.db_put('memoized_votes', {})
@@ -20,32 +46,11 @@ def main(brainwallet, pubkey_flag=False):
         tools.db_put('diffLength', '0')
     tools.db_put('stop', False)
     if not pubkey_flag:
-        privkey=tools.det_hash(brainwallet)
         tools.db_put('privkey', privkey)
-        pubkey=tools.privtopub(privkey)
     else:
         tools.db_put('privkey', 'Default')
-        pubkey=brainwallet
     tools.db_put('address', tools.make_address([pubkey], 1))
-    processes= [
-        {'target': peers_check.main,
-         'args': (custom.peers, DB)},
-        {'target':tools.heart_monitor,
-         'args':(DB['heart_queue'], )},
-        {'target': blockchain.main,
-         'args': (DB,)},
-        {'target': truthcoin_api.main,
-         'args': (DB, DB['heart_queue'])},
-        {'target': miner.main,
-         'args': (pubkey, DB)},
-        {'target': networking.serve_forever,
-         'args': (custom.port, lambda d: peer_recieve.main(d, DB), DB['heart_queue'], DB)}
-    ]
-    cmds=[]
-    for process in processes:
-        cmd=multiprocessing.Process(target=process['target'], args=process['args'])
-        cmd.start()
-        cmds.append(cmd)
+    miner.main(pubkey, DB)
     while not tools.db_get('stop'):
         time.sleep(0.5)
     tools.log('about to stop threads')

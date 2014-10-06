@@ -37,6 +37,7 @@ def give_block(peer, DB, block_count_peer):
                'blocks': blocks})
     return 0
 def peer_check(i, peers, DB):
+    print('peer check')
     peer=peers[i][0]
     block_count = cmd(peer, {'type': 'blockCount'})
     if not isinstance(block_count, dict):
@@ -68,6 +69,9 @@ def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
     p=tools.db_get('peers_ranked')
+    if type(p)!=list:
+        time.sleep(3)
+        return main(peers, DB)
     for peer in peers:
         p.append([peer, 5, '0', 0])
     tools.db_put('peers_ranked', p)

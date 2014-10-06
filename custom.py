@@ -3,7 +3,8 @@ import tools, hashlib
 peers = [['192.241.212.114', 8900],['69.164.196.239', 8900]]
 database_name = 'DB.db'
 port=8900
-api_port=8800
+api_port=8899
+database_port=8898
 version = "0.0001"
 block_reward = 10 ** 5
 premine = 5 * 10 ** 6

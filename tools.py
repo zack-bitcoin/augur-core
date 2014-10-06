@@ -1,6 +1,6 @@
 """A bunch of functions that are used by multiple threads.
 """
-import pt, hashlib, re, subprocess, time, copy, ht
+import pt, hashlib, re, subprocess, time, copy, ht, networking, custom
 from json import dumps as package, loads as unpackage
 #from collections import OrderedDict
 
@@ -73,7 +73,7 @@ def E_check(dic, key, type_):
         if not dic[key] == type_[0]: return E_check(dic, key, type_[1:])
     return True
 def reveal_time_p(DB, n=10):
-    return tools.db_get('length')%20>=(20-n)
+    return db_get('length')%20>=(20-n)
 def is_number(s):
     try:
         int(s)
@@ -93,18 +93,30 @@ def kill_processes_using_ports(ports):
         if match:
             pid = match.group('pid')
             subprocess.Popen(['kill', '-9', pid])
-default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
+def sc(c, expect_response): 
+    response=networking.send_command(['127.0.0.1', custom.database_port], c)
+    if (response==None and expect_response) or (type(response)==dict and 'error' in response):
+        return sc(c)
+    else:
+        return response
+def db_get(n, DB={}): return sc({'type':'get', 'args':[n]}, True)
+def db_put(key, dic, DB={}): return sc({'type':'put', 'args':[key, dic]}, False)
+def db_existence(key, DB={}): return sc({'type':'existence', 'args':[key]}, True)
+def db_delete(key): return sc({'type':'delete', 'args':[key]}, False)
+'''
 def db_get(n, DB={}):
     out=ht.get(n)
     if out=='undefined':
         return copy.deepcopy(default_entry)
     return out
-def db_put(key, dic, DB={}): return ht.put(key, dic)
+def db_put(key, dic, DB={}): 
+    return ht.put(key, dic)
 def db_delete(key, DB={}): return db_put(key, 'n', DB)
 def db_existence(key, DB={}):
     n=str(key)
     out=ht.get(n)
     return not out=='undefined'
+'''
 '''
 def db_get(n, DB):
     n = str(n)
