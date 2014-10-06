@@ -7,7 +7,7 @@ def easy_add_transaction(tx_orig, DB, privkey='default'):
         tx['count'] = tools.count(tools.db_get('address'), DB)
     except:
         tx['count'] = 1
-    if privkey=='default':
+    if privkey in ['default', 'Default']:
         if tools.db_existence('privkey'):
             privkey=tools.db_get('privkey')
         else:
