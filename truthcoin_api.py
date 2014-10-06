@@ -168,7 +168,7 @@ def mine(DB, args):
     if len(args)>0 and args[0]=='off': 
         tools.db_put('mine', False)
         return('miner is now turned off')
-    elif 'privkey' in DB: 
+    elif tools.db_existence('privkey'):
         tools.db_put('mine', True)
         return ('miner on. (use "./truth_cli.py mine off" to turn off)')
     else:
