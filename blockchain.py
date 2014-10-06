@@ -60,13 +60,8 @@ def recent_blockthings(key, DB, size, length=0):
     def get_val(length):
         leng = str(length)
         if not leng in storage:            
-            try:
-                storage[leng] = tools.db_get(leng, DB)[key[:-1]]
-                tools.db_put(key, storage)
-            except:
-                tools.log('storage: ' +str(storage))
-                tools.log('leng: ' +str(leng))
-                error()
+            storage[leng] = tools.db_get(leng, DB)[key[:-1]]
+            tools.db_put(key, storage)
         return storage[leng]
     def clean_up(storage, end):
         if end<0: return

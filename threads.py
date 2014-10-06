@@ -28,8 +28,8 @@ def main(brainwallet, pubkey_flag=False):
         pubkey=brainwallet
     tools.db_put('address', tools.make_address([pubkey], 1))
     processes= [
-        #{'target': peers_check.main,
-        # 'args': (custom.peers, DB)},
+        {'target': peers_check.main,
+         'args': (custom.peers, DB)},
         {'target':tools.heart_monitor,
          'args':(DB['heart_queue'], )},
         {'target': blockchain.main,
@@ -46,7 +46,6 @@ def main(brainwallet, pubkey_flag=False):
         cmd=multiprocessing.Process(target=process['target'], args=process['args'])
         cmd.start()
         cmds.append(cmd)
-    peers_check.main(custom.peers, DB)
     while not tools.db_get('stop'):
         time.sleep(0.5)
     tools.log('about to stop threads')
