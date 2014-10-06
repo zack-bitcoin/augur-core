@@ -72,7 +72,7 @@ def recent_blockthings(key, DB, size, length=0):
     if length == 0:
         length = tools.db_get('length')
     start = max((length-size), 0)
-    clean_up(storage, length-max(custom.mmm, custom.history_length))
+    clean_up(storage, length-max(custom.mmm, custom.history_length)-100)
     return map(get_val, range(start, length))
 def hexSum(a, b):
     # Sum of numbers expressed as hexidecimal strings
@@ -156,22 +156,6 @@ def add_block(block_pair, DB):
     #tools.log('attempt to add block: ' +str(block))
     if block_check(block, DB):
         #tools.log('add_block: ' + str(block))
-        i=0
-        j='empty'
-        #instead we should put a message on a queue, and let the peers_check thread adjust the peers_ranking.
-        if peer != False:
-            #DB['reward_peers_queue'].put({'peer':peer, 'do':'reward'})
-            '''
-            for p in DB['peers_ranked']:
-                if p[0]==peer:
-                    j=i
-                i+=1
-            if j!='empty':
-                DB['peers_ranked'][j][1]*=0.1#listen more to people who give us good blocks.
-            else:
-                #maybe this peer should be added to our list of peers?
-                pass
-            '''
         tools.db_put(block['length'], block, DB)
         tools.db_put('length', block['length'])
         tools.db_put('diffLength', block['diffLength'])
@@ -182,24 +166,6 @@ def add_block(block_pair, DB):
             transactions.update[tx['type']](tx, DB)
         for tx in orphans:
             add_tx(tx, DB)
-    else:
-        i=0
-        j='empty'
-        if peer != False:
-            #DB['reward_peers_queue'].put({'peer':peer, 'do':'punish'})
-            '''
-            for p in DB['peers_ranked']:
-                if p[0]==peer:
-                    j=i
-                i+=1
-            if j!='empty':
-                DB['peers_ranked'][j][1]*=0.8#listen less to people who give us bad blocks.
-                DB['peers_ranked'][j][1]+=0.2*60
-            else:
-                #maybe this peer should be added to our list of peers?
-                pass
-            '''
-
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """
     length=tools.db_get('length')
@@ -234,22 +200,6 @@ def delete_block(DB):
         tools.db_put('diffLength', block['diffLength'])
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
-'''
-def suggestions(DB, s, f):
-    heart_time=time.time()
-    while True:
-        if time.time()-heart_time>10:
-            DB['heart_queue'].put(s)
-            heart_time=time.time()
-        time.sleep(0.5)
-        while not DB[s].empty():
-            time.sleep(0.002)
-            try:
-                f(DB[s].get(False), DB)
-            except:
-                tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
-                error()
-'''
 def f(blocks_queue, txs_queue, heart_queue, DB):
     def bb(): return blocks_queue.empty()
     def tb(): return txs_queue.empty()
@@ -270,18 +220,6 @@ def f(blocks_queue, txs_queue, heart_queue, DB):
                 heart_time=t
             ff(blocks_queue, add_block, bb, 'block')
             ff(txs_queue, add_tx, tb, 'tx')
-'''                    
-def suggestion_txs(DB): 
-    try:
-        return suggestions(DB, 'suggested_txs', add_tx)
-    except:
-        tools.log('suggestions txs error: ' +str(sys.exc_info()))
-def suggestion_blocks(DB): 
-    try:
-        return suggestions(DB, 'suggested_blocks', add_block)
-    except:
-        tools.log('suggestions blocks error: ' +str(sys.exc_info()))
-'''
 def main(DB):
     return f(DB['suggested_blocks'], DB['suggested_txs'], DB['heart_queue'], DB)
     

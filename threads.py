@@ -1,7 +1,7 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
 import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing
-def main(brainwallet):
+def main(brainwallet, pubkey_flag=False):
     print('starting truthcoin')
     DB = {
         'reward_peers_queue':multiprocessing.Queue(),
@@ -19,19 +19,23 @@ def main(brainwallet):
         tools.db_put('mine', False)
         tools.db_put('diffLength', '0')
     tools.db_put('stop', False)
-    privkey=tools.det_hash(brainwallet)
-    tools.db_put('privkey', privkey)
-    pubkey=tools.privtopub(privkey)
+    if not pubkey_flag:
+        privkey=tools.det_hash(brainwallet)
+        tools.db_put('privkey', privkey)
+        pubkey=tools.privtopub(privkey)
+    else:
+        tools.db_put('privkey', 'Default')
+        pubkey=brainwallet
     tools.db_put('address', tools.make_address([pubkey], 1))
     processes= [
-        {'target':tools.heart_monitor,
-         'args':(DB['heart_queue'], )},
         {'target': peers_check.main,
          'args': (custom.peers, DB)},
-        {'target': truthcoin_api.main,
-         'args': (DB, DB['heart_queue'])},
+        {'target':tools.heart_monitor,
+         'args':(DB['heart_queue'], )},
         {'target': blockchain.main,
          'args': (DB,)},
+        {'target': truthcoin_api.main,
+         'args': (DB, DB['heart_queue'])},
         {'target': miner.main,
          'args': (pubkey, DB)},
         {'target': networking.serve_forever,
@@ -47,8 +51,8 @@ def main(brainwallet):
     tools.log('about to stop threads')
     DB['heart_queue'].put('stop')
     for cmd in cmds:
-        tools.log('stopped a thread')
         cmd.join()
+        tools.log('stopped a thread')
     tools.log('all threads stopped')
     print('all threads stopped')
     sys.exit(1)

@@ -34,12 +34,15 @@ def give_block(peer, DB, block_count_peer):
     cmd(peer, {'type': 'pushblock',
                'blocks': blocks})
     return 0
-def peer_check(peer, DB):
+def peer_check(i, peers, DB):
+    peer=peers[i][0]
     block_count = cmd(peer, {'type': 'blockCount'})
     if not isinstance(block_count, dict):
         return
     if 'error' in block_count.keys():
         return
+    peers[i][2]=block_count['diffLength']
+    peers[i][3]=block_count['length']
     length = tools.db_get('length')
     diffLength= tools.db_get('diffLength')
     size = max(len(diffLength), len(block_count['diffLength']))
@@ -56,57 +59,28 @@ def peer_check(peer, DB):
         return download_blocks(peer, DB, block_count, length)
     except:
         tools.log('could not download blocks')
-def exponential_random(weights):
-    def grab(r, weights, counter=0):
-        if len(weights)==0: return counter
-        if r<weights[0]: return counter
-        else: return grab(r-weights[0], weights[1:], counter+1)
-    weights=map(lambda x: 1.0/x, weights)
-    tot=sum(weights)
-    r=random.random()*tot
-    return grab(r, weights)
+def exponential_random(r, i=0):
+    if random.random()<r: return i
+    return exponential_random(r, i+1)
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
     p=tools.db_get('peers_ranked')
     for peer in peers:
-        p.append([peer, 5])
+        p.append([peer, 5, '0', 0])
     tools.db_put('peers_ranked', p)
     try:
         while True:
             if tools.db_get('stop'): return
             if len(peers)>0:
                 main_once(peers, DB)
-            while not DB['reward_peers_queue'].empty():
-                q=DB['reward_peers_queue'].get()
-                p=q['peer']
-                d=q['do']
-                pr=tools.db_get('peers_ranked')
-                i=0
-                j='empty'
-                for p in pr:
-                    if p[0]==peer:
-                        j=i
-                    i+=1
-                if j!='empty':
-                    if d=='reward':
-                        #listen more to people who give us good blocks.
-                        pr[j][1]*=0.1
-                    elif d=='punish':
-                        #listen less to people who give us bad blocks.
-                        pr[j][1]*=0.8
-                        pr[j][1]+=0.2*60
-                    tools.db_put('peers_ranked', pr)
-                else:
-                    #maybe this peer should be added to our list of peers?
-                    pass
     except:
         tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(peers, DB):
-    #DB['peers_ranked']=sorted(DB['peers_ranked'], key=lambda r: r[1])
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
-    pr=sorted(pr, key=lambda r: r[1])
+    pr=sorted(pr, key=lambda r: r[2])
+    pr.reverse()
     if DB['suggested_blocks'].empty():
         time.sleep(10)
     i=0
@@ -115,11 +89,10 @@ def main_once(peers, DB):
         time.sleep(0.1)
         if i%100==0: 
             DB['heart_queue'].put('peers check')
-    #tools.log('suggested_blocks emptied at : ' +str(time.time()))
     DB['heart_queue'].put('peers check')
-    i=exponential_random(map(lambda x: x[1], pr))
+    i=exponential_random(3.0/4)%len(pr)
     t1=time.time()
-    r=peer_check(pr[i][0], DB)
+    r=peer_check(i, pr, DB)
     t2=time.time()
     pr[i][1]*=0.8
     if r==0:
@@ -128,3 +101,6 @@ def main_once(peers, DB):
         pr[i][1]+=0.2*30
     tools.db_put('peers_ranked', pr)
     DB['heart_queue'].put('peers check')
+
+
+
