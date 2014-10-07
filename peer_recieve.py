@@ -8,7 +8,7 @@ def security_check(dic):
         #we could add security features here.
         return {'bool': True, 'newdic': dic}
 def blockCount(dic, DB):
-    length = DB['length']
+    length = tools.db_get('length')
     if length >= 0:
         return {'length': length,
                 'diffLength': tools.db_get('diffLength')}

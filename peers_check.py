@@ -37,8 +37,8 @@ def give_block(peer, DB, block_count_peer):
                'blocks': blocks})
     return 0
 def peer_check(i, peers, DB):
-    print('peer check')
-    print('peers: ' +str(peers))
+    tools.log('peer check')
+    tools.log('peers: ' +str(peers))
     peer=peers[i][0]
     block_count = cmd(peer, {'type': 'blockCount'})
     tools.log('block count: ' +str(block_count))
@@ -70,34 +70,42 @@ def exponential_random(r, i=0):
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
+    tools.log('peers: ' +str(peers))
     p=tools.db_get('peers_ranked')
     if type(p)!=list:
         time.sleep(3)
         return main(peers, DB)
     for peer in peers:
+        tools.log('add peer')
         p.append([peer, 5, '0', 0])
     tools.db_put('peers_ranked', p)
-    try:
+    #try:
+    if True:
         while True:
-            if tools.db_get('stop'): return
+            if tools.db_get('stop')==True: return
             if len(peers)>0:
-                main_once(peers, DB)
-    except:
-        tools.log('main peers check: ' +str(sys.exc_info()))
-def main_once(peers, DB):
+                main_once(DB)
+    #except:
+    #    tools.log('main peers check: ' +str(sys.exc_info()))
+def main_once(DB):
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
+    print('pr: ' +str(pr))
     pr=sorted(pr, key=lambda r: r[2])
     pr.reverse()
+    tools.log('peers check 2')
     if DB['suggested_blocks'].empty() and tools.db_get('length')>100:
         time.sleep(10)
     i=0
+    tools.log('peers check 3')
     while not DB['suggested_blocks'].empty():
         i+=1
         time.sleep(0.1)
         if i%100==0: 
             DB['heart_queue'].put('peers check')
+    tools.log('peers check 4')
     DB['heart_queue'].put('peers check')
+    print('pr: ' +str(pr))
     i=exponential_random(3.0/4)%len(pr)
     t1=time.time()
     r=peer_check(i, pr, DB)
