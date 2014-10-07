@@ -90,7 +90,6 @@ def main(peers, DB):
 def main_once(DB):
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
-    print('pr: ' +str(pr))
     pr=sorted(pr, key=lambda r: r[2])
     pr.reverse()
     tools.log('peers check 2')
@@ -105,7 +104,6 @@ def main_once(DB):
             DB['heart_queue'].put('peers check')
     tools.log('peers check 4')
     DB['heart_queue'].put('peers check')
-    print('pr: ' +str(pr))
     i=exponential_random(3.0/4)%len(pr)
     t1=time.time()
     r=peer_check(i, pr, DB)
