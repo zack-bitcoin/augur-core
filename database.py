@@ -2,10 +2,12 @@ import networking, copy, custom, ht
 def main(heart_queue):
     def responder(command):
         if type(command)!=dict or 'type' not in command:
+            tools.log('database main command: ' +str(command))
+            tools.log('database main command: ' +str(type(command)))
             return {'error': 'bad data'}
         else:
             return dbfunc[command['type']](command['args'])
-    return networking.serve_forever(custom.database_port, responder, heart_queue, {}, True)
+    return networking.serve_forever(responder, custom.database_port, heart_queue)
 
 
 def putCommand(args): return db_put(args[0], args[1])

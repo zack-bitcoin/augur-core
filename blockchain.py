@@ -220,9 +220,10 @@ def f(blocks_queue, txs_queue, heart_queue, DB):
             except:
                 tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
     heart_time=time.time()
+    t0=time.time()
     while True:
         time.sleep(0.5)
-        if tools.db_get('stop'): return
+        if time.time()>t0+100000 and tools.db_get('stop'): return
         while not bb() or not tb():
             t=time.time()
             if t-heart_time>10:

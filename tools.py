@@ -94,9 +94,13 @@ def kill_processes_using_ports(ports):
             pid = match.group('pid')
             subprocess.Popen(['kill', '-9', pid])
 def sc(c, expect_response): 
-    response=networking.send_command(['127.0.0.1', custom.database_port], c)
+    response=networking.send_command(['localhost', custom.database_port], c)
     if (response==None and expect_response) or (type(response)==dict and 'error' in response):
-        return sc(c)
+        time.sleep(1)
+        log('response was: ' +str(response))
+        log('command was: ' +str(c))
+        #error()
+        return sc(c, expect_response)
     else:
         return response
 def db_get(n, DB={}): return sc({'type':'get', 'args':[n]}, True)

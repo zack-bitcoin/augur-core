@@ -70,7 +70,7 @@ def main():
     else:
         run_command(p)
 def connect(p):
-    peer=['127.0.0.1', custom.api_port]
+    peer=['localhost', custom.api_port]
     response=networking.send_command(peer, p, 5)
     if tools.can_unpack(response):
         response=tools.unpackage(response)

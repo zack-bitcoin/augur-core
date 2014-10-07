@@ -189,6 +189,6 @@ def main(DB, heart_queue):
             out=str(command[0]) + ' is not a command. use "./truth_cli.py commands" to get the list of truthshell commands. use "./truth_cli.py help help" to learn about the help tool.'
         return out
     try:
-        return networking.serve_forever(custom.api_port, responder, heart_queue, DB, True)
+        return networking.serve_forever(responder, custom.api_port, heart_queue)
     except:
         print('api error: ' +str(sys.exc_info()))

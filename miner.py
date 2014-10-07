@@ -83,6 +83,7 @@ def main(pubkey, DB):
             #restart_workers(workers)
             return
         elif tools.db_get('mine'):
+            tools.log('miner once')
             main_once(pubkey, DB, num_cores, solution_queue, workers)
         else:
             time.sleep(1)

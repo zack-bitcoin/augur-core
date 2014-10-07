@@ -1,110 +1,58 @@
-"""This file explains how sockets work for networking."""
-import socket
-import tools
-import custom
-import time
-import sys
-MAX_MESSAGE_SIZE = 60000
-def recvall(sock, max_size, Timespan=1):
-    data = ''
-    tries=0
-    while not tools.can_unpack(data):
-        sleep_chunk=0.01
-        time.sleep(sleep_chunk)
-        tries+=1
-        if tries>Timespan/sleep_chunk:
-            return {'recvall timeout error': data}
-        try:
-            d=sock.recv(max_size - len(data))
-            if not d:
-                return {'recvall connection broken error':data}
-            data += d
-        except:
-            pass
-    return data
-def sendall(sock, data):
-    while data:
-        time.sleep(0.1)
-        sent = sock.send(data)
-        data = data[sent:]
-def connect_socket(sock, ip, port):
-    tries=0
-    while True:
-        time.sleep(0.2)
-        tries+=1
-        if tries>20: return False
-        try:
-            sock.connect((ip, port))
-            return True
-        except Exception, e:
-            if e.errno==36:
-                return True
-def serve_forever(PORT, handler, heart_queue, DB, internal_flag=False):
-    server = socket.socket()
-    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    time.sleep(2)
-    heart_queue.put('server: '+str(PORT))
-    if internal_flag: IP='localhost'
-    else: IP='0.0.0.0'
+import socket, tools, custom, time, sys
+from json import dumps as package, loads as unpackage
+
+def serve_forever(handler, port, heart_queue='default', external=False):
+    if heart_queue=='default':
+        import Queue
+        heart_queue=Queue.Queue()
+    if external:
+        host='0.0.0.0'
+    else:
+        host = 'localhost'
+    #port = 50000
+    backlog = 5
+    size = 1024
+    time.sleep(1)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        server.bind((IP, PORT))
+        s.bind((host,port))
     except:
-        tools.kill_processes_using_ports([str(PORT)])
-        return serve_forever(PORT, handler, heart_queue, DB)
-    server.listen(100)
-    server.setblocking(0)
-    #try:
-    t0=time.time()
-    while True:
-        if time.time()>(t0+10000) and tools.db_get('stop'): return
-        serve_once(PORT, handler, heart_queue, server)
-    #except:
-    #    print('serve forever error: ' +str(sys.exc_info()))
-def serve_once(PORT, handler, heart_queue, server):
-    heart_queue.put('server: '+str(PORT))
-    time.sleep(0.1)
+        tools.kill_processes_using_ports([str(port)])
+        time.sleep(2)
+        return serve_forever(handler, port, heart_queue)
+    s.listen(backlog)
+    while 1:
+        heart_queue.put('server: '+str(port))
+        client, address = s.accept()
+        data = client.recv(size)
+        data=unpackage(data)
+        data=handler(data)
+        data=package(data)
+        if data:
+            client.send(data)
+        client.close() 
+def connect(msg, port, host='localhost'):
+    #port = 50000
+    size = 1024
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        client, addr = server.accept()
+        s.connect((host,port))
     except:
-        return
-    (ip, port) = addr
-    peer=[str(ip), int(port)]
+        return({'error': 'cannot connect'})
     try:
-        data=recvall(client, MAX_MESSAGE_SIZE)
+        msg['version'] = custom.version
     except:
-        client.close()
-        return
-    if type(data)==type('string'):
+        pass
+    s.send(tools.package(msg))
+    try:
+        data = s.recv(size)
+    except:
+        tools.log('no response from peer')
+        return(connect(msg, port, host))
+    try:
         data=tools.unpackage(data)
-    data['peer']=peer
-    after=handler(data)
-    try:
-        sendall(client, tools.package(after))
     except:
         pass
-    client.close()
-def connect(msg, host, port, response_time=1):
-    if len(msg) < 1 or len(msg) > MAX_MESSAGE_SIZE:
-        tools.log('wrong sized message')
-        return('wrong size')
-    s = socket.socket()
-    s.setblocking(0)
-    b=connect_socket(s, str(host), int(port))
-    if not b: 
-        s.close()
-        return ({'error':'cannot connect: '+str(host)})
-    msg['version'] = custom.version
-    try:
-        sendall(s, tools.package(msg))
-    except:
-        return({'error':'cannot connect on mac: ' +str(host)})
-    response=recvall(s, MAX_MESSAGE_SIZE, response_time)
-    s.close()
-    try:
-        return tools.unpackage(response)
-    except:
-        pass
-    if 'recvall timeout error' in response:
-        return({'error':'cannot download: '+str(host)})
+    return(data)
 def send_command(peer, msg, response_time=1):
-    return connect(msg, peer[0], peer[1], response_time)
+    return connect(msg, peer[1], peer[0])
