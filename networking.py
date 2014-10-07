@@ -21,16 +21,19 @@ def serve_forever(handler, port, heart_queue='default', external=False):
         time.sleep(2)
         return serve_forever(handler, port, heart_queue)
     s.listen(backlog)
-    while 1:
-        heart_queue.put('server: '+str(port))
-        client, address = s.accept()
-        data = client.recv(size)
-        data=unpackage(data)
-        data=handler(data)
-        data=package(data)
-        if data:
-            client.send(data)
-        client.close() 
+    try:
+        while 1:
+            client, address = s.accept()
+            data = client.recv(size)
+            data=unpackage(data)
+            if data=='stop': return
+            data=handler(data)
+            data=package(data)
+            if data:
+                client.send(data)
+            client.close() 
+    except:
+        tools.log('networking error: ' +str(port) + ' ' + str(sys.exc_info()))
 def connect(msg, port, host='localhost'):
     #port = 50000
     size = 1024

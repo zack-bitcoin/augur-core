@@ -27,8 +27,8 @@ def main(brainwallet, pubkey_flag=False):
          'args': (DB, DB['heart_queue'])},
         {'target': miner.main,
          'args': (pubkey, DB)},
-        #{'target': networking.serve_forever,
-        # 'args': (lambda d: peer_recieve.main(d, DB), custom.port, DB['heart_queue'], True)}
+        {'target': networking.serve_forever,
+         'args': (lambda d: peer_recieve.main(d, DB), custom.port, DB['heart_queue'], True)}
     ]
     cmds=[]
     cmd=multiprocessing.Process(target=processes[0]['target'], args=processes[0]['args'])
@@ -39,10 +39,6 @@ def main(brainwallet, pubkey_flag=False):
     tools.log(tools.db_get('test'))
     tools.log(tools.db_get('test'))
     tools.db_put('test', 'n')
-    for process in processes[1:]:
-        cmd=multiprocessing.Process(target=process['target'], args=process['args'])
-        cmd.start()
-        cmds.append(cmd)
     b=tools.db_existence(0)
     if not b:
         tools.db_put('length', -1)
@@ -55,6 +51,10 @@ def main(brainwallet, pubkey_flag=False):
         tools.db_put('diffLength', '0')
     else:
         error()
+    for process in processes[1:]:
+        cmd=multiprocessing.Process(target=process['target'], args=process['args'])
+        cmd.start()
+        cmds.append(cmd)
     tools.db_put('stop', False)
     if not pubkey_flag:
         tools.db_put('privkey', privkey)
@@ -65,6 +65,8 @@ def main(brainwallet, pubkey_flag=False):
         time.sleep(0.5)
     tools.log('about to stop threads')
     DB['heart_queue'].put('stop')
+    for p in [[custom.port, '127.0.0.1'], [custom.api_port, 'localhost'], [custom.database_port, 'localhost']]:
+        networking.connect('stop', p[0], p[1])
     for cmd in cmds:
         cmd.join()
         tools.log('stopped a thread')

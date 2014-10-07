@@ -71,20 +71,20 @@ def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
     p=tools.db_get('peers_ranked')
+    print('peers ranked: ' +str(p))
     if type(p)!=list:
         time.sleep(3)
         return main(peers, DB)
     for peer in peers:
         p.append([peer, 5, '0', 0])
     tools.db_put('peers_ranked', p)
-    #try:
-    t0=time.time()
-    while True:
-        if time.time()>t0+10000 and tools.db_get('stop'): return
-        if len(peers)>0:
-            main_once(peers, DB)
-    #except:
-    #    tools.log('main peers check: ' +str(sys.exc_info()))
+    try:
+        while True:
+            if tools.db_get('stop'): return
+            if len(peers)>0:
+                main_once(peers, DB)
+    except:
+        tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(peers, DB):
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')

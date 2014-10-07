@@ -93,34 +93,36 @@ def kill_processes_using_ports(ports):
         if match:
             pid = match.group('pid')
             subprocess.Popen(['kill', '-9', pid])
-def sc(c, expect_response): 
+def s_to_db(c): 
     response=networking.send_command(['localhost', custom.database_port], c)
-    if (response==None and expect_response) or (type(response)==dict and 'error' in response):
+    if (type(response)==dict and 'error' in response):
         time.sleep(1)
         log('response was: ' +str(response))
         log('command was: ' +str(c))
         #error()
-        return sc(c, expect_response)
+        return sc(c)
     else:
         return response
+'''
 def db_get(n, DB={}): return sc({'type':'get', 'args':[n]}, True)
 def db_put(key, dic, DB={}): return sc({'type':'put', 'args':[key, dic]}, False)
 def db_existence(key, DB={}): return sc({'type':'existence', 'args':[key]}, True)
 def db_delete(key): return sc({'type':'delete', 'args':[key]}, False)
 '''
+default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
 def db_get(n, DB={}):
     out=ht.get(n)
     if out=='undefined':
         return copy.deepcopy(default_entry)
     return out
 def db_put(key, dic, DB={}): 
-    return ht.put(key, dic)
+    return s_to_db({'type':'put', 'args':[key, dic]}, False)
 def db_delete(key, DB={}): return db_put(key, 'n', DB)
 def db_existence(key, DB={}):
     n=str(key)
     out=ht.get(n)
     return not out=='undefined'
-'''
+
 '''
 def db_get(n, DB):
     n = str(n)
