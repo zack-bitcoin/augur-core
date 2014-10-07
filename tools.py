@@ -100,7 +100,7 @@ def s_to_db(c):
         log('response was: ' +str(response))
         log('command was: ' +str(c))
         #error()
-        return sc(c)
+        return s_to_db(c)
     else:
         return response
 '''
@@ -116,7 +116,7 @@ def db_get(n, DB={}):
         return copy.deepcopy(default_entry)
     return out
 def db_put(key, dic, DB={}): 
-    return s_to_db({'type':'put', 'args':[key, dic]}, False)
+    return s_to_db({'type':'put', 'args':[key, dic]})
 def db_delete(key, DB={}): return db_put(key, 'n', DB)
 def db_existence(key, DB={}):
     n=str(key)

@@ -71,7 +71,6 @@ def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
     p=tools.db_get('peers_ranked')
-    print('peers ranked: ' +str(p))
     if type(p)!=list:
         time.sleep(3)
         return main(peers, DB)
