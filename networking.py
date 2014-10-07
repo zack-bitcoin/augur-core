@@ -53,19 +53,15 @@ def connect(msg, port, host='localhost', counter=0):
     #port = 50000
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setblocking(5)
-    tools.log('1')
     try:
         s.connect((host,port))
     except:
         return({'error': 'cannot connect'})
-    tools.log('2')
     try:
         msg['version'] = custom.version
     except:
         pass
-    tools.log('3')
     s.send(tools.package(msg))
-    tools.log('4')
     ready=select.select([s],[],[], 1)
     if ready[0]:
         try:
@@ -74,12 +70,10 @@ def connect(msg, port, host='localhost', counter=0):
             return(connect_error(msg, port, host, counter))
     else:
         return connect_error(msg, host, port, counter)
-    tools.log('5')
     try:
         data=tools.unpackage(data)
     except:
         pass
-    tools.log('6')
     return(data)
 def send_command(peer, msg, response_time=1):
     return connect(msg, peer[1], peer[0])
