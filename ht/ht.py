@@ -55,6 +55,7 @@ def put(key, value, file=default_db, depth=0):
         write_page(file, a)
         put(key, value, f)
         put(old['key'], old['value'], f)
+    return 'success'
 try: os.mkdir('db')
 except: pass
 f=n_to_file(default_db)
