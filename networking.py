@@ -27,30 +27,28 @@ def serve_forever(handler, port, heart_queue='default', external=False):
     except:
         tools.log('networking error: ' +str(port) + ' ' + str(sys.exc_info()))
 def recvall(client, data=''):
-    tools.log('recvall 1')
-    data+=client.recv(MAX_MESSAGE_SIZE)
-    tools.log('recvall 2')
+    #ready=select.select([client],[],[], 1)
+    #if not ready[0]:
+    try:
+        data+=client.recv(MAX_MESSAGE_SIZE)
+    except:
+        time.sleep(0.1)
+        tools.log('not ready')
+        recvall(client, data)        
     if not data:
         return 'broken connection'
-    tools.log('recvall 3')
     if len(data)<5: return recvall(client, data)
-    tools.log('recvall 4')
     try:
         length=int(data[0:5])
-        tools.log('length: ' +str(length))
     except:
         return 'no length'
-    tools.log('recvall 5: '+str(length))
     tries=0
     data=data[5:]
-    tools.log('recvall 6:'+str(data))
     while len(data)<length:
-        tools.log('data: ' +str(data))
         d=client.recv(MAX_MESSAGE_SIZE-len(data))
         if not d:
             return 'broken connection'
         data+=d
-    tools.log('recvall 7: '+str(data))
     return data
 
 def serve_once(s, size, handler):
@@ -81,10 +79,13 @@ def connect_error(msg, host, port, counter):
     tools.log('port: ' +str(port))
     tools.log('host: ' +str(host))
     return(connect(msg, port, host, counter+1))
-def send_msg(msg, s):
-    msg=tools.package(msg)
-    s.send(tools.buffer_(str(len(msg)), 5)+msg)
-
+def send_msg(data, sock):
+    data=tools.package(data)
+    data=tools.buffer_(str(len(data)), 5)+data
+    while data:
+        time.sleep(0.1)
+        sent = sock.send(data)
+        data = data[sent:]
 
 def connect(msg, port, host='localhost', counter=0):
     #port = 50000
@@ -93,28 +94,19 @@ def connect(msg, port, host='localhost', counter=0):
     try:
         s.connect((host,port))
     except:
-        return({'error': 'cannot connect'})
+        return({'error': 'cannot connect '+str(host) + ' ' +str(port)})
     try:
         msg['version'] = custom.version
     except:
         pass
     send_msg(msg, s)
-    #ready=select.select([s],[],[], 1)
-    #if ready[0]:
-    try:
-        tools.log('about to try recvall from: '+str(msg))
-        data= recvall(s)
-        tools.log('data: ' +str(data))
-    except:
-        return(connect_error(msg, port, host, counter))
+    data= recvall(s)
     if data=='broken connection':
         print('could not connect')
         return(connect_error(msg, port, host, counter))
     if data=='no length':
         print('should start with length')
         return(connect_error(msg, port, host, counter))
-    #else:
-    #    return connect_error(msg, host, port, counter)
     data=tools.unpackage(data)
     return(data)
 def send_command(peer, msg, response_time=1):

@@ -29,6 +29,7 @@ def ask_for_txs(peer, DB):
         cmd(peer, {'type': 'pushtx', 'tx': push})
     return 0
 def give_block(peer, DB, block_count_peer):
+    tools.log('give block')
     blocks=[]
     b=[max(block_count_peer+1, 0), min(tools.db_get('length'), block_count_peer+custom.download_many)]
     for i in range(b[0], b[1]+1):
