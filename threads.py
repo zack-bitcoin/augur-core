@@ -65,6 +65,7 @@ def main(brainwallet, pubkey_flag=False):
     DB['heart_queue'].put('stop')
     for p in [[custom.port, '127.0.0.1'], [custom.api_port, 'localhost'], [custom.database_port, 'localhost']]:
         networking.connect('stop', p[0], p[1])
+        networking.connect('stop', p[0], p[1])
     for cmd in cmds:
         cmd.join()
         tools.log('stopped a thread')

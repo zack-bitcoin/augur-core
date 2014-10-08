@@ -9,7 +9,6 @@ def serve_forever(handler, port, heart_queue='default', external=False):
         host='0.0.0.0'
     else:
         host = 'localhost'
-    #port = 50000
     backlog = 5
     time.sleep(1)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,22 +20,22 @@ def serve_forever(handler, port, heart_queue='default', external=False):
         time.sleep(2)
         return serve_forever(handler, port, heart_queue)
     s.listen(backlog)
-    try:
-        while 1:
-            serve_once(s, MAX_MESSAGE_SIZE, handler)
-    except:
-        tools.log('networking error: ' +str(port) + ' ' + str(sys.exc_info()))
+    while True:
+        try:
+            a=serve_once(s, MAX_MESSAGE_SIZE, handler)
+            if a=='stop': 
+                tools.log('shutting off server: ' +str(port))
+                return
+        except:
+            tools.log('networking error: ' +str(port) + ' ' + str(sys.exc_info()))
 def recvall(client, data=''):
-    #ready=select.select([client],[],[], 1)
-    #if not ready[0]:
     try:
         data+=client.recv(MAX_MESSAGE_SIZE)
     except:
-        time.sleep(0.1)
+        time.sleep(0.01)
         tools.log('not ready')
         recvall(client, data)        
     if not data:
-        #this is the spot that txs keep taking me.
         return 'broken connection'
     if len(data)<5: return recvall(client, data)
     try:
@@ -53,41 +52,39 @@ def recvall(client, data=''):
     try:
         data=unpackage(data)
     except:
-        print('recieved bad data: ' +str(data))
-        return serve_once(s, size, handler)
+        pass
     return data
-
 def serve_once(s, size, handler):
     client, address = s.accept()
     data=recvall(client)
     if data=='broken connection':
-        print('broken connection')
+        #print('broken connection')
         return serve_once(s, size, handler)
     if data=='no length':
-        print('recieved data that did not start with its length')
+        #print('recieved data that did not start with its length')
         return serve_once(s, size, handler)
-    if data=='stop': return
-    data=handler(data)
+    if data=='stop': return 'stop'
+    if data=='ping': data='pong'
+    else: data=handler(data)
     send_msg(data, client)
     client.close() 
-
+    return 0
 def connect_error(msg, port, host, counter):
     if counter>3:
         return({'error':'could not get a response'})
-    #tools.log('no response from peer')
-    #tools.log('port: ' +str(port))
-    #tools.log('host: ' +str(host))
     return(connect(msg, port, host, counter+1))
 def send_msg(data, sock):
     data=tools.package(data)
     data=tools.buffer_(str(len(data)), 5)+data
     while data:
-        time.sleep(0.1)
-        sent = sock.send(data)
+        time.sleep(0.01)
+        try:
+            sent = sock.send(data)
+        except:
+            return 'peer died'
         data = data[sent:]
-
+    return 0
 def connect(msg, port, host='localhost', counter=0):
-    #port = 50000
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setblocking(5)
     try:
@@ -98,7 +95,8 @@ def connect(msg, port, host='localhost', counter=0):
         msg['version'] = custom.version
     except:
         pass
-    send_msg(msg, s)
+    r=send_msg(msg, s)
+    if r=='peer died': return('peer died: ' +str(msg))
     data= recvall(s)
     if data=='broken connection':
         tools.log('broken connection: ' +str(msg))

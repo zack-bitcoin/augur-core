@@ -18,9 +18,7 @@ def download_blocks(peer, DB, peers_block_count, length):
         DB['suggested_blocks'].put([block, peer])
     return 0
 def ask_for_txs(peer, DB):
-    tools.log('peer: ' +str(peer))
     txs = cmd(peer, {'type': 'txs'})
-    tools.log('txs: ' +str(txs))
     if not isinstance(txs, list):
         return -1
     for tx in txs:
@@ -31,7 +29,6 @@ def ask_for_txs(peer, DB):
         cmd(peer, {'type': 'pushtx', 'tx': push})
     return 0
 def give_block(peer, DB, block_count_peer):
-    tools.log('give block')
     blocks=[]
     b=[max(block_count_peer+1, 0), min(tools.db_get('length'), block_count_peer+custom.download_many)]
     for i in range(b[0], b[1]+1):
@@ -40,12 +37,8 @@ def give_block(peer, DB, block_count_peer):
                'blocks': blocks})
     return 0
 def peer_check(i, peers, DB):
-    tools.log('peer check')
-    tools.log('peers: ' +str(peers))
     peer=peers[i][0]
-    tools.log('peer: ' +str(peer))
     block_count = cmd(peer, {'type': 'blockCount'})
-    tools.log('block count: ' +str(block_count))
     if not isinstance(block_count, dict):
         return
     if 'error' in block_count.keys():
@@ -94,7 +87,7 @@ def main_once(DB):
     pr=tools.db_get('peers_ranked')
     pr=sorted(pr, key=lambda r: r[2])
     pr.reverse()
-    if DB['suggested_blocks'].empty() and tools.db_get('length')>100:
+    if DB['suggested_blocks'].empty() and tools.db_get('length')>3:
         time.sleep(10)
     i=0
     while not DB['suggested_blocks'].empty():

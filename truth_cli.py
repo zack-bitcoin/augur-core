@@ -11,6 +11,7 @@ def build_buy_shares():
     tx['buy']=[]
     for i in range(num_states):
         tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.\n>')))
+    print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
 def build_pm():
     tx={'type':'prediction_market', 'fees':0}
@@ -36,6 +37,7 @@ def build_pm():
         if i!=num_states-1:
             next_comb=(str(raw_input('how does the '+str(i)+' state depend upon the outcome of the decisions? For example: if there are 2 decisions, and this market only comes true when the first is "yes" and the second is "no", then you would put: "1 0" here.\n>')))
             tx['states_combinatory'].append(map(int, next_comb.split(' ')))
+    print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
 def main():
     info=sys.argv
