@@ -36,6 +36,7 @@ def recvall(client, data=''):
         tools.log('not ready')
         recvall(client, data)        
     if not data:
+        #this is the spot that txs keep taking me.
         return 'broken connection'
     if len(data)<5: return recvall(client, data)
     try:
@@ -49,6 +50,11 @@ def recvall(client, data=''):
         if not d:
             return 'broken connection'
         data+=d
+    try:
+        data=unpackage(data)
+    except:
+        print('recieved bad data: ' +str(data))
+        return serve_once(s, size, handler)
     return data
 
 def serve_once(s, size, handler):
@@ -60,24 +66,17 @@ def serve_once(s, size, handler):
     if data=='no length':
         print('recieved data that did not start with its length')
         return serve_once(s, size, handler)
-    try:
-        data=unpackage(data)
-    except:
-        print('recieved bad data: ' +str(data))
-        return serve_once(s, size, handler)
     if data=='stop': return
     data=handler(data)
-    data=package(data)
-    if data:
-        send_msg(data, client)
+    send_msg(data, client)
     client.close() 
 
-def connect_error(msg, host, port, counter):
+def connect_error(msg, port, host, counter):
     if counter>3:
         return({'error':'could not get a response'})
-    tools.log('no response from peer')
-    tools.log('port: ' +str(port))
-    tools.log('host: ' +str(host))
+    #tools.log('no response from peer')
+    #tools.log('port: ' +str(port))
+    #tools.log('host: ' +str(host))
     return(connect(msg, port, host, counter+1))
 def send_msg(data, sock):
     data=tools.package(data)
@@ -94,7 +93,7 @@ def connect(msg, port, host='localhost', counter=0):
     try:
         s.connect((host,port))
     except:
-        return({'error': 'cannot connect '+str(host) + ' ' +str(port)})
+        return({'error': 'cannot connect host:'+str(host) + ' port:' +str(port)})
     try:
         msg['version'] = custom.version
     except:
@@ -102,12 +101,11 @@ def connect(msg, port, host='localhost', counter=0):
     send_msg(msg, s)
     data= recvall(s)
     if data=='broken connection':
-        print('could not connect')
+        tools.log('broken connection: ' +str(msg))
         return(connect_error(msg, port, host, counter))
     if data=='no length':
-        print('should start with length')
+        tools.log('no length: ' +str(msg))
         return(connect_error(msg, port, host, counter))
-    data=tools.unpackage(data)
     return(data)
 def send_command(peer, msg, response_time=1):
     return connect(msg, peer[1], peer[0])

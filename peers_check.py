@@ -18,7 +18,9 @@ def download_blocks(peer, DB, peers_block_count, length):
         DB['suggested_blocks'].put([block, peer])
     return 0
 def ask_for_txs(peer, DB):
+    tools.log('peer: ' +str(peer))
     txs = cmd(peer, {'type': 'txs'})
+    tools.log('txs: ' +str(txs))
     if not isinstance(txs, list):
         return -1
     for tx in txs:
@@ -41,6 +43,7 @@ def peer_check(i, peers, DB):
     tools.log('peer check')
     tools.log('peers: ' +str(peers))
     peer=peers[i][0]
+    tools.log('peer: ' +str(peer))
     block_count = cmd(peer, {'type': 'blockCount'})
     tools.log('block count: ' +str(block_count))
     if not isinstance(block_count, dict):
@@ -71,7 +74,6 @@ def exponential_random(r, i=0):
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
-    tools.log('peers: ' +str(peers))
     p=tools.db_get('peers_ranked')
     if type(p)!=list:
         time.sleep(3)
@@ -80,30 +82,26 @@ def main(peers, DB):
         tools.log('add peer')
         p.append([peer, 5, '0', 0])
     tools.db_put('peers_ranked', p)
-    #try:
-    if True:
+    try:
         while True:
             if tools.db_get('stop')==True: return
             if len(peers)>0:
                 main_once(DB)
-    #except:
-    #    tools.log('main peers check: ' +str(sys.exc_info()))
+    except:
+        tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(DB):
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
     pr=sorted(pr, key=lambda r: r[2])
     pr.reverse()
-    tools.log('peers check 2')
     if DB['suggested_blocks'].empty() and tools.db_get('length')>100:
         time.sleep(10)
     i=0
-    tools.log('peers check 3')
     while not DB['suggested_blocks'].empty():
         i+=1
         time.sleep(0.1)
         if i%100==0: 
             DB['heart_queue'].put('peers check')
-    tools.log('peers check 4')
     DB['heart_queue'].put('peers check')
     i=exponential_random(3.0/4)%len(pr)
     t1=time.time()

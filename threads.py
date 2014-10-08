@@ -36,8 +36,7 @@ def main(brainwallet, pubkey_flag=False):
     time.sleep(4)
     cmds.append(cmd)
     tools.db_put('test', 'TEST')
-    tools.log(tools.db_get('test'))
-    tools.log(tools.db_get('test'))
+    tools.db_get('test')
     tools.db_put('test', 'n')
     b=tools.db_existence(0)
     if not b:
@@ -49,8 +48,6 @@ def main(brainwallet, pubkey_flag=False):
         tools.db_put('times', {})
         tools.db_put('mine', False)
         tools.db_put('diffLength', '0')
-    else:
-        error()
     tools.db_put('stop', False)
     for process in processes[1:]:
         cmd=multiprocessing.Process(target=process['target'], args=process['args'])

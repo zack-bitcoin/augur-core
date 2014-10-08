@@ -31,16 +31,18 @@ def pushtx(dic, DB):
     DB['suggested_txs'].put(dic['tx'])
     return 'success'
 def pushblock(dic, DB):
-    length=db_get('length')
-    block = db_get(length, DB)    
+    length=tools.db_get('length')
+    block = tools.db_get(length, DB)    
+    if 'peer' in dic: peer=dic['peer']
+    else: peer=False
     if 'blocks' in dic:
         for i in range(20):
             if tools.fork_check(dic['blocks'], DB, length, block):
                 blockchain.delete_block(DB)
         for block in dic['blocks']:
-            DB['suggested_blocks'].put([block, dic['peer']])
+            DB['suggested_blocks'].put([block, peer])
     else:
-        DB['suggested_blocks'].put([dic['block'], dic['peer']])
+        DB['suggested_blocks'].put([dic['block'], peer])
     return 'success'
 def main(dic, DB):
     funcs = {'blockCount': blockCount, 'rangeRequest': rangeRequest,
