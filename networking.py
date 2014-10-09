@@ -12,6 +12,7 @@ def serve_forever(handler, port, heart_queue='default', external=False):
     backlog = 5
     time.sleep(1)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     try:
         s.bind((host,port))
     except:
@@ -24,6 +25,7 @@ def serve_forever(handler, port, heart_queue='default', external=False):
         try:
             a=serve_once(s, MAX_MESSAGE_SIZE, handler)
             if a=='stop': 
+                s.close()
                 tools.log('shutting off server: ' +str(port))
                 return
         except:
