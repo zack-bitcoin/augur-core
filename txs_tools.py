@@ -70,8 +70,8 @@ def decisions_keepers(vote_id, jury, DB):
         else:
             tools.log('participation times certainty was too low to include this decision: ' +str(jury['decisions'][i]))
     return out
-def cost_to_buy_shares(tx, DB):
-    pm=tools.db_get(tx['PM_id'], DB)
+def cost_to_buy_shares(tx):
+    pm=tools.db_get(tx['PM_id'])
     shares_purchased=pm['shares_purchased']
     buy=tx['buy']
     B=pm['B']
@@ -80,11 +80,11 @@ def cost_to_buy_shares(tx, DB):
     def add(a, b): return a+b
     C_new=C(map(add, shares_purchased, buy), B)
     return int(C_new-C_old)
-def cost_0(txs, DB):
+def cost_0(txs, address):
     #cost of the zeroth confirmation transactions
     total_cost = []
     votecoin_cost = {}
-    address=tools.db_get('address')
+    #address=tools.db_get('address')
     for Tx in filter(lambda t: address == addr(t), txs):
         def spend_(total_cost=total_cost, votecoin_cost=votecoin_cost):
             total_cost.append(custom.fee)
@@ -95,7 +95,7 @@ def cost_0(txs, DB):
                     votecoin_cost[Tx['vote_id']]=0
                 votecoin_cost[Tx['vote_id']]+=Tx['amount']
         def buy_shares_(total_cost=total_cost):
-            cost = cost_to_buy_shares(Tx, DB)
+            cost = cost_to_buy_shares(Tx)
             total_cost.append(custom.buy_shares_fee)
             total_cost.append(cost)
             total_cost.append(int(abs(cost*0.01)))
@@ -113,7 +113,7 @@ def cost_0(txs, DB):
     return {'truthcoin_cost':sum(total_cost), 'votecoin_cost':votecoin_cost}
 def fee_check(tx, txs, DB):
     address = addr(tx)
-    cost_=cost_0(txs+[tx], DB)
+    cost_=cost_0(txs+[tx], address)
     truthcoin_cost = cost_['truthcoin_cost']
     votecoin_cost = cost_['votecoin_cost']
     acc=tools.db_get(address, DB)

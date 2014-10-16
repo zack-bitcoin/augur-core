@@ -154,7 +154,7 @@ def difficulty(DB, args): return(str(target.target(DB)))
 def my_balance(DB, args, address='default'): 
     if address=='default':
         address=tools.db_get('address')
-    return(str(tools.db_get(address, DB)['amount']-txs_tools.cost_0(tools.db_get('txs'), DB)['truthcoin_cost']))
+    return(str(tools.db_get(address, DB)['amount']-txs_tools.cost_0(tools.db_get('txs'), address)['truthcoin_cost']))
 def balance(DB, args): 
     if len(args)<1:
         return('what address do you want the balance for?')
