@@ -1,6 +1,22 @@
-"""This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
-import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, database
+This program starts all the threads going.
+When it hears a kill signal, it kills all the threads.
+"""
+import ht
+import miner
+import peer_recieve
+import time
+import threading
+import tools
+import custom
+import networking
+import sys
+import truthcoin_api
+import blockchain
+import peers_check
+import multiprocessing
+import database
+
 def main(brainwallet, pubkey_flag=False):
     print('starting truthcoin')
     if not pubkey_flag:
@@ -8,27 +24,32 @@ def main(brainwallet, pubkey_flag=False):
         pubkey=tools.privtopub(privkey)
     else:
         pubkey=brainwallet
+    '''
     DB = {
         'reward_peers_queue':multiprocessing.Queue(),
         'suggested_blocks': multiprocessing.Queue(),
         'suggested_txs': multiprocessing.Queue(),
         'heart_queue': multiprocessing.Queue(),
-    }
+    }'''
+
+    blocks_queue = multiprocessing.Queue()
+    txs_queue = multiprocessing.Queue()
+    heart_queue = multiprocessing.Queue()
     processes= [
         {'target': database.main,
-         'args': (DB['heart_queue'],)},
+         'args': (heart_queue,)},
         #{'target': peers_check.main,
         # 'args': (custom.peers, DB)},
         {'target':tools.heart_monitor,
-         'args':(DB['heart_queue'], )},
+         'args':(heart_queue,)},
         {'target': blockchain.main,
-         'args': (DB,)},
+         'args': (blocks_queue,txs_queue)},
         {'target': truthcoin_api.main,
-         'args': (DB, DB['heart_queue'])},
+         'args': (heart_queue,)},
         {'target': miner.main,
-         'args': (pubkey, DB)},
+         'args': (pubkey, heart_queue, blocks_queue)},
         {'target': networking.serve_forever,
-         'args': (lambda d: peer_recieve.main(d, DB), custom.port, DB['heart_queue'], True)}
+         'args': (lambda d: peer_recieve.main(d, blocks_queue, txs_queue), custom.port, heart_queue, True)}
     ]
     cmds=[]
     cmd=multiprocessing.Process(target=processes[0]['target'], args=processes[0]['args'])
@@ -58,11 +79,11 @@ def main(brainwallet, pubkey_flag=False):
     else:
         tools.db_put('privkey', 'Default')
     tools.db_put('address', tools.make_address([pubkey], 1))
-    peers_check.main(custom.peers, DB)
+    peers_check.main(custom.peers, heart_queue, blocks_queue, txs_queue)
     while not tools.db_get('stop'):
         time.sleep(0.5)
     tools.log('about to stop threads')
-    DB['heart_queue'].put('stop')
+    heart_queue.put('stop')
     for p in [[custom.port, '127.0.0.1'], [custom.api_port, 'localhost'], [custom.database_port, 'localhost']]:
         networking.connect('stop', p[0], p[1])
         networking.connect('stop', p[0], p[1])

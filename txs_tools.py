@@ -1,25 +1,31 @@
-"""These are functions that are exclusively used for the truthcoin aspects of the blockchain.
-tools.py contains functions that are used everywhere.
 """
-import blockchain, custom, math, tools, numpy
+These are functions that are exclusively used for the truthcoin aspects
+of the blockchain. tools.py contains functions that are used everywhere.
+"""
+import blockchain
+import custom
+import math
+import tools
+import numpy
 addr=tools.addr
 
-def weights(vote_id, DB, jury='default'):
+def weights(vote_id, jury='default'):
     out=[]
     if jury=='default':
-        jury=tools.db_get(jury, DB)
+        jury=tools.db_get(jury)
     if 'members' not in jury:
         return 'error'
     for member in jury['members']:
-        acc=tools.db_get(member, DB)
+        acc=tools.db_get(member)
         out.append([acc['votecoin'][vote_id]])
     return out
-def decision_matrix(jury, decisions, DB):
+
+def decision_matrix(jury, decisions):
     matrix=[]
     if 'members' not in jury:
         tools.log('DECISION MATRIX ERROR UNINITIALIZED JURY')
     for member in jury['members']:#empty
-        acc=tools.db_get(member, DB)
+        acc=tools.db_get(member)
         row=[]
         for decision in decisions:
             vote='unsure'
@@ -36,13 +42,14 @@ def decision_matrix(jury, decisions, DB):
                 row.append(numpy.nan)
         matrix.append(row)
     return matrix
-def decisions_keepers(vote_id, jury, DB):
+
+def decisions_keepers(vote_id, jury):
     #this is returning something of length voters.
     
-    wt=map(lambda x: x[0], weights(vote_id, DB, jury))
+    wt=map(lambda x: x[0], weights(vote_id, jury))
     if wt=='error': return 'error'
     total_weight=sum(wt)
-    matrix=decision_matrix(jury, jury['decisions'], DB)
+    matrix=decision_matrix(jury, jury['decisions'])
     #exclude decisions with insufficient participation*certainty
     decisions=[]
     if len(matrix)<3: 
@@ -70,6 +77,7 @@ def decisions_keepers(vote_id, jury, DB):
         else:
             tools.log('participation times certainty was too low to include this decision: ' +str(jury['decisions'][i]))
     return out
+
 def cost_to_buy_shares(tx):
     pm=tools.db_get(tx['PM_id'])
     shares_purchased=pm['shares_purchased']
@@ -80,6 +88,7 @@ def cost_to_buy_shares(tx):
     def add(a, b): return a+b
     C_new=C(map(add, shares_purchased, buy), B)
     return int(C_new-C_old)
+
 def cost_0(txs, address):
     #cost of the zeroth confirmation transactions
     total_cost = []
@@ -111,12 +120,13 @@ def cost_0(txs, address):
             'prediction_market':(lambda: total_cost.append(Tx['B']*math.log(len(Tx['states']))))}
         Do[Tx['type']]()
     return {'truthcoin_cost':sum(total_cost), 'votecoin_cost':votecoin_cost}
-def fee_check(tx, txs, DB):
+
+def fee_check(tx, txs):
     address = addr(tx)
     cost_=cost_0(txs+[tx], address)
     truthcoin_cost = cost_['truthcoin_cost']
     votecoin_cost = cost_['votecoin_cost']
-    acc=tools.db_get(address, DB)
+    acc=tools.db_get(address)
     if int(acc['amount']) < truthcoin_cost: 
         tools.log('insufficient truthcoin')
         return False
@@ -132,64 +142,35 @@ def fee_check(tx, txs, DB):
             tools.log('not enough votecoin: ' +str(v_id))
             return False
     return True
-'''
-db={}
-def put_x(s):
-    def f(d, x): return tools.db_put(x+s, d)
-    return f
-def get_x(s): return (lambda x: tools.db_get(x+s))
-def existence_x(s): return (lambda x: tools.db_existence(x+s))
-verbs=[put_x, get_x, existence_x]
-verb_names=['get', 'put', 'existence']
-adj=['jury', 'pm', 'dec', 'block', 'addr']
-prefix=['j_', 'p_', 'd_', 'b_', '']
-for v in range(len(verbs)):
-    db[verb_names[v]]={}
-    for a in range(len(adj)):
-        db[verb_names[v]][adj[a]]=verbs[v](prefix[a])
-def put_x(s, d, x): return db_put(x+s, d)
-def put_jury(s, d): return put_x(s, d, 'j_')
-def put_pm(s, d): return put_x(s, d, 'p_')
-def put_dec(s, d): return put_x(s, d, 'd_')
-def put_block(n, d): return put_x(s, d, 'b_')
-def put_addr(n, d): return db_put(s, d)
-def get_x(s, x): return db_get(x+s)
-def get_jury(s): return get_x(s, 'j_')
-def get_pm(s): return get_x(s, 'p_')
-def get_dec(s): return get_x(s, 'd_')
-def get_block(n): return get_x(s, 'b_')
-def get_addr(n): return db_get(s)
-def existence_x(s, x): return db_existence(x+s)
-def existence_jury(s): return existence_x(s, 'j_')
-def existence_pm(s): return existence_x(s, 'p_')
-def existence_dec(s): return existence_x(s, 'd_')
-def existence_block(s): return existence_x(s, 'b_')
-def existence_addr(n): return db_existence(s)
-'''
 
 def get_(loc, thing): 
     if loc==[]: return thing
     return get_(loc[1:], thing[loc[0]])
+
 def set_(loc, dic, val):
     get_(loc[:-1], dic)[loc[-1]] = val
     return dic
-def adjust(pubkey, DB, f):#location shouldn't be here.
-    acc = tools.db_get(pubkey, DB)
+
+def adjust(pubkey, f):#location shouldn't be here.
+    acc = tools.db_get(pubkey)
     f(acc)
-    tools.db_put(pubkey, acc, DB)    
+    tools.db_put(pubkey, acc)   
+
 def adjust_int(key, pubkey, amount, DB, add_block):
     def f(acc, amount=amount):
         if not add_block: amount=-amount
         set_(key, acc, (get_(key, acc) + amount))
-    adjust(pubkey, DB, f)
+    adjust(pubkey, f)
+
 def adjust_string(location, pubkey, old, new, DB, add_block):
     def f(acc, old=old, new=new):
         current=get_(location, acc)
         if add_block: 
             set_(location, acc, new)
         else: set_(location, acc, old)
-    adjust(pubkey, DB, f)
-def adjust_dict(location, pubkey, remove, dic, DB, add_block):
+    adjust(pubkey, f)
+
+def adjust_dict(location, pubkey, remove, dic, add_block):
     def f(acc, remove=remove, dic=dic):
         current=get_(location, acc)
         if remove != add_block:# 'xor' and '!=' are the same.
@@ -197,8 +178,9 @@ def adjust_dict(location, pubkey, remove, dic, DB, add_block):
         else: 
             current.pop(dic.keys()[0])
         set_(location, acc, current)
-    adjust(pubkey, DB, f)    
-def adjust_list(location, pubkey, remove, item, DB, add_block):
+    adjust(pubkey, f)
+
+def adjust_list(location, pubkey, remove, item, add_block):
     def f(acc, remove=remove, item=item):
         current=get_(location, acc)
         if remove != (add_block):# 'xor' and '!=' are the same.
@@ -206,29 +188,36 @@ def adjust_list(location, pubkey, remove, item, DB, add_block):
         else: 
             current.remove(item)
         set_(location, acc, current)
-    adjust(pubkey, DB, f)    
+    adjust(pubkey, f)
+
 def symmetric_put(id_, dic, DB, add_block):
-    if add_block: tools.db_put(id_, dic, DB)
-    else: tools.db_delete(id_, DB)
-def initialize_to_zero_helper(loc, address, DB):
-    acc=tools.db_get(address, DB)
+    if add_block:
+        tools.db_put(id_, dic)
+    else:
+        tools.db_delete(id_)
+
+def initialize_to_zero_helper(loc, address):
+    acc=tools.db_get(address)
     if loc[1] not in acc[loc[0]]:
         acc[loc[0]][loc[1]]=0
-        tools.db_put(address , acc, DB)    
+        tools.db_put(address , acc)
+
 def initialize_to_zero_votecoin(vote_id, address, DB, add_block):
-    initialize_to_zero_helper(['votecoin', vote_id], address, DB)
-    jury=tools.db_get(vote_id, DB)
+    initialize_to_zero_helper(['votecoin', vote_id], address)
+    jury=tools.db_get(vote_id)
     if 'members' not in jury:
         tools.log('initialized to zero error')
     if address not in jury['members']:
-        adjust_list(['members'], vote_id, False, address, DB, add_block)
+        adjust_list(['members'], vote_id, False, address, add_block)
+
 def memory_leak_helper(loc, address, DB, add_block):
-    acc=tools.db_get(address, DB)
+    acc=tools.db_get(address)
     bool_=get_(loc, acc)==0
     if bool_:
-        adjust_dict(loc, address, True, {loc[-1]: 0}, DB, add_block)
+        adjust_dict(loc, address, True, {loc[-1]: 0}, add_block)
     return bool_
+
 def memory_leak_votecoin(vote_id, address, DB, add_block):
-    bool_=memory_leak_helper(['votecoin', vote_id], address, DB, add_block)
+    bool_=memory_leak_helper(['votecoin', vote_id], address, add_block)
     if bool_:
-        adjust_list(['members'], vote_id, True, address, DB, add_block)
+        adjust_list(['members'], vote_id, True, address, add_block)

@@ -15,15 +15,15 @@ def getCommand(args): return db_get(args[0])
 def exiCommand(args): return db_existence(args[0])
 def delCommand(args): return db_delete(args[0])
 default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
-def db_get(n, DB={}):
+def db_get(n):
     out=ht.get(n)
     if out=='undefined':
         return copy.deepcopy(default_entry)
     return out
-def db_put(key, dic, DB={}): 
+def db_put(key, dic): 
     return ht.put(key, dic)
-def db_delete(key, DB={}): return db_put(key, 'n', DB)
-def db_existence(key, DB={}):
+def db_delete(key): return db_put(key, 'n')
+def db_existence(key):
     n=str(key)
     out=ht.get(n)
     return not out=='undefined'

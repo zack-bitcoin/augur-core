@@ -1,50 +1,63 @@
-"""When a peer talks to us, this is how we generate a response. This is the external API.
 """
-import networking, custom, tools, blockchain, time
+When a peer talks to us, this is how we generate a response.
+This is the external API.
+"""
+import networking
+import custom
+import tools
+import blockchain
+import time
+
 def security_check(dic):
     if 'version' not in dic or dic['version'] != custom.version:
         return {'bool': False, 'error': 'version'}
     else:
         #we could add security features here.
         return {'bool': True, 'newdic': dic}
-def blockCount(dic, DB):
+
+def blockCount(dic):
     length = tools.db_get('length')
     if length >= 0:
         return {'length': length,
                 'diffLength': tools.db_get('diffLength')}
     else:
         return {'length': -1, 'diffLength': '0'}
-def rangeRequest(dic, DB):
+
+def rangeRequest(dic):
     ran = dic['range']
     out = []
     counter = 0
     while (len(tools.package(out)) < custom.max_download
            and ran[0] + counter <= ran[1]):
-        block = tools.db_get(ran[0] + counter, DB)
+        block = tools.db_get(ran[0] + counter)
         if 'length' in block:
             out.append(block)
         counter += 1
     return out
-def txs(dic, DB):
+
+def txs(dic):
     return tools.db_get('txs')
-def pushtx(dic, DB):
-    DB['suggested_txs'].put(dic['tx'])
+
+def pushtx(dic, txs_queue):
+    txs_queue.put(dic['tx'])
     return 'success'
-def pushblock(dic, DB):
+
+def pushblock(dic, blocks_queue):
     length=tools.db_get('length')
-    block = tools.db_get(length, DB)    
+    block = tools.db_get(length)    
     if 'peer' in dic: peer=dic['peer']
     else: peer=False
     if 'blocks' in dic:
         for i in range(20):
-            if tools.fork_check(dic['blocks'], DB, length, block):
-                blockchain.delete_block(DB)
+            if tools.fork_check(dic['blocks'], length, block):
+                blockchain.delete_block()
         for block in dic['blocks']:
-            DB['suggested_blocks'].put([block, peer])
+            blocks_queue.put([block, peer])
     else:
-        DB['suggested_blocks'].put([dic['block'], peer])
+        blocks_queue.put([dic['block'], peer])
     return 'success'
-def main(dic, DB):
+
+def main(dic, blocks_queue, txs_queue):
     funcs = {'blockCount': blockCount, 'rangeRequest': rangeRequest,
              'txs': txs, 'pushtx': pushtx, 'pushblock': pushblock}
     if 'type' not in dic:
@@ -55,6 +68,11 @@ def main(dic, DB):
     if not check['bool']:
         return check
     try:
-        return funcs[dic['type']](check['newdic'], DB)
-    except:
-        pass
+        if dic['type'] == 'pushtx':
+            return pushtx(check['newdic'], txs_queue)
+        elif dic['type'] == 'pushblock':
+            return pushblock(check['newdic'], blocks_queue)
+        else:
+            return funcs[dic['type']](check['newdic'])
+    except Exception as exc:
+        tools.log('peer_recieve.main: erro: ' + exc.__class__.__name__ + ': ' + exc.message)

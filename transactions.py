@@ -1,6 +1,12 @@
-"""This file explains how we tell if a transaction is valid or not, it explains
-how we update the database when new transactions are added to the blockchain."""
-import blockchain, custom, copy, tools, txs_tools
+"""
+This file explains how we tell if a transaction is valid or not, it explains
+how we update the database when new transactions are added to the blockchain.
+"""
+import blockchain
+import custom
+import copy
+import tools
+import txs_tools
 import txs_truthcoin as tt
 E_check=tools.E_check
 def sigs_match(Sigs, Pubs, msg):
@@ -18,6 +24,7 @@ def sigs_match(Sigs, Pubs, msg):
         sigs.remove(sig)
         pubs.remove(a['pub'])
     return True
+
 def signature_check(tx):
     tx_copy = copy.deepcopy(tx)
     if not E_check(tx, 'signatures', list):
@@ -40,7 +47,7 @@ def signature_check(tx):
         return False
     return True
 
-def spend_verify(tx, txs, out, DB):
+def spend_verify(tx, txs, out):
     if not E_check(tx, 'to', [str, unicode]):
         out[0]+='no to'
         return False
@@ -54,7 +61,7 @@ def spend_verify(tx, txs, out, DB):
     if not E_check(tx, 'amount', int):
         out[0]+='no amount'
         return False
-    if not txs_tools.fee_check(tx, txs, DB):
+    if not txs_tools.fee_check(tx, txs):
         out[0]+='fee check error'
         return False
     if 'vote_id' in tx:
@@ -62,7 +69,8 @@ def spend_verify(tx, txs, out, DB):
             out[0]+='cannot hold votecoins in a multisig address'
             return False
     return True
-def mint_verify(tx, txs, out, DB):
+
+def mint_verify(tx, txs, out):
     return 0 == len(filter(lambda t: t['type'] == 'mint', txs))
 tx_check = {'spend':spend_verify,
             'mint':mint_verify,
@@ -80,24 +88,26 @@ adjust_int=txs_tools.adjust_int
 adjust_dict=txs_tools.adjust_dict
 adjust_list=txs_tools.adjust_list
 symmetric_put=txs_tools.symmetric_put
-def mint(tx, DB, add_block):
+def mint(tx, add_block):
     address = tools.addr(tx)
-    adjust_int(['amount'], address, custom.block_reward, DB, add_block)
-    adjust_int(['count'], address, 1, DB, add_block)
-def spend(tx, DB, add_block):
+    adjust_int(['amount'], address, custom.block_reward, add_block)
+    adjust_int(['count'], address, 1, add_block)
+
+def spend(tx, add_block):
     address = tools.addr(tx)
     if 'vote_id' in tx:
-        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], address, DB, add_block)
-        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], tx['to'], DB, add_block)
-        adjust_int(['votecoin', tx['vote_id']], address, -tx['amount'], DB, add_block)
-        adjust_int(['votecoin', tx['vote_id']], tx['to'], tx['amount'], DB, add_block)
-        txs_tools.memory_leak_votecoin(tx['vote_id'], address, DB, add_block)#this should get rid of any zeros in the jury so we don't leak memory.
-        txs_tools.memory_leak_votecoin(tx['vote_id'], tx['to'], DB, add_block)#this should get rid of any zeros in the jury so we don't leak memory.
+        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], address, add_block)
+        txs_tools.initialize_to_zero_votecoin(tx['vote_id'], tx['to'], add_block)
+        adjust_int(['votecoin', tx['vote_id']], address, -tx['amount'], add_block)
+        adjust_int(['votecoin', tx['vote_id']], tx['to'], tx['amount'], add_block)
+        txs_tools.memory_leak_votecoin(tx['vote_id'], address, add_block)#this should get rid of any zeros in the jury so we don't leak memory.
+        txs_tools.memory_leak_votecoin(tx['vote_id'], tx['to'], add_block)#this should get rid of any zeros in the jury so we don't leak memory.
     else:
-        adjust_int(['amount'], address, -tx['amount'], DB, add_block)
-        adjust_int(['amount'], tx['to'], tx['amount'], DB, add_block)
-    adjust_int(['amount'], address, -custom.fee, DB, add_block)
-    adjust_int(['count'], address, 1, DB, add_block)
+        adjust_int(['amount'], address, -tx['amount'], add_block)
+        adjust_int(['amount'], tx['to'], tx['amount'], add_block)
+    adjust_int(['amount'], address, -custom.fee, add_block)
+    adjust_int(['count'], address, 1, add_block)
+
 update = {'mint':mint,
           'spend':spend,
           'create_jury':tt.create_jury,

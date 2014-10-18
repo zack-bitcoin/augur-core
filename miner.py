@@ -1,5 +1,6 @@
-""" This file mines blocks and talks to peers. It maintains consensus of the
-    blockchain.
+""" 
+This file mines blocks and talks to peers.
+It maintains consensus of the blockchain.
 """
 from Queue import Empty
 import blockchain
@@ -13,29 +14,32 @@ import time
 import copy
 import sys
 import target
-def make_mint(pubkey, DB):
+
+def make_mint(pubkey):
     address = tools.make_address([pubkey], 1)
     return {'type': 'mint',
             'pubkeys': [pubkey],
             'signatures': ['first_sig'],
-            'count': tools.count(address, DB)}
-def genesis(pubkey, DB):
-    target_ = target.target(DB)
+            'count': tools.count(address)}
+
+def genesis(pubkey):
+    target_ = target.target()
     out = {'version': custom.version,
            'length': 0,
            'time': time.time(),
            'target': target_,
            'diffLength': blockchain.hexInvert(target_),
-           'txs': [make_mint(pubkey, DB)]}
+           'txs': [make_mint(pubkey)]}
     out = tools.unpackage(tools.package(out))
     return out
-def make_block(prev_block, txs, pubkey, DB):
+
+def make_block(prev_block, txs, pubkey):
     leng = int(prev_block['length']) + 1
-    target_ = target.target(DB, leng)
+    target_ = target.target(leng)
     diffLength = blockchain.hexSum(prev_block['diffLength'],
                                    blockchain.hexInvert(target_))
     out = {'version': custom.version,
-           'txs': txs + [make_mint(pubkey, DB)],
+           'txs': txs + [make_mint(pubkey)],
            'length': leng,
            'time': time.time(),
            'diffLength': diffLength,
@@ -43,6 +47,7 @@ def make_block(prev_block, txs, pubkey, DB):
            'prevHash': tools.det_hash(prev_block)}
     out = tools.unpackage(tools.package(out))
     return out
+
 def POW(block, restart_signal):
     halfHash = tools.det_hash(block)
     block[u'nonce'] = random.randint(0, 10000000000000000000000000000000000000000)
@@ -72,28 +77,29 @@ def restart_workers(workers):
     for worker in workers:
         dump_out(worker['in_queue'])
         worker['restart'].set()
-def main(pubkey, DB):
+def main(pubkey, heart_queue, blocks_queue):
     num_cores = multiprocessing.cpu_count()
     solution_queue = multiprocessing.Queue()
     workers = [new_worker(solution_queue) for _ in range(num_cores)]
     try:
         while True:
-            DB['heart_queue'].put('miner')
+            heart_queue.put('miner')
             if tools.db_get('stop'): 
                 return
             elif tools.db_get('mine'):
-                main_once(pubkey, DB, num_cores, solution_queue, workers)
+                main_once(pubkey, blocks_queue, num_cores, solution_queue, workers)
             else:
                 time.sleep(1)
     except:
         tools.log('miner main: ' +str(sys.exc_info()))
-def main_once(pubkey, DB, num_cores, solution_queue, workers):
+
+def main_once(pubkey, blocks_queue, num_cores, solution_queue, workers):
     length=tools.db_get('length')
     if length==-1:
-        candidate_block = genesis(pubkey, DB)
+        candidate_block = genesis(pubkey)
     else:
-        prev_block = tools.db_get(length, DB)
-        candidate_block = make_block(prev_block, tools.db_get('txs'), pubkey, DB)
+        prev_block = tools.db_get(length)
+        candidate_block = make_block(prev_block, tools.db_get('txs'), pubkey)
     work = candidate_block
     for worker in workers:
         worker['in_queue'].put(work)
@@ -104,9 +110,10 @@ def main_once(pubkey, DB, num_cores, solution_queue, workers):
     restart_workers(workers)
     while not solution_queue.empty():
         try:
-            DB['suggested_blocks'].put(solution_queue.get(False))
+            blocks_queue.put(solution_queue.get(False))
         except:
             continue
+
 def miner(restart, solution_queue, in_queue):
     while True:
         try:

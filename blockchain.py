@@ -1,23 +1,26 @@
-""" This file explains explains the rules for adding and removing blocks from the local chain.
+"""
+This file explains explains the rules for adding
+and removing blocks from the local chain.
 """
 import time
 import copy
 import custom
 import networking
 import transactions
-import sys
 import tools
 import target
+import Queue
 
-def add_tx(tx, DB):
+def add_tx(tx):
     # Attempt to add a new transaction into the pool.
     #print('top of add_tx')
     out=['']
-    if type(tx) != type({'a':1}): 
+    if type(tx) != dict:
         return False
     address = tools.make_address(tx['pubkeys'], len(tx['signatures']))
     def verify_count(tx, txs):
-        return tx['count'] != tools.count(address, DB)
+        return tx['count'] != tools.count(address)
+
     def type_check(tx, txs):
         if not tools.E_check(tx, 'type', [str, unicode]):
             out[0]+='blockchain type'
@@ -28,8 +31,10 @@ def add_tx(tx, DB):
             out[0]+='bad type'
             return False
         return True
+
     def too_big_block(tx, txs):
         return len(tools.package(txs+[tx])) > networking.MAX_MESSAGE_SIZE - 5000
+
     def verify_tx(tx, txs, out):
         if not type_check(tx, txs):
             out[0]+='type error'
@@ -43,10 +48,11 @@ def add_tx(tx, DB):
         if too_big_block(tx, txs):
             out[0]+='too many txs'
             return False
-        if not transactions.tx_check[tx['type']](tx, txs, out, DB):
+        if not transactions.tx_check[tx['type']](tx, txs, out):
             out[0]+= 'tx: ' + str(tx)
             return False
         return True
+
     #tools.log('attempt to add tx: ' +str(tx))
     T=tools.db_get('txs')
     if verify_tx(tx, T, out):
@@ -55,17 +61,18 @@ def add_tx(tx, DB):
         return('added tx: ' +str(tx))
     else:
         return('failed to add tx because: '+out[0])
-def recent_blockthings(key, DB, size, length=0):
+
+def recent_blockthings(key, size, length=0):
     storage = tools.db_get(key)
     def get_val(length):
         leng = str(length)
         if not leng in storage:            
             try:
-                storage[leng] = tools.db_get(leng, DB)[key[:-1]]
+                storage[leng] = tools.db_get(leng)[key[:-1]]
             except:
                 print('leng: ' +str(leng))
                 print('key: ' +str(key))
-                print('db_get: ' +str(tools.db_get(leng, DB)))
+                print('db_get: ' +str(tools.db_get(leng)))
                 print('storage: ' +str(storage))
                 error()
             tools.db_put(key, storage)
@@ -81,13 +88,16 @@ def recent_blockthings(key, DB, size, length=0):
     start = max((length-size), 0)
     clean_up(storage, length-max(custom.mmm, custom.history_length)-100)
     return map(get_val, range(start, length))
+
 def hexSum(a, b):
     # Sum of numbers expressed as hexidecimal strings
     return tools.buffer_(str(hex(int(a, 16)+int(b, 16)))[2: -1], 64)
+
 def hexInvert(n):
     # Use double-size for division, to reduce information leakage.
     return tools.buffer_(str(hex(int('f' * 128, 16) / int(n, 16)))[2: -1], 64)
-def add_block(block_pair, DB):
+
+def add_block(block_pair):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
      hashpower. """
@@ -96,7 +106,7 @@ def add_block(block_pair, DB):
             return 0
         return sorted(mylist)[len(mylist) / 2]
 
-    def block_check(block, DB):
+    def block_check(block):
         def log_(txt): pass #return tools.log(txt)
         def tx_check(txs):
             start = copy.deepcopy(txs)
@@ -106,7 +116,7 @@ def add_block(block_pair, DB):
                 if start == []:
                     return False  # Block passes this test
                 start_copy = copy.deepcopy(start)
-                if transactions.tx_check[start[-1]['type']](start[-1], out, [''], DB):
+                if transactions.tx_check[start[-1]['type']](start[-1], out, ['']):
                     out.append(start.pop())
                 else:
                     return True  # Block is invalid
@@ -128,7 +138,7 @@ def add_block(block_pair, DB):
             log_('diflength error')
             return False
         if length >= 0:
-            if tools.det_hash(tools.db_get(length, DB)) != block['prevHash']:
+            if tools.det_hash(tools.db_get(length)) != block['prevHash']:
                 log_('det hash error')
                 return False
         a = copy.deepcopy(block)
@@ -140,10 +150,10 @@ def add_block(block_pair, DB):
         if tools.det_hash(half_way) > block['target']:
             log_('det hash error 2')
             return False
-        if block['target'] != target.target(DB, block['length']):
+        if block['target'] != target.target(block['length']):
             log_('wrong target')
             return False
-        earliest = median(recent_blockthings('times', DB, custom.mmm))
+        earliest = median(recent_blockthings('times', custom.mmm))
         if 'time' not in block: 
             log_('no time')
             return False
@@ -164,18 +174,19 @@ def add_block(block_pair, DB):
         block=block_pair
         peer=False
     #tools.log('attempt to add block: ' +str(block))
-    if block_check(block, DB):
+    if block_check(block):
         #tools.log('add_block: ' + str(block))
-        tools.db_put(block['length'], block, DB)
+        tools.db_put(block['length'], block)
         tools.db_put('length', block['length'])
         tools.db_put('diffLength', block['diffLength'])
         orphans = tools.db_get('txs')
         tools.db_put('txs', [])
         for tx in block['txs']:
-            transactions.update[tx['type']](tx, DB, True)
+            transactions.update[tx['type']](tx, True)
         for tx in orphans:
-            add_tx(tx, DB)
-def delete_block(DB):
+            add_tx(tx)
+
+def delete_block():
     """ Removes the most recent block from the blockchain. """
     length=tools.db_get('length')
     if length < 0:
@@ -192,23 +203,53 @@ def delete_block(DB):
         tools.db_put('times', ts)
     except:
         pass
-    block = tools.db_get(length, DB)
+    block = tools.db_get(length)
     orphans = tools.db_get('txs')
     tools.db_put('txs', [])
     for tx in block['txs']:
         orphans.append(tx)
         tools.db_put('add_block', False)
-        transactions.update[tx['type']](tx, DB, False)
-    tools.db_delete(length, DB)
+        transactions.update[tx['type']](tx, False)
+    tools.db_delete(length)
     length-=1
     tools.db_put('length', length)
     if length == -1:
         tools.db_put('diffLength', '0')
     else:
-        block = tools.db_get(length, DB)
+        block = tools.db_get(length)
         tools.db_put('diffLength', block['diffLength'])
     for orphan in sorted(orphans, key=lambda x: x['count']):
-        add_tx(orphan, DB)
+        add_tx(orphan)
+
+def main(blocks_queue, txs_queue):
+    '''
+    Listens for blocks and transactions to add to the blockchain
+    or the transaction pool.
+    '''
+    def log_error(action, exc):
+        # logs a useful message in log.py
+        logmsg = ' '.join((
+            'blockchain.main:',
+            'error %s:' % action,
+            exc.__class__.__name__ + ':',
+            exc.message))
+        tools.log(logmsg)
+
+    def do_once_with_timeout(queue, func, timeout):
+        try:
+            data = queue.get(timeout=timeout)
+        except Queue.Empty:
+            return
+        try:
+            func(data)
+        except Exception as exc:
+            log_error(func.__name__, exc)
+
+    while not tools.db_get('stop'):
+        do_once_with_timeout(blocks_queue, add_block, 0.1)
+        do_once_with_timeout(txs_queue, add_tx, 0.1)
+
+'''
 def f(blocks_queue, txs_queue, heart_queue, DB):
     def bb(): return blocks_queue.empty()
     def tb(): return txs_queue.empty()
@@ -216,7 +257,7 @@ def f(blocks_queue, txs_queue, heart_queue, DB):
         while not b():
             time.sleep(0.0001)
             try:
-                g(queue.get(False), DB)
+                g(queue.get(False))
             except:
                 tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
     heart_time=time.time()
@@ -232,4 +273,4 @@ def f(blocks_queue, txs_queue, heart_queue, DB):
             ff(txs_queue, add_tx, tb, 'tx')
 def main(DB):
     return f(DB['suggested_blocks'], DB['suggested_txs'], DB['heart_queue'], DB)
-    
+ '''   

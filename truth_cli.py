@@ -1,10 +1,17 @@
 #!/usr/bin/env python
-import networking, sys, tools, custom, os, multiprocessing, threads
+import networking
+import sys
+import tools
+import custom
+import os
+import multiprocessing
+import threads
 
 def daemonize(f):
     pid=os.fork()
     if pid==0: f()
     else: sys.exit(0)
+
 def build_buy_shares():
     tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?\n>'))}
     num_states=int(raw_input('how many states does this pm have?\n>'))
@@ -13,6 +20,7 @@ def build_buy_shares():
         tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.\n>')))
     print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
+
 def build_pm():
     tx={'type':'prediction_market', 'fees':0}
     pubkey=str(raw_input('What is the address or pubkey of the owner of the PM?\n>'))
@@ -39,6 +47,7 @@ def build_pm():
             tx['states_combinatory'].append(map(int, next_comb.split(' ')))
     print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
+    
 def main():
     info=sys.argv
     p={'command':sys.argv[1:]}
