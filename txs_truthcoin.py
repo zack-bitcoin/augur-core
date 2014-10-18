@@ -209,8 +209,8 @@ def SVD_consensus_check(tx, txs, out):
         return False
     try:
         matrix=txs_tools.decision_matrix(jury, tx['decisions'])
-    except:
-        tools.log(sys.exc_info())
+    except Exception as exc:
+        tools.log(exc)
         tools.log('matrix failure')
         return False
     w=txs_tools.weights(tx['vote_id'], jury)
@@ -371,7 +371,7 @@ def propose_decision(tx, add_block):
     adjust_int(['amount'], address, -custom.propose_decision_fee, add_block)
     decision={'state':'proposed',#proposed, yes, no
               'txt':tx['txt']}
-    symmetric_put(tx['decision_id'], decision, dd_block)
+    symmetric_put(tx['decision_id'], decision, add_block)
 
 def jury_vote(tx, add_block):
     address=addr(tx)

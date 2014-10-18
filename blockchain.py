@@ -226,15 +226,6 @@ def main(blocks_queue, txs_queue):
     Listens for blocks and transactions to add to the blockchain
     or the transaction pool.
     '''
-    def log_error(action, exc):
-        # logs a useful message in log.py
-        logmsg = ' '.join((
-            'blockchain.main:',
-            'error %s:' % action,
-            exc.__class__.__name__ + ':',
-            exc.message))
-        tools.log(logmsg)
-
     def do_once_with_timeout(queue, func, timeout):
         try:
             data = queue.get(timeout=timeout)
@@ -243,7 +234,7 @@ def main(blocks_queue, txs_queue):
         try:
             func(data)
         except Exception as exc:
-            log_error(func.__name__, exc)
+            tools.log(exc)
 
     while not tools.db_get('stop'):
         do_once_with_timeout(blocks_queue, add_block, 0.1)

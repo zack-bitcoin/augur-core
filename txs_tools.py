@@ -156,13 +156,13 @@ def adjust(pubkey, f):#location shouldn't be here.
     f(acc)
     tools.db_put(pubkey, acc)   
 
-def adjust_int(key, pubkey, amount, DB, add_block):
+def adjust_int(key, pubkey, amount, add_block):
     def f(acc, amount=amount):
         if not add_block: amount=-amount
         set_(key, acc, (get_(key, acc) + amount))
     adjust(pubkey, f)
 
-def adjust_string(location, pubkey, old, new, DB, add_block):
+def adjust_string(location, pubkey, old, new, add_block):
     def f(acc, old=old, new=new):
         current=get_(location, acc)
         if add_block: 
@@ -190,7 +190,7 @@ def adjust_list(location, pubkey, remove, item, add_block):
         set_(location, acc, current)
     adjust(pubkey, f)
 
-def symmetric_put(id_, dic, DB, add_block):
+def symmetric_put(id_, dic, add_block):
     if add_block:
         tools.db_put(id_, dic)
     else:
@@ -202,7 +202,7 @@ def initialize_to_zero_helper(loc, address):
         acc[loc[0]][loc[1]]=0
         tools.db_put(address , acc)
 
-def initialize_to_zero_votecoin(vote_id, address, DB, add_block):
+def initialize_to_zero_votecoin(vote_id, address, add_block):
     initialize_to_zero_helper(['votecoin', vote_id], address)
     jury=tools.db_get(vote_id)
     if 'members' not in jury:
@@ -210,14 +210,14 @@ def initialize_to_zero_votecoin(vote_id, address, DB, add_block):
     if address not in jury['members']:
         adjust_list(['members'], vote_id, False, address, add_block)
 
-def memory_leak_helper(loc, address, DB, add_block):
+def memory_leak_helper(loc, address, add_block):
     acc=tools.db_get(address)
     bool_=get_(loc, acc)==0
     if bool_:
         adjust_dict(loc, address, True, {loc[-1]: 0}, add_block)
     return bool_
 
-def memory_leak_votecoin(vote_id, address, DB, add_block):
+def memory_leak_votecoin(vote_id, address, add_block):
     bool_=memory_leak_helper(['votecoin', vote_id], address, add_block)
     if bool_:
         adjust_list(['members'], vote_id, True, address, add_block)

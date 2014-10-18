@@ -10,6 +10,7 @@ import copy
 import ht
 import networking
 import custom
+import logging
 from json import dumps as package, loads as unpackage
 
 def heart_monitor(queue):
@@ -30,9 +31,12 @@ def heart_monitor(queue):
                 log('adding thread: ' +str(beat))
             beats[beat]=t
 
-def log(tx):
-    with open("log.py", "a") as myfile:
-        myfile.write(tx+'\n')
+logging.basicConfig(filename='log.txt')
+def log(junk):
+    if isinstance(junk, Exception):
+        logging.exception(junk)
+    else:
+        logging.info(str(junk))
 
 def can_unpack(o):
     try:

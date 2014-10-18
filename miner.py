@@ -12,7 +12,6 @@ import multiprocessing
 import random
 import time
 import copy
-import sys
 import target
 
 def make_mint(pubkey):
@@ -90,8 +89,8 @@ def main(pubkey, heart_queue, blocks_queue):
                 main_once(pubkey, blocks_queue, num_cores, solution_queue, workers)
             else:
                 time.sleep(1)
-    except:
-        tools.log('miner main: ' +str(sys.exc_info()))
+    except Exception as exc:
+        tools.log(exc)
 
 def main_once(pubkey, blocks_queue, num_cores, solution_queue, workers):
     length=tools.db_get('length')
@@ -99,6 +98,7 @@ def main_once(pubkey, blocks_queue, num_cores, solution_queue, workers):
         candidate_block = genesis(pubkey)
     else:
         prev_block = tools.db_get(length)
+        tools.log(prev_block)
         candidate_block = make_block(prev_block, tools.db_get('txs'), pubkey)
     work = candidate_block
     for worker in workers:

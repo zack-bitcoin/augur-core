@@ -75,4 +75,4 @@ def main(dic, blocks_queue, txs_queue):
         else:
             return funcs[dic['type']](check['newdic'])
     except Exception as exc:
-        tools.log('peer_recieve.main: erro: ' + exc.__class__.__name__ + ': ' + exc.message)
+        tools.log(exc)
