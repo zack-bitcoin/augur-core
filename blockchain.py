@@ -13,7 +13,7 @@ def add_tx(tx, DB):
     # Attempt to add a new transaction into the pool.
     #print('top of add_tx')
     out=['']
-    if type(tx) != type({'a':1}): 
+    if type(tx) != dict: 
         return False
     address = tools.make_address(tx['pubkeys'], len(tx['signatures']))
     def verify_count(tx, txs):
@@ -61,11 +61,11 @@ def recent_blockthings(key, DB, size, length=0):
         leng = str(length)
         if not leng in storage:            
             try:
-                storage[leng] = tools.db_get(leng, DB)[key[:-1]]
+                storage[leng] = tools.db_get(leng)[key[:-1]]
             except:
                 print('leng: ' +str(leng))
                 print('key: ' +str(key))
-                print('db_get: ' +str(tools.db_get(leng, DB)))
+                print('db_get: ' +str(tools.db_get(leng)))
                 print('storage: ' +str(storage))
                 error()
             tools.db_put(key, storage)
