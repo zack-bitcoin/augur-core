@@ -417,7 +417,7 @@ def buy_shares(tx, DB, add_block):
     address = addr(tx)
     acc = tools.db_get(address, DB)
     adjust_int(['count'], address, 1, DB, add_block)
-    cost=txs_tools.cost_to_buy_shares(tx, DB)
+    cost=txs_tools.cost_to_buy_shares(tx)
     fee=int(abs(cost*0.01))
     adjust_int(['fees'], tx['PM_id'], fee, DB, add_block)
     adjust_int(['amount'], address, -fee, DB, add_block)

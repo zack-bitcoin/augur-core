@@ -21,20 +21,28 @@ def last():#this discovers where the end of the list is.
         i+=1
 DB={'last':last()}
 #print('DB: ' +str(DB))
+def file_part(n): return str(n/1000)
 def append(x):
     DB['last']+=1
-    f=str(DB['last']/1000)
+    f=file_part(DB['last'])
     if not ht.file_exists(f):
         ht.make_file(f)
     ht.raw_write_page(f+'/a'+str(DB['last']), x)
     return DB['last']
+def exists(n): 
+    f=file_part(n)
+    if not ht.file_exists(f): return False
+    if not os.path.isfile('db/'+f+'/a'+str(n)): return False
+    return True
 def lookup(n):
-    f=str(n/1000)
+    if not exists(n):
+        return {'error':'n is too big'}
+    f=file_part(n)
     return ht.raw_read_page(f+'/a'+str(n))
 def replace(n, x):
-    f=str(n/1000)
-    if not ht.file_exists(f):
+    if not exists(n):
         return {'error':'n is too big'}
+    f=file_part(n)
     ht.raw_write_page(f+'/a'+str(n), x)
 
 
