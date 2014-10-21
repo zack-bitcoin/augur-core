@@ -17,8 +17,8 @@ def main(brainwallet, pubkey_flag=False):
     processes= [
         {'target': database.main,
          'args': (DB['heart_queue'],)},
-        #{'target': peers_check.main,
-        # 'args': (custom.peers, DB)},
+        {'target': peers_check.main,
+         'args': (custom.peers, DB)},
         {'target':tools.heart_monitor,
          'args':(DB['heart_queue'], )},
         {'target': blockchain.main,
@@ -37,7 +37,7 @@ def main(brainwallet, pubkey_flag=False):
     cmds.append(cmd)
     tools.db_put('test', 'TEST')
     tools.db_get('test')
-    tools.db_put('test', 'n')
+    tools.db_put('test', 'undefined')
     b=tools.db_existence(0)
     if not b:
         tools.db_put('length', -1)
@@ -49,6 +49,7 @@ def main(brainwallet, pubkey_flag=False):
         tools.db_put('mine', False)
         tools.db_put('diffLength', '0')
     tools.db_put('stop', False)
+    tools.log('stop: ' +str(tools.db_get('stop')))
     for process in processes[1:]:
         cmd=multiprocessing.Process(target=process['target'], args=process['args'])
         cmd.start()
@@ -58,7 +59,7 @@ def main(brainwallet, pubkey_flag=False):
     else:
         tools.db_put('privkey', 'Default')
     tools.db_put('address', tools.make_address([pubkey], 1))
-    peers_check.main(custom.peers, DB)
+    tools.log('stop: ' +str(tools.db_get('stop')))
     while not tools.db_get('stop'):
         time.sleep(0.5)
     tools.log('about to stop threads')

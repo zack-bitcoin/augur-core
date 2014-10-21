@@ -1,4 +1,4 @@
-import networking, copy, custom, ht
+import networking, copy, custom, ht, tools
 def main(heart_queue):
     def responder(command):
         if type(command)!=dict or 'type' not in command:

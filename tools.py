@@ -1,9 +1,7 @@
 """A bunch of functions that are used by multiple threads.
 """
-import pt, hashlib, re, subprocess, time, copy, ht, networking, custom
+import pt, hashlib, re, subprocess, time, copy, ht, networking, custom, logging
 from json import dumps as package, loads as unpackage
-#from collections import OrderedDict
-
 def heart_monitor(queue):
     beats={}
     while True:
@@ -21,9 +19,12 @@ def heart_monitor(queue):
             if beat not in beats:
                 log('adding thread: ' +str(beat))
             beats[beat]=t
-def log(tx):
-    with open("log.py", "a") as myfile:
-        myfile.write(tx+'\n')
+logging.basicConfig(filename='log.py', level=logging.INFO)
+def log(junk):
+    if isinstance(junk, Exception):
+        logging.exception(junk)
+    else:
+        logging.info(str(junk))
 def can_unpack(o):
     try:
         unpackage(o)
@@ -105,11 +106,7 @@ def db_existence(key, DB={}): return sc({'type':'existence', 'args':[key]}, True
 def db_delete(key): return sc({'type':'delete', 'args':[key]}, False)
 '''
 default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
-def db_get(n, DB={}):
-    out=ht.get(n)
-    if out=='undefined':
-        return copy.deepcopy(default_entry)
-    return out
+def db_get(n, DB={}): return s_to_db({'type':'get', 'args':[str(n)]})
 def can_int(n):
     try:
         int(n)
@@ -117,15 +114,14 @@ def can_int(n):
     except:
         return False
 def db_put(key, dic, DB={}): 
+    key=str(key)
     if can_int(key) and can_int(dic): 
         print('BLOCK CANNOT BE INT')
         error()
     return s_to_db({'type':'put', 'args':[key, dic]})
 def db_delete(key, DB={}): return db_put(key, 'undefined', DB)
 def db_existence(key, DB={}):
-    n=str(key)
-    out=ht.get(n)
-    return not out=='undefined'
+    return s_to_db({'type':'existence', 'args':[str(key)]})
 
 '''
 def db_get(n, DB):

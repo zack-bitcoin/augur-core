@@ -5,7 +5,6 @@ import copy
 import custom
 import networking
 import transactions
-import sys
 import tools
 import target
 
@@ -60,14 +59,18 @@ def recent_blockthings(key, DB, size, length=0):
     def get_val(length):
         leng = str(length)
         if not leng in storage:            
-            try:
-                storage[leng] = tools.db_get(leng, DB)[key[:-1]]
-            except:
-                tools.log('leng: ' +str(leng))
-                tools.log('key: ' +str(key))
-                tools.log('db_get: ' +str(tools.db_get(leng, DB)))
-                tools.log('storage: ' +str(storage))
-                error()
+            block=tools.db_get(leng, DB)
+            if block==tools.default_entry:
+                tools.db_put('length', leng-1)
+                block=tools.db_get(leng, DB)
+            #try:
+            storage[leng] = tools.db_get(leng, DB)[key[:-1]]
+            #except:
+            #    tools.log('leng: ' +str(leng))
+            #    tools.log('key: ' +str(key))
+            #    tools.log('db_get: ' +str(tools.db_get(leng, DB)))
+            #    tools.log('storage: ' +str(storage))
+            #    error()
             tools.db_put(key, storage)
         return storage[leng]
     def clean_up(storage, end):
@@ -217,8 +220,9 @@ def f(blocks_queue, txs_queue):
             time.sleep(0.0001)
             try:
                 g(queue.get(False))
-            except:
-                tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
+            except Exception as exc:
+                tools.log('suggestions ' + s)
+                tools.log(exc)
     while True:
         time.sleep(0.5)
         if tools.db_get('stop'): return

@@ -28,8 +28,9 @@ def serve_forever(handler, port, heart_queue='default', external=False):
                 s.close()
                 tools.log('shutting off server: ' +str(port))
                 return
-        except:
-            tools.log('networking error: ' +str(port) + ' ' + str(sys.exc_info()))
+        except Exception as exc:
+            tools.log('networking error: ' +str(port))
+            tools.log(exc)
 def recvall(client, data=''):
     try:
         data+=client.recv(MAX_MESSAGE_SIZE)
