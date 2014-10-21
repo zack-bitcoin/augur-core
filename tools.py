@@ -110,7 +110,16 @@ def db_get(n, DB={}):
     if out=='undefined':
         return copy.deepcopy(default_entry)
     return out
+def can_int(n):
+    try:
+        int(n)
+        return True
+    except:
+        return False
 def db_put(key, dic, DB={}): 
+    if can_int(key) and can_int(dic): 
+        print('BLOCK CANNOT BE INT')
+        error()
     return s_to_db({'type':'put', 'args':[key, dic]})
 def db_delete(key, DB={}): return db_put(key, 'n', DB)
 def db_existence(key, DB={}):
@@ -150,5 +159,6 @@ def fork_check(newblocks, DB, length, block):
     #length=db_get('length')
     #block = db_get(length, DB)
     recent_hash = det_hash(block)
-    their_hashes = map(lambda x: x['prevHash'] if x['length']>0 else 0, newblocks)
-    return (recent_hash not in their_hashes) and length>=newblocks[0]['length']-1
+    their_hashes = map(lambda x: x['prevHash'] if x['length']>0 else 0, newblocks)+[det_hash(newblocks[-1])]
+    b=(recent_hash not in their_hashes) and length>=newblocks[0]['length']-1
+    return b

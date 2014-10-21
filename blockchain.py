@@ -63,10 +63,10 @@ def recent_blockthings(key, DB, size, length=0):
             try:
                 storage[leng] = tools.db_get(leng, DB)[key[:-1]]
             except:
-                print('leng: ' +str(leng))
-                print('key: ' +str(key))
-                print('db_get: ' +str(tools.db_get(leng, DB)))
-                print('storage: ' +str(storage))
+                tools.log('leng: ' +str(leng))
+                tools.log('key: ' +str(key))
+                tools.log('db_get: ' +str(tools.db_get(leng, DB)))
+                tools.log('storage: ' +str(storage))
                 error()
             tools.db_put(key, storage)
         return storage[leng]

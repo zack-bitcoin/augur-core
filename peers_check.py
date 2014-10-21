@@ -4,13 +4,13 @@ This file explains how we initiate interactions with our peers.
 import time, networking, tools, blockchain, custom, random, sys
 def cmd(peer, x): return networking.send_command(peer, x)
 def download_blocks(peer, DB, peers_block_count, length):
-    b=[max(0, length-10), min(peers_block_count['length'], length+custom.download_many)]
+    b=[max(0, length-10), min(peers_block_count['length']+1, length+custom.download_many)]
     blocks = cmd(peer, {'type': 'rangeRequest', 'range': b})
     if type(blocks)!=list: return -1
     if not isinstance(blocks, list): return []
     length=tools.db_get('length')
     block=tools.db_get(length)
-    for i in range(20):  # Only delete a max of 20 blocks, otherwise a
+    for i in range(10):  # Only delete a max of 20 blocks, otherwise a
         # peer might trick us into deleting everything over and over.
         if tools.fork_check(blocks, DB, length, block):
             blockchain.delete_block(DB)

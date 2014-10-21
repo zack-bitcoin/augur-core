@@ -10,6 +10,9 @@ def put_block(n, block):
 def del_block(n):
     db.seek(n*64+60)
     db.write('\x00'*4)
+def reserve_block(n):
+    db.seek(n*64+60)
+    db.write('\x00'*3+'\x01')
 def reserved_p(n):
     db.seek(n*64+60)
     t=db.read(4)
@@ -25,6 +28,19 @@ def first_empty_block(first_empty=first_empty):
                 return first_empty[0]
     else:
         return first_empty[0]
+def put_data(data, b=0):
+    if b==0:
+        b=first_empty_block()
+    if len(data)>60:
+        reserved_p(b)
+        b2=first_empty_block()
+        block=data[:60]+int2address(b2)
+        put_block(b, block)
+        return put_block(data[60:], b2)
+
+put_data('abcd'*100)
+
+'''
 reserved_p(0)
 print(first_empty_block())
 put_block(0, 'a'*64)
@@ -33,3 +49,4 @@ print(reserved_p(0))
 #del_block(0)
 print(reserved_p(0))
 print(first_empty_block())
+'''

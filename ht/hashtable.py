@@ -21,6 +21,11 @@ if __name__ == "__main__":
     '''
     for i in 'abcdefghijklmnopqrstuvwxyz':
         put(i, i*10)
+    for i in range(10000):
+        put(str(i), str(i)*5)
+    for i in range(10000):
+        if not get(str(i))==str(i)*5: error()
     for i in 'abcdefghijklmnopqrstuvwxyz':
-        print(get(i))
+        if not get(i)==i*10: error()
+
 
