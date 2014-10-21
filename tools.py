@@ -121,7 +121,7 @@ def db_put(key, dic, DB={}):
         print('BLOCK CANNOT BE INT')
         error()
     return s_to_db({'type':'put', 'args':[key, dic]})
-def db_delete(key, DB={}): return db_put(key, 'n', DB)
+def db_delete(key, DB={}): return db_put(key, 'undefined', DB)
 def db_existence(key, DB={}):
     n=str(key)
     out=ht.get(n)

@@ -22,7 +22,7 @@ def db_get(n, DB={}):
     return out
 def db_put(key, dic, DB={}): 
     return ht.put(key, dic)
-def db_delete(key, DB={}): return db_put(key, 'n', DB)
+def db_delete(key, DB={}): return db_put(key, 'undefined', DB)
 def db_existence(key, DB={}):
     n=str(key)
     out=ht.get(n)
