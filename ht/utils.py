@@ -1,6 +1,7 @@
 import logging
 import logging.config
 from sha3 import sha3_256
+from hashlib import sha384
 from bitcoin import privtopub
 import struct
 import os

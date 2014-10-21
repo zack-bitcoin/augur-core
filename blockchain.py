@@ -87,7 +87,7 @@ def hexSum(a, b):
 def hexInvert(n):
     # Use double-size for division, to reduce information leakage.
     return tools.buffer_(str(hex(int('f' * 128, 16) / int(n, 16)))[2: -1], 64)
-def add_block(block_pair, DB):
+def add_block(block_pair, DB={}):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
      hashpower. """
@@ -209,27 +209,22 @@ def delete_block(DB):
         tools.db_put('diffLength', block['diffLength'])
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
-def f(blocks_queue, txs_queue, heart_queue, DB):
+def f(blocks_queue, txs_queue):
     def bb(): return blocks_queue.empty()
     def tb(): return txs_queue.empty()
     def ff(queue, g, b, s):
         while not b():
             time.sleep(0.0001)
             try:
-                g(queue.get(False), DB)
+                g(queue.get(False))
             except:
                 tools.log('suggestions ' + s + ' '+str(sys.exc_info()))
-    heart_time=time.time()
-    t0=time.time()
     while True:
         time.sleep(0.5)
         if tools.db_get('stop'): return
         while not bb() or not tb():
-            t=time.time()
-            if t-heart_time>10:
-                heart_time=t
             ff(blocks_queue, add_block, bb, 'block')
             ff(txs_queue, add_tx, tb, 'tx')
 def main(DB):
-    return f(DB['suggested_blocks'], DB['suggested_txs'], DB['heart_queue'], DB)
+    return f(DB['suggested_blocks'], DB['suggested_txs'])
     

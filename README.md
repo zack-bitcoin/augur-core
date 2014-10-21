@@ -11,6 +11,7 @@ for Ubuntu
     sudo apt-get update
     sudo apt-get install python-numpy git
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
+    sudo pip install pysha3
     cd Truthcoin-POW
 
 for Arch Linux)

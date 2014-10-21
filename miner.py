@@ -109,9 +109,11 @@ def main_once(pubkey, DB, num_cores, solution_queue, workers):
             continue
 def miner(restart, solution_queue, in_queue):
     while True:
-        try:
-            candidate_block=in_queue.get(False)
-        except:
+        #try:
+        if not(in_queue.empty()):
+            candidate_block=in_queue.get()#False)
+        else:
+            time.sleep(1)
             continue
         possible_block = POW(candidate_block, restart)
         if 'error' in possible_block: 
