@@ -135,6 +135,21 @@ def is_key_value_type(node_type):
 BLANK_NODE = ''
 BLANK_ROOT = ''
 
+def base58_encode(num):
+    num = int(num, 16)
+    alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'
+    base_count = len(alphabet)
+    encode = ''
+    if num < 0:
+        return ''
+    while (num >= base_count):
+        mod = num % base_count
+        encode = alphabet[mod] + encode
+        num = num / base_count
+    if num:
+        encode = alphabet[num] + encode
+    return encode
+
 
 class Trie(object):
     proof_mode = 0
@@ -153,7 +168,8 @@ class Trie(object):
         self.set_root_hash(root_hash)
         self.proof_mode = 0
         self.proof_nodes = []
-
+        if 'salt' not in self.db:
+            self.db.put('salt', random.getrandbits(
     # For SPV proof production/verification purposes
     def spv_check(self, node):
         if not self.proof_mode:

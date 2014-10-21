@@ -28,7 +28,7 @@ def read_page(file):
     file=n_to_file(file)
     return raw_read_page(file)
 def key_hash(key): return int(hashlib.md5(key).hexdigest()[0:5], 16)%page_size
-def allocate_page(file): write_page(file,  ['n']*page_size)
+def allocate_page(file): write_page(file,  ['undefined']*page_size)
 def get(key, file=default_db):
     key=str(key)
     a=get_raw(key, file)
@@ -37,7 +37,7 @@ def get(key, file=default_db):
     else: return 'undefined'
 def get_raw(key, file):
     a=read_page(file)[key_hash(key+file)]
-    return {'value':'undefined'} if a=='n' else a
+    return {'value':'undefined'} if a=='undefined' else a
 def put(key, value, file=default_db, depth=0):
     key=str(key)
     a=read_page(file)
