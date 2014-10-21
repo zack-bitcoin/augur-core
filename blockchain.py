@@ -61,8 +61,11 @@ def recent_blockthings(key, DB, size, length=0):
         if not leng in storage:            
             block=tools.db_get(leng, DB)
             if block==tools.default_entry:
-                tools.db_put('length', leng-1)
-                block=tools.db_get(leng, DB)
+                if leng==tools.db_get('length'):
+                    tools.db_put('length', int(leng)-1)
+                    block=tools.db_get(leng, DB)
+                else:
+                    error()
             #try:
             storage[leng] = tools.db_get(leng, DB)[key[:-1]]
             #except:
