@@ -2,6 +2,7 @@ Truthcoin-POW
 =============
 
 adding abilities from the truthcoin project to basiccoin. https://github.com/psztorc/Truthcoin
+A podcast interview where I describe this project: http://economicsdetective.com/2014/10/truthcoin-prediction-markets-and-anarchy-with-zack-hess/
 
 Donations: 1GbpRPE83Vjg73KFvTVZ4EnS2qNkiLY5TT
 
@@ -11,7 +12,6 @@ for Ubuntu
     sudo apt-get update
     sudo apt-get install python-numpy git
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
-    sudo pip install pysha3
     cd Truthcoin-POW
 
 for Arch Linux)
@@ -45,6 +45,3 @@ For now, there is a 20-block cycle.
 1-10: votecoin-holders may give encrypted votes on decisions. (in the final version of truthcoin, this step will take 1000+ blocks)
 11-15: votecoin-holders may decrypt their votes
 16-20: if there are at least 3 votecoin-holders, and at least 5 decisions they have voted on, then we can do SVD to come to consensus about these decisions.
-
-
-
