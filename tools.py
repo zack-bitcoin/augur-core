@@ -1,6 +1,6 @@
 """A bunch of functions that are used by multiple threads.
 """
-import pt, hashlib, re, subprocess, time, copy, ht, networking, custom, logging
+import pt, hashlib, re, subprocess, time, copy, networking, custom, logging
 from json import dumps as package, loads as unpackage
 def heart_monitor(queue):
     beats={}

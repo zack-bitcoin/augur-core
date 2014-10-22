@@ -1,6 +1,6 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
-import ht, miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, database
+import miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, database
 def main(brainwallet, pubkey_flag=False):
     print('starting truthcoin')
     if not pubkey_flag:

@@ -1,4 +1,4 @@
-import networking, copy, custom, ht, tools
+import networking, copy, custom, salted_leveldb, tools
 def main(heart_queue):
     def responder(command):
         if type(command)!=dict or 'type' not in command:
@@ -10,16 +10,16 @@ def main(heart_queue):
     return networking.serve_forever(responder, custom.database_port, heart_queue)
 default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
 def get(n, DB={}):
-    out=ht.get(n)
+    out=salted_leveldb.get(n)
     if out=='undefined':
         return copy.deepcopy(default_entry)
     return out
 def put(key, dic, DB={}): 
-    return ht.put(key, dic)
+    return salted_leveldb.put(key, dic)
 def delete(key, DB={}): return db_put(key, 'undefined', DB)
 def existence(key, DB={}):
     n=str(key)
-    out=ht.get(n)
+    out=salted_leveldb.get(n)
     return not out=='undefined'
 
 def putCommand(args): return put(args[0], args[1])
