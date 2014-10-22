@@ -80,8 +80,8 @@ def main(peers, DB):
             if tools.db_get('stop'): return
             if len(peers)>0:
                 main_once(DB)
-    except:
-        tools.log('main peers check: ' +str(sys.exc_info()))
+    except Exception as exc:
+        tools.log(exc)
 def main_once(DB):
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')

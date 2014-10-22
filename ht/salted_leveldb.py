@@ -1,7 +1,7 @@
 import leveldb, random
 from json import dumps as package, loads as unpackage
 import os.path
-if not os.path.isfile('DB'):
+if not os.path.exists('DB'):
     DB=leveldb.LevelDB('DB')
     def exists_p(key):
         try:
