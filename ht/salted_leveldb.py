@@ -1,6 +1,7 @@
 import leveldb, random
 from json import dumps as package, loads as unpackage
-try:
+import os.path
+if not os.path.isfile('DB'):
     DB=leveldb.LevelDB('DB')
     def exists_p(key):
         try:
@@ -17,8 +18,6 @@ try:
     else:
         salt=rand_letters(5)
         DB.Put('salt', salt)
-except:
-    pass
 def get(key, tries=10): 
     key=str(key)
     if tries==0: return 'undefined'
