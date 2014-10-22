@@ -17,14 +17,14 @@ def main(brainwallet, pubkey_flag=False):
     processes= [
         {'target': database.main,
          'args': (DB['heart_queue'],)},
-        {'target': peers_check.main,
-         'args': (custom.peers, DB)},
         {'target':tools.heart_monitor,
          'args':(DB['heart_queue'], )},
         {'target': blockchain.main,
          'args': (DB,)},
         {'target': truthcoin_api.main,
          'args': (DB, DB['heart_queue'])},
+        {'target': peers_check.main,
+         'args': (custom.peers, DB)},
         {'target': miner.main,
          'args': (pubkey, DB)},
         {'target': networking.serve_forever,
@@ -64,12 +64,16 @@ def main(brainwallet, pubkey_flag=False):
         time.sleep(0.5)
     tools.log('about to stop threads')
     DB['heart_queue'].put('stop')
-    for p in [[custom.port, '127.0.0.1'], [custom.api_port, 'localhost'], [custom.database_port, 'localhost']]:
+    for p in [[custom.port, '127.0.0.1'], [custom.api_port, 'localhost']]:
         networking.connect('stop', p[0], p[1])
         networking.connect('stop', p[0], p[1])
-    for cmd in cmds:
+    cmds.reverse()
+    for cmd in cmds[:-1]:
         cmd.join()
-        tools.log('stopped a thread')
+        tools.log('stopped a thread: '+str(cmd))
+    for p in [[custom.database_port, 'localhost']]:
+        networking.connect('stop', p[0], p[1])
+        networking.connect('stop', p[0], p[1])
     tools.log('all threads stopped')
     print('all threads stopped')
     sys.exit(1)

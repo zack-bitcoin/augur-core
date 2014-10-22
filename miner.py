@@ -80,6 +80,7 @@ def main(pubkey, DB):
         while True:
             DB['heart_queue'].put('miner')
             if tools.db_get('stop'): 
+                tools.log('shutting off miner')
                 return
             elif tools.db_get('mine'):
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
@@ -99,7 +100,7 @@ def main_once(pubkey, DB, num_cores, solution_queue, workers):
         worker['in_queue'].put(work)
         worker['in_queue'].put(work)
     start=time.time()
-    while solution_queue.empty() and time.time()<start+5:#we might mine faster if the 5 was a 30.
+    while solution_queue.empty() and time.time()<start+20 and tools.db_get('mine') and not tools.db_get('stop'):
         time.sleep(0.1)
     restart_workers(workers)
     while not solution_queue.empty():

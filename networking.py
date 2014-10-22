@@ -24,7 +24,7 @@ def serve_forever(handler, port, heart_queue='default', external=False):
     while True:
         try:
             a=serve_once(s, MAX_MESSAGE_SIZE, handler)
-            if a=='stop': 
+            if a=='stop':
                 s.close()
                 tools.log('shutting off server: ' +str(port))
                 return

@@ -77,12 +77,13 @@ def main(peers, DB):
     tools.db_put('peers_ranked', p)
     try:
         while True:
-            if tools.db_get('stop')==True: return
+            if tools.db_get('stop'): return
             if len(peers)>0:
                 main_once(DB)
     except:
         tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(DB):
+    tools.log('main_once')
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
     pr=sorted(pr, key=lambda r: r[2])
