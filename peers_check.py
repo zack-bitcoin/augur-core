@@ -83,7 +83,6 @@ def main(peers, DB):
     except:
         tools.log('main peers check: ' +str(sys.exc_info()))
 def main_once(DB):
-    tools.log('main_once')
     DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
     pr=sorted(pr, key=lambda r: r[2])
