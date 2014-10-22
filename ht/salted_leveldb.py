@@ -7,19 +7,18 @@ def exists_p(key):
         return True
     except KeyError:
         return False
-def make_salt():
-    salt=str(random.getrandbits(24))
-    DB.Put('salt', salt)
-    try:
-        if DB.Get('salt')+'a'==salt+'a': return salt
-    except:
-        pass
-    return make_salt()
-if exists_p('salt'):
-    salt=DB.Get('salt')
-else:
-    salt=make_salt()
-
+alphabet=['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+alphabet+=map(lambda x: x.upper(), alphabet)
+alphabet+=['1','2','3','4','5','6','7','8','9','0']
+def rand_letters(n): return '' if n==0 else random.choice(alphabet)+rand_letters(n-1)
+try:
+    if exists_p('salt'):
+        salt=DB.Get('salt')
+    else:
+        salt=rand_letters(5)
+        DB.Put('salt', salt)
+except:
+    pass
 def get(key, tries=10): 
     key=str(key)
     if tries==0: return 'undefined'
