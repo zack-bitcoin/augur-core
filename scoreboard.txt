@@ -8,3 +8,4 @@ Xkoeppelmann if txs is non-empty, then we cannot run my_balance at the bash api
 Xkoeppelmann no reason for the node to hold the private key
 Xkoeppelmann it is possible to make the balance go negative
 Xkoeppelmann it is too complex to boot up truthcoin
+psztorc buy_shares needs a POW component, or else it is too easy to front-run trades.
