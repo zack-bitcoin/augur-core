@@ -14,6 +14,7 @@ def download_blocks(peer, DB, peers_block_count, length):
         # peer might trick us into deleting everything over and over.
         if tools.fork_check(blocks, DB, length, block):
             blockchain.delete_block(DB)
+            length-=1
     for block in blocks:
         DB['suggested_blocks'].put([block, peer])
     return 0
@@ -30,7 +31,7 @@ def ask_for_txs(peer, DB):
     return 0
 def give_block(peer, DB, block_count_peer):
     blocks=[]
-    b=[max(block_count_peer+1, 0), min(tools.db_get('length'), block_count_peer+custom.download_many)]
+    b=[max(block_count_peer-5, 0), min(tools.db_get('length'), block_count_peer+custom.download_many)]
     for i in range(b[0], b[1]+1):
         blocks.append(tools.db_get(i, DB))
     cmd(peer, {'type': 'pushblock',

@@ -153,5 +153,5 @@ def fork_check(newblocks, DB, length, block):
     #block = db_get(length, DB)
     recent_hash = det_hash(block)
     their_hashes = map(lambda x: x['prevHash'] if x['length']>0 else 0, newblocks)+[det_hash(newblocks[-1])]
-    b=(recent_hash not in their_hashes) and length>=newblocks[0]['length']-1
+    b=(recent_hash not in their_hashes) and length>newblocks[0]['length']-1
     return b
