@@ -168,8 +168,8 @@ class Trie(object):
         self.set_root_hash(root_hash)
         self.proof_mode = 0
         self.proof_nodes = []
-        if 'salt' not in self.db:
-            self.db.put('salt', random.getrandbits(base58_
+        #if 'salt' not in self.db:
+        #    self.db.put('salt', random.getrandbits(base58_
     # For SPV proof production/verification purposes
     def spv_check(self, node):
         if not self.proof_mode:

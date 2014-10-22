@@ -35,7 +35,7 @@ def recvall(client, data=''):
     try:
         data+=client.recv(MAX_MESSAGE_SIZE)
     except:
-        time.sleep(0.01)
+        time.sleep(0.0001)
         tools.log('not ready')
         recvall(client, data)        
     if not data:
@@ -80,7 +80,7 @@ def send_msg(data, sock):
     data=tools.package(data)
     data=tools.buffer_(str(len(data)), 5)+data
     while data:
-        time.sleep(0.01)
+        time.sleep(0.0001)
         try:
             sent = sock.send(data)
         except:

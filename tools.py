@@ -93,9 +93,6 @@ def s_to_db(c):
     response=networking.send_command(['localhost', custom.database_port], c)
     if (type(response)==dict and 'error' in response):
         time.sleep(1)
-        log('response was: ' +str(response))
-        log('command was: ' +str(c))
-        #error()
         return s_to_db(c)
     else:
         return response

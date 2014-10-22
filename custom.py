@@ -5,7 +5,7 @@ database_name = 'DB.db'
 port=8900
 api_port=8899
 database_port=8898
-version = "0.0002"
+version = "0.0003"
 block_reward = 10 ** 5
 premine = 5 * 10 ** 6
 fee = 10 ** 3
@@ -27,4 +27,4 @@ history_length = 400
 inflection = 0.985
 download_many = 50  # Max number of blocks to request from a peer at the same time.
 max_download = 58000
-def blocktime(length): return 180
+def blocktime(length): return 60
