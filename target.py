@@ -12,7 +12,7 @@ def target(length=0):
         b = int(a * number)#this should be rational multiplication followed by integer estimation
         return tools.buffer_(str(hex(b))[2: -1], 64)
     def weights(length):#uses float
-        return [custom.inflection ** (length-i) for i in range(length)]
+        return [(custom.inflection ** (length-i)).limit_denominator() for i in range(length)]
     def estimate_target():
         """
         We are actually interested in the average number of hashes required to
