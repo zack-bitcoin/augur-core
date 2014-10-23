@@ -11,7 +11,6 @@ import multiprocessing
 import random
 import time
 import copy
-import sys
 import target
 def make_mint(pubkey, DB):
     address = tools.make_address([pubkey], 1)
@@ -86,8 +85,9 @@ def main(pubkey, DB):
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
             else:
                 time.sleep(1)
-    except:
-        tools.log('miner main: ' +str(sys.exc_info()))
+    except Exception as exc:
+        tools.log('miner main: ')
+        tools.log(exc)
 def main_once(pubkey, DB, num_cores, solution_queue, workers):
     length=tools.db_get('length')
     if length==-1:

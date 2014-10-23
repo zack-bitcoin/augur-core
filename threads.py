@@ -74,6 +74,8 @@ def main(brainwallet, pubkey_flag=False):
     for p in [[custom.database_port, 'localhost']]:
         networking.connect('stop', p[0], p[1])
         networking.connect('stop', p[0], p[1])
+    time.sleep(2)
+    del database.DB
     tools.log('all threads stopped')
     print('all threads stopped')
     sys.exit(1)

@@ -1,20 +1,31 @@
 #!/usr/bin/env python
-import networking, sys, tools, custom, os, multiprocessing, threads
+import networking, sys, tools, custom, os, multiprocessing, threads, txs_tools
 
 def daemonize(f):
     pid=os.fork()
     if pid==0: f()
     else: sys.exit(0)
+def get_address(tx):
+    pubkey=str(raw_input('What is your address or pubkey\n>'))
+    if len(pubkey)>40:
+        out=tools.make_address([pubkey], 1)
+    else:
+        out=pubkey    
+    return tx
 def build_buy_shares():
     tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?\n>'))}
     num_states=int(raw_input('how many states does this pm have?\n>'))
     tx['buy']=[]
     for i in range(num_states):
         tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.\n>')))
+    cost=txs_tools.cost_0([tx], tools.addr(tx))['truthcoin_cost']
+    tx['price_limit']=int(cost*1.01)
+    tx=tools.POW(tx)
     print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
 def build_pm():
     tx={'type':'prediction_market', 'fees':0}
+    tx=add_address(tx)
     pubkey=str(raw_input('What is the address or pubkey of the owner of the PM?\n>'))
     if len(pubkey)>40:
         tx['owner']=tools.make_address([pubkey], 1)

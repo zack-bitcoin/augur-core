@@ -1,6 +1,6 @@
 """A bunch of functions that are used by multiple threads.
 """
-import pt, hashlib, re, subprocess, time, copy, networking, custom, logging
+import pt, hashlib, re, subprocess, time, copy, networking, custom, logging, random
 from json import dumps as package, loads as unpackage
 def heart_monitor(queue):
     beats={}
@@ -39,6 +39,14 @@ def hash_(x): return hashlib.sha384(x).hexdigest()[0:64]
 def det_hash(x):
     """Deterministically takes sha256 of dict, list, int, or string."""
     return hash_(package(x, sort_keys=True))
+def POW(block):
+    halfHash = det_hash(block)
+    block[u'nonce'] = random.randint(0, 10000000000000000000000000000000000000000)
+    a='F'*64
+    while a > custom.buy_shares_target:
+        a=det_hash({u'nonce': block['nonce'], u'halfHash': halfHash})
+        block[u'nonce'] += 1
+    return block
 def base58_encode(num):
     num = int(num, 16)
     alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'
@@ -96,48 +104,11 @@ def s_to_db(c):
         return s_to_db(c)
     else:
         return response
-'''
-def db_get(n, DB={}): return sc({'type':'get', 'args':[n]}, True)
-def db_put(key, dic, DB={}): return sc({'type':'put', 'args':[key, dic]}, False)
-def db_existence(key, DB={}): return sc({'type':'existence', 'args':[key]}, True)
-def db_delete(key): return sc({'type':'delete', 'args':[key]}, False)
-'''
 default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
 def db_get(n, DB={}): return s_to_db({'type':'get', 'args':[str(n)]})
-def can_int(n):
-    try:
-        int(n)
-        return True
-    except:
-        return False
-def db_put(key, dic, DB={}): 
-    key=str(key)
-    if can_int(key) and can_int(dic): 
-        print('BLOCK CANNOT BE INT')
-        error()
-    return s_to_db({'type':'put', 'args':[key, dic]})
+def db_put(key, dic, DB={}): return s_to_db({'type':'put', 'args':[str(key), dic]})
 def db_delete(key, DB={}): return db_put(key, 'undefined', DB)
-def db_existence(key, DB={}):
-    return s_to_db({'type':'existence', 'args':[str(key)]})
-
-'''
-def db_get(n, DB):
-    n = str(n)
-    try:
-        return unpackage(DB['db'].Get(n))
-    except:
-        db_put(n, default_entry, DB)
-        return db_get(n, DB)
-def db_put(key, dic, DB): return DB['db'].Put(str(key), package(dic))
-def db_delete(key, DB): return DB['db'].Delete(str(key))
-def db_existence(key, DB):
-    n=str(key)
-    try:
-        a=unpackage(DB['db'].Get(n))
-        return not a==default_entry
-    except:
-        return False
-'''
+def db_existence(key, DB={}): return s_to_db({'type':'existence', 'args':[str(key)]})
 def count(address, DB):
     # Returns the number of transactions that pubkey has broadcast.
     def zeroth_confirmation_txs(address, DB):
@@ -149,9 +120,16 @@ def count(address, DB):
     zeroth=zeroth_confirmation_txs(address, DB)
     return current+zeroth
 def fork_check(newblocks, DB, length, block):
-    #length=db_get('length')
-    #block = db_get(length, DB)
     recent_hash = det_hash(block)
     their_hashes = map(lambda x: x['prevHash'] if x['length']>0 else 0, newblocks)+[det_hash(newblocks[-1])]
     b=(recent_hash not in their_hashes) and length>newblocks[0]['length']-1 and length<newblocks[-1]['length']
     return b
+if __name__ == "__main__":
+    time_0=time.time()
+    for i in range(100):
+        timea=time.time()
+        POW({'empty':0}, '0'*4+'1'+'9'*59)
+        print(time.time()-timea)
+    print(time.time()-time_0)
+
+

@@ -54,26 +54,20 @@ def add_tx(tx, DB):
         return('added tx: ' +str(tx))
     else:
         return('failed to add tx because: '+out[0])
-def recent_blockthings(key, DB, size, length=0):
+def recent_blockthings(key, size, length=0):
     storage = tools.db_get(key)
     def get_val(length):
         leng = str(length)
         if not leng in storage:            
-            block=tools.db_get(leng, DB)
+            block=tools.db_get(leng)
             if block==tools.default_entry:
                 if leng==tools.db_get('length'):
                     tools.db_put('length', int(leng)-1)
-                    block=tools.db_get(leng, DB)
+                    block=tools.db_get(leng)
                 else:
                     error()
             #try:
-            storage[leng] = tools.db_get(leng, DB)[key[:-1]]
-            #except:
-            #    tools.log('leng: ' +str(leng))
-            #    tools.log('key: ' +str(key))
-            #    tools.log('db_get: ' +str(tools.db_get(leng, DB)))
-            #    tools.log('storage: ' +str(storage))
-            #    error()
+            storage[leng] = tools.db_get(leng)[key[:-1]]
             tools.db_put(key, storage)
         return storage[leng]
     def clean_up(storage, end):
@@ -93,6 +87,10 @@ def hexSum(a, b):
 def hexInvert(n):
     # Use double-size for division, to reduce information leakage.
     return tools.buffer_(str(hex(int('f' * 128, 16) / int(n, 16)))[2: -1], 64)
+def make_half_way(block):
+    a = copy.deepcopy(block)
+    a.pop('nonce')
+    return({u'nonce': block['nonce'], u'halfHash': tools.det_hash(a)})
 def add_block(block_pair, DB={}):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
@@ -137,19 +135,19 @@ def add_block(block_pair, DB={}):
             if tools.det_hash(tools.db_get(length, DB)) != block['prevHash']:
                 log_('det hash error')
                 return False
-        a = copy.deepcopy(block)
-        a.pop('nonce')
         if u'target' not in block.keys():
             log_('target error')
             return False
-        half_way = {u'nonce': block['nonce'], u'halfHash': tools.det_hash(a)}
+        half_way=make_half_way(block)
         if tools.det_hash(half_way) > block['target']:
             log_('det hash error 2')
             return False
-        if block['target'] != target.target(DB, block['length']):
+        if block['target'] != target.target(block['length']):
+            log_('block: ' +str(block))
+            log_('target: ' +str(target.target(block['length'])))
             log_('wrong target')
             return False
-        earliest = median(recent_blockthings('times', DB, custom.mmm))
+        earliest = median(recent_blockthings('times', custom.mmm))
         if 'time' not in block: 
             log_('no time')
             return False

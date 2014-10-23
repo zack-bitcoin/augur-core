@@ -1,5 +1,6 @@
 """This is to make magic numbers easier to deal with."""
 import tools, hashlib
+from fractions import Fraction
 peers = [['192.241.212.114', 8900]]#,['69.164.196.239', 8900]]
 database_name = 'DB.db'
 port=8900
@@ -24,7 +25,8 @@ mmm = 100
 history_length = 400
 # This constant is selected such that the 50 most recent blocks count for 1/2 the
 # total weight.
-inflection = 0.985
+inflection = Fraction('0.985')
 download_many = 50  # Max number of blocks to request from a peer at the same time.
 max_download = 58000
+buy_shares_target='0'*4+'1'+'9'*59
 def blocktime(length): return 60

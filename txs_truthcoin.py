@@ -276,6 +276,10 @@ def buy_shares_check(tx, txs, out, DB):
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
+    half_way=blockchain.make_half_way(tx)
+    if tools.det_hash(half_way)>custom.buy_shares_target:
+        out[0]+='insufficient POW'
+        return False
     if not E_check(tx, 'buy', list):
         out[0]+='buy error'
         return False
@@ -289,6 +293,11 @@ def buy_shares_check(tx, txs, out, DB):
     if len(tx['buy'])!=len(pm['shares_purchased']):
         out[0]+='buy length error'
         return False
+    if 'price_limit' in tx:
+        price = txs_tools.cost_0([tx], address)['truthcoin_cost']
+        if price>tx['price_limit']:
+            out[0]+='that is outside the price limit for that tx'
+            return False
     for purchase in tx['buy']:
         if type(purchase)!=int:
             return False
