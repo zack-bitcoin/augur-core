@@ -19,7 +19,7 @@ def make_mint(pubkey, DB):
             'signatures': ['first_sig'],
             'count': tools.count(address, DB)}
 def genesis(pubkey, DB):
-    target_ = target.target(DB)
+    target_ = target.target()
     out = {'version': custom.version,
            'length': 0,
            'time': time.time(),
@@ -30,7 +30,7 @@ def genesis(pubkey, DB):
     return out
 def make_block(prev_block, txs, pubkey, DB):
     leng = int(prev_block['length']) + 1
-    target_ = target.target(DB, leng)
+    target_ = target.target(leng)
     diffLength = blockchain.hexSum(prev_block['diffLength'],
                                    blockchain.hexInvert(target_))
     out = {'version': custom.version,
