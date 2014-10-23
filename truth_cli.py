@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import networking, sys, tools, custom, os, multiprocessing, threads, txs_tools
+import networking, sys, tools, custom, os, multiprocessing, threads, txs_tools, truthcoin_api
 
 def daemonize(f):
     pid=os.fork()
@@ -18,14 +18,20 @@ def build_buy_shares():
     tx['buy']=[]
     for i in range(num_states):
         tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.\n>')))
-    cost=txs_tools.cost_0([tx], tools.addr(tx))['truthcoin_cost']
+    brainwallet=str(raw_input('What is your brainwallet\n>'))
+    privkey=tools.det_hash(brainwallet)
+    pubkey=tools.privtopub(privkey)
+    tx['pubkeys']=[pubkey]
+    tx['count'] = tools.count(address, {})
+    cost=txs_tools.cost_to_buy_shares(tx)
     tx['price_limit']=int(cost*1.01)
+    print('now for a little proof of work. This may take several minutes. The purpose of this pow is to make it more difficult for a front runner to steal your trade.')
     tx=tools.POW(tx)
+    tx['signatures']=[tools.sign(tools.det_hash(tx), privkey)]
     print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
 def build_pm():
     tx={'type':'prediction_market', 'fees':0}
-    tx=add_address(tx)
     pubkey=str(raw_input('What is the address or pubkey of the owner of the PM?\n>'))
     if len(pubkey)>40:
         tx['owner']=tools.make_address([pubkey], 1)

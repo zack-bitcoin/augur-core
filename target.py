@@ -1,4 +1,8 @@
 import blockchain, custom, tools
+from fractions import Fraction
+def denominator_limited_sum(l, a=0):
+    if len(l)==0: return a
+    return denominator_limited_sum(l[1:], (a+l[0]).limit_denominator())
 def target(length=0):
     """ Returns the target difficulty at a paticular blocklength. """
     db_length=tools.db_get('length')
@@ -27,7 +31,7 @@ def target(length=0):
             return l[0]
         targets = blockchain.recent_blockthings('targets', custom.history_length)
         w = weights(len(targets))#should be rat instead of float
-        tw = sum(w)
+        tw = denominator_limited_sum(w)
         targets = map(blockchain.hexInvert, targets)
         def weighted_multiply(i):
             return targetTimesFloat(targets[i], w[i]/tw)#this should use rat division instead
@@ -35,10 +39,11 @@ def target(length=0):
         return blockchain.hexInvert(sumTargets(weighted_targets))
     def estimate_time():
         times = blockchain.recent_blockthings('times', custom.history_length)#should be deterministally turned into rats
+        times=map(Fraction, times)
         blocklengths = [times[i] - times[i - 1] for i in range(1, len(times))]
         w = weights(len(blocklengths))  # Geometric weighting
-        tw = sum(w)  # Normalization constant
-        return sum([w[i] * blocklengths[i] / tw for i in range(len(blocklengths))])
+        tw = denominator_limited_sum(w)  # Normalization constant
+        return denominator_limited_sum([w[i] * blocklengths[i] / tw for i in range(len(blocklengths))])
     retarget = estimate_time() / custom.blocktime(length)
     return targetTimesFloat(estimate_target(), retarget)
 

@@ -3,19 +3,22 @@
 import copy, tools, blockchain, custom, random, transactions, sys, txs_tools, time, networking, txs_truthcoin, target
 def easy_add_transaction(tx_orig, DB, privkey='default'):
     tx = copy.deepcopy(tx_orig)
-    try:
-        tx['count'] = tools.count(tools.db_get('address'), DB)
-    except:
-        tx['count'] = 1
     if privkey in ['default', 'Default']:
         if tools.db_existence('privkey'):
             privkey=tools.db_get('privkey')
+            address=tools.db_get('address')
         else:
             return('no private key is known, so the tx cannot be signed. Here is the tx: \n'+str(tools.package(tx_orig).encode('base64').replace('\n', '')))
+    else:    
+        pubkey=tools.privtopub(privkey)
+        address=tools.make_address([pubkey], 1)
+    try:
+        tx['count'] = tools.count(address, {})
+    except:
+        tx['count'] = 1
     if 'pubkeys' not in tx:
-        tx['pubkeys']=[tools.privtopub(privkey)]
+        tx['pubkeys']=[pubkey]
     tx['signatures'] = [tools.sign(tools.det_hash(tx), privkey)]
-    tools.log('collect winnings 3')
     return(blockchain.add_tx(tx, DB))
 def help_(DB, args):      
     tell_about_command={
