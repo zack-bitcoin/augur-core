@@ -67,7 +67,7 @@ def main(heart_queue):
             return {'error': 'bad data'}
         else:
             return dbfunc[command['type']](command['args'])
-    return networking.serve_forever(responder, custom.database_port, heart_queue)
+    networking.serve_forever(responder, custom.database_port, heart_queue)
 if __name__ == "__main__":
     import Queue
     main(Queue.Queue())
