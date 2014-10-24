@@ -175,6 +175,9 @@ def add_block(block_pair, DB={}):
             transactions.update[tx['type']](tx, DB, True)
         for tx in orphans:
             add_tx(tx, DB)
+        while tools.db_get('length')!=block['length']:
+            time.sleep(0.0001)
+
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """
     length=tools.db_get('length')
@@ -209,6 +212,8 @@ def delete_block(DB):
         tools.db_put('diffLength', block['diffLength'])
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
+    while tools.db_get('length')!=length:
+        time.sleep(0.0001)
 def f(blocks_queue, txs_queue):
     def bb(): return blocks_queue.empty()
     def tb(): return txs_queue.empty()
