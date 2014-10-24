@@ -8,7 +8,7 @@ import transactions
 import tools
 import target
 
-def add_tx(tx, DB):
+def add_tx(tx, DB={}):
     # Attempt to add a new transaction into the pool.
     #print('top of add_tx')
     out=['']
