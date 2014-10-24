@@ -14,9 +14,6 @@ def main(brainwallet, pubkey_flag=False):
         return peer_recieve.main(d, DB)
 
     processes= [
-        {'target': database.main,
-         'args': (DB['heart_queue'],),
-         'name':'database'},
         {'target':tools.heart_monitor,
          'args':(DB['heart_queue'], ),
          'name':'heart_monitor'},
@@ -37,9 +34,13 @@ def main(brainwallet, pubkey_flag=False):
          'name': 'peer_recieve'}
     ]
     cmds=[]
-    cmd=multiprocessing.Process(**processes[0])
-    cmd.start()
-    tools.log('starting ' + cmd.name)
+    cmds.append(database.DatabaseProcess(
+        DB['heart_queue'],
+        custom.database_name,
+        tools.log,
+        custom.database_port))
+    cmds[0].start()
+    tools.log('starting ' + cmds[0].name)
     time.sleep(4)
     cmds.append(cmd)
     tools.db_put('test', 'TEST')

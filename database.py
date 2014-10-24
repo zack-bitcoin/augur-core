@@ -1,73 +1,92 @@
-def make_sfuncs():
-    # The imports are here to make sure
-    # this only happens inside the main
-    # function (which makes it happen ONLY
-    # in the process running the main function)
-    import sys
-    import custom
-    import os
-    from json import dumps as package, loads as unpackage
-    if sys.platform == 'win32': # tentative windows support
-        import bsddb
-        # hashopen will only make a new database
-        # if there isn't already one there.
-        DB = bsddb.hashopen(custom.database_name)
-        DBget = DB.get
-        DBput = lambda k, v: DB.__setitem__(k, v)
-    else:
-        import leveldb
-        # leveldb automatically makes a new database
-        # iff there is not one with the same name already.
-        # If on already exists, then this just opens it.
-        DB = leveldb.LevelDB(custom.database_name)
-        DBget = DB.Get
-        DBput = DB.Put
-    try:
-        salt = DBget('salt')
-    except KeyError:
-        salt = os.urandom(5)
-        DBput('salt', salt)
-    def sget(key, tries=10):
-        if tries==0: return 'undefined'
-        try:
-            return unpackage(DBget(salt + str(key)))
-        except KeyError:
-            return sget(key, tries-1)
-    def sput(key, value):
-        return DBput(salt + str(key), package(value))
-    return sget, sput
+from multiprocessing import Process
+import sys
+import os
+import json
 
-def main(heart_queue):
-    import tools
-    import networking
-    sget, sput = make_sfuncs()
-    def default_entry(): return {'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
-    def get(n, DB={}):
-        out=sget(n)
-        if out=='undefined':
-            return default_entry()
-        return out
-    def put(key, dic, DB={}): 
-        return sput(key, dic)
-    def delete(key, DB={}): return put(key, 'undefined', DB)
-    def existence(key, DB={}):
-        n=str(key)
-        out=sget(n)
-        return not out=='undefined'
-    
-    def putCommand(args): return put(args[0], args[1])
-    def getCommand(args): return get(args[0])
-    def exiCommand(args): return existence(args[0])
-    def delCommand(args): return delete(args[0])
-    dbfunc={'put':putCommand, 'get':getCommand, 'existence':exiCommand, 'delete':delCommand}
-    def responder(command):
-        if type(command)!=dict or 'type' not in command:
-            tools.log('database main command: ' +str(command))
-            tools.log('database main command: ' +str(type(command)))
-            return {'error': 'bad data'}
+def _default_entry():
+    return dict(count=0, amount=0, votecoin={}, votes={}, shares={})
+
+def _noop():
+    return None
+
+class DatabaseProcess(Process):
+    '''
+    Manages operations on the database.
+    '''
+    def __init__(self, heart_queue, database_name, logf, port):
+        super(DatabaseProcess, self).__init__(name=name)
+        self.heart_queue = heart_queue
+        self.database_name = database_name
+        self.logf = logf
+        self.port = port
+        if sys.platform == 'win32':
+            import bsddb
+            self.DB = bsddb.hashopen(self.database_name)
+            self._get = self.DB.__getitem__
+            self._put = self.DB.__setitem__
+            self._del = self.DB.__delitem__
+            self._close = self.DB.close
         else:
-            return dbfunc[command['type']](command['args'])
-    networking.serve_forever(responder, custom.database_port, heart_queue)
-if __name__ == "__main__":
-    import Queue
-    main(Queue.Queue())
+            import leveldb
+            self.DB = leveldb.LevelDB(self.database_name)
+            self._get = self.DB.Get
+            self._put = self.DB.Put
+            self._del = self.DB.Delete
+            self._close = _noop # leveldb doesn't have a close func
+        try:
+            self.salt = self._get('salt')
+        except KeyError:
+            self.salt = os.urandom(5)
+            self._put('salt', salt)
+
+    def get(self, args):
+        '''Gets the key in args[0] using the salt'''
+        try:
+            return json.loads(self._get(self.salt + str(args[0])))
+        except KeyError:
+            return _default_entry()
+
+    def put(self, args):
+        '''
+        Puts the val in args[1] under the key in args[0] with the salt
+        prepended to the key.
+        '''
+        self._put(self.salt + str(args[0]), json.dumps(args[1]))
+
+    def existence(self, args):
+        '''
+        Checks if the key in args[0] with the salt prepended is
+        in the database.
+        '''
+        try:
+            self._get(self.salt + str(args[0]))
+        except KeyError:
+            return False
+        else:
+            return True
+
+    def delete(self, args):
+        '''
+        Removes the entry in the database under the the key in args[0]
+        with the salt prepended.
+        '''
+        # It isn't an error to try to delete something that isn't there.
+        try:
+            self._del(self.salt + str(args[0]))
+        except:
+            pass
+
+    def run(self):
+        import networking
+        def command_handler(command):
+            try:
+                name = command['type']
+                assert (name not in ['__init__', 'run'])
+                return getattr(self, name)(command['args'])
+            except Exception as exc:
+                self.logf(exc)
+                self.logf('command: ' + str(command))
+                self.logf('command type: ' + str(type(command)))
+                return {'error':'bad data'}
+        networking.serve_forever(command_handler, self.port, self.heart_queue)
+        self._close()
