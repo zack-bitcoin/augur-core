@@ -75,9 +75,9 @@ def main():
         if is_truthcoin_off(r):
             p=raw_input('what is your password?\n')
             if sys.platform == 'win32':
-                pypath = os.path.split(sys.executable)
+                pypath = list(os.path.split(sys.executable))
                 pypath[-1] = 'pythonw.exe'
-                os.system('start '+os.path.join(pypath)+'threads.py '+p)
+                os.system('start '+os.path.join(*pypath)+'threads.py '+p)
                 sys.exit(0)
             else:
                 daemonize(lambda: threads.main(p))
