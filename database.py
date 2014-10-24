@@ -39,7 +39,7 @@ def make_sfuncs():
 
 def main(heart_queue):
     import tools
-    import netowrking
+    import networking
     sget, sput = make_sfuncs()
     def default_entry(): return {'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
     def get(n, DB={}):
