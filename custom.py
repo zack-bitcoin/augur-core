@@ -30,7 +30,7 @@ download_many = 50  # Max number of blocks to request from a peer at the same ti
 max_download = 58000
 #buy_shares_target='0'*4+'1'+'9'*59
 buy_shares_target='0'*3+'1'+'9'*60
-def blocktime(length): return 60
+def blocktime(length): return 3
 DB = {
     'reward_peers_queue':multiprocessing.Queue(),
     'suggested_blocks': multiprocessing.Queue(),
