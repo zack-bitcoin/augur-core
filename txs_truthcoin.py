@@ -9,6 +9,7 @@ import tools
 import blockchain
 import transactions
 import numpy
+import copy
 addr=tools.addr
 E_check=tools.E_check
 is_number=tools.is_number
@@ -276,7 +277,9 @@ def buy_shares_check(tx, txs, out, DB):
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
-    half_way=blockchain.make_half_way(tx)
+    a=copy.deepcopy(tx)
+    a.pop('signatures')
+    half_way=tools.make_half_way(a)
     if tools.det_hash(half_way)>custom.buy_shares_target:
         out[0]+='insufficient POW'
         return False
@@ -294,9 +297,9 @@ def buy_shares_check(tx, txs, out, DB):
         out[0]+='buy length error'
         return False
     if 'price_limit' in tx:
-        price = txs_tools.cost_0([tx], address)['truthcoin_cost']
+        price = txs_tools.cost_to_buy_shares(tx)
         if price>tx['price_limit']:
-            out[0]+='that is outside the price limit for that tx'
+            out[0]+='that is outside the price limit for that tx '+str(price) + ' is bigger than ' +str(tx)
             return False
     for purchase in tx['buy']:
         if type(purchase)!=int:

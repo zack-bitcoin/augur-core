@@ -40,13 +40,18 @@ def det_hash(x):
     """Deterministically takes sha256 of dict, list, int, or string."""
     return hash_(package(x, sort_keys=True))
 def POW(block):
-    halfHash = det_hash(block)
+    #halfHash = det_hash(block)
+    h=det_hash(block)
     block[u'nonce'] = random.randint(0, 10000000000000000000000000000000000000000)
     a='F'*64
-    while a > custom.buy_shares_target:
-        a=det_hash({u'nonce': block['nonce'], u'halfHash': halfHash})
+    while det_hash(a) > custom.buy_shares_target:
         block[u'nonce'] += 1
+        a={u'nonce': block['nonce'], u'halfHash': h}
     return block
+def make_half_way(block):
+    a = copy.deepcopy(block)
+    a.pop('nonce')
+    return({u'nonce': block['nonce'], u'halfHash': det_hash(a)})
 def base58_encode(num):
     num = int(num, 16)
     alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'
@@ -125,11 +130,15 @@ def fork_check(newblocks, DB, length, block):
     b=(recent_hash not in their_hashes) and length>newblocks[0]['length']-1 and length<newblocks[-1]['length']
     return b
 if __name__ == "__main__":
+    a=POW({'a':'b'})
+    print(a)
+    print(det_hash(make_half_way(a))<custom.buy_shares_target)
+    '''
     time_0=time.time()
     for i in range(100):
         timea=time.time()
-        POW({'empty':0}, '0'*4+'1'+'9'*59)
+        POW({'empty':0})
         print(time.time()-timea)
     print(time.time()-time_0)
-
+    '''
 

@@ -87,10 +87,6 @@ def hexSum(a, b):
 def hexInvert(n):
     # Use double-size for division, to reduce information leakage.
     return tools.buffer_(str(hex(int('f' * 128, 16) / int(n, 16)))[2: -1], 64)
-def make_half_way(block):
-    a = copy.deepcopy(block)
-    a.pop('nonce')
-    return({u'nonce': block['nonce'], u'halfHash': tools.det_hash(a)})
 def add_block(block_pair, DB={}):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
@@ -138,7 +134,7 @@ def add_block(block_pair, DB={}):
         if u'target' not in block.keys():
             log_('target error')
             return False
-        half_way=make_half_way(block)
+        half_way=tools.make_half_way(block)
         if tools.det_hash(half_way) > block['target']:
             log_('det hash error 2')
             return False

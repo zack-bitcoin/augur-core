@@ -10,13 +10,15 @@ def easy_add_transaction(tx_orig, DB, privkey='default'):
             return('no private key is known, so the tx cannot be signed. Here is the tx: \n'+str(tools.package(tx_orig).encode('base64').replace('\n', '')))
     pubkey=tools.privtopub(privkey)
     address=tools.make_address([pubkey], 1)
-    try:
-        tx['count'] = tools.count(address, {})
-    except:
-        tx['count'] = 1
+    if 'count' not in tx:
+        try:
+            tx['count'] = tools.count(address, {})
+        except:
+            tx['count'] = 1
     if 'pubkeys' not in tx:
         tx['pubkeys']=[pubkey]
-    tx['signatures'] = [tools.sign(tools.det_hash(tx), privkey)]
+    if 'signatures' not in tx:
+        tx['signatures'] = [tools.sign(tools.det_hash(tx), privkey)]
     return(blockchain.add_tx(tx, DB))
 def help_(DB, args):      
     tell_about_command={

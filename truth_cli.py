@@ -21,13 +21,14 @@ def build_buy_shares():
     brainwallet=str(raw_input('What is your brainwallet\n>'))
     privkey=tools.det_hash(brainwallet)
     pubkey=tools.privtopub(privkey)
+    address=tools.make_address([pubkey], 1)
     tx['pubkeys']=[pubkey]
-    tx['count'] = tools.count(tools.make_address([pubkey], 1), {})
+    tx['count'] = tools.count(address, {})
     cost=txs_tools.cost_to_buy_shares(tx)
     tx['price_limit']=int(cost*1.01)
     print('now for a little proof of work. This may take several minutes. The purpose of this pow is to make it more difficult for a front runner to steal your trade.')
-    tx=tools.POW(tx)
     tx=tools.unpackage(tools.package(tx))
+    tx=tools.POW(tx)
     tx['signatures']=[tools.sign(tools.det_hash(tx), privkey)]
     print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
