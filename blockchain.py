@@ -8,6 +8,7 @@ import transactions
 import tools
 import target
 
+
 def add_tx(tx, DB={}):
     # Attempt to add a new transaction into the pool.
     #print('top of add_tx')
@@ -175,8 +176,8 @@ def add_block(block_pair, DB={}):
             transactions.update[tx['type']](tx, DB, True)
         for tx in orphans:
             add_tx(tx, DB)
-        while tools.db_get('length')!=block['length']:
-            time.sleep(0.0001)
+        #while tools.db_get('length')!=block['length']:
+        #    time.sleep(0.0001)
 
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """
@@ -212,8 +213,8 @@ def delete_block(DB):
         tools.db_put('diffLength', block['diffLength'])
     for orphan in sorted(orphans, key=lambda x: x['count']):
         add_tx(orphan, DB)
-    while tools.db_get('length')!=length:
-        time.sleep(0.0001)
+    #while tools.db_get('length')!=length:
+    #    time.sleep(0.0001)
 def f(blocks_queue, txs_queue):
     def bb(): return blocks_queue.empty()
     def tb(): return txs_queue.empty()
@@ -226,11 +227,21 @@ def f(blocks_queue, txs_queue):
                 tools.log('suggestions ' + s)
                 tools.log(exc)
     while True:
-        time.sleep(0.5)
+        time.sleep(0.1)
         if tools.db_get('stop'): return
         while not bb() or not tb():
             ff(blocks_queue, add_block, bb, 'block')
             ff(txs_queue, add_tx, tb, 'tx')
-def main(DB):
-    return f(DB['suggested_blocks'], DB['suggested_txs'])
+import cProfile
+def main(DB): return f(DB["suggested_blocks"], DB["suggested_txs"])
+def profile(DB):
+    import pprint
+    p=cProfile.Profile()
+    p.run('blockchain.main(custom.DB)')
+    g=p.getstats()
+    #g=g.sorted(lambda x: x.inlinetime)
+    g=sorted(g, key=lambda x: x.totaltime)
+    g.reverse()
+    pprint.pprint(g)
+    #return f(DB['suggested_blocks'], DB['suggested_txs'])
     

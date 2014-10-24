@@ -15,8 +15,30 @@ def target(length=0):
         a = int(str(target), 16)
         b = int(a * number)#this should be rational multiplication followed by integer estimation
         return tools.buffer_(str(hex(b))[2: -1], 64)
+    def multiply_things(things):
+        out=1
+        while len(things)>0:
+            out=out*things[0].limit_denominator()
+            things=things[1:]
+        return out
+    def rat_power(a, b):#6 seconds per hundred blocks
+        things=[]
+        while b>1:
+            if b%2==0:
+                a=(a*a).limit_denominator()
+                b=b/2
+            else:
+                things.append(a)
+                b=b-1
+        if a==0: return 0
+        if a==1: return 1
+        if b==0: return 1
+        if b==1: return multiply_things([a]+things)
+        else:
+            tools.log('a b: ' +str(a)+' '+str(b))
+            error()
     def weights(length):#uses float
-        return [(custom.inflection ** (length-i)).limit_denominator() for i in range(length)]
+        return [rat_power(custom.inflection, (length-i)).limit_denominator() for i in range(length)]
     def estimate_target():
         """
         We are actually interested in the average number of hashes required to

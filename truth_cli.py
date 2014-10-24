@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import networking, sys, tools, custom, os, multiprocessing, threads, txs_tools, truthcoin_api
+import networking, sys, tools, custom, os, multiprocessing, threads, txs_tools, truthcoin_api, blockchain
 
 def daemonize(f):
     pid=os.fork()
