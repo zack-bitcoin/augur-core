@@ -227,7 +227,7 @@ def f(blocks_queue, txs_queue):
                 tools.log('suggestions ' + s)
                 tools.log(exc)
     while True:
-        time.sleep(0.5)
+        time.sleep(0.1)
         if tools.db_get('stop'): return
         while not bb() or not tb():
             ff(blocks_queue, add_block, bb, 'block')
