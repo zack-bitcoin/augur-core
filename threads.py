@@ -1,25 +1,20 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
-import miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, database
+import miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, database, threads
 def main(brainwallet, pubkey_flag=False):
+    DB=custom.DB
     print('starting truthcoin')
     if not pubkey_flag:
         privkey=tools.det_hash(brainwallet)
         pubkey=tools.privtopub(privkey)
     else:
         pubkey=brainwallet
-    DB = {
-        'reward_peers_queue':multiprocessing.Queue(),
-        'suggested_blocks': multiprocessing.Queue(),
-        'suggested_txs': multiprocessing.Queue(),
-        'heart_queue': multiprocessing.Queue(),
-    }
     processes= [
         {'target': database.main,
          'args': (DB['heart_queue'],)},
         {'target':tools.heart_monitor,
          'args':(DB['heart_queue'], )},
-        {'target': blockchain.main,
+        {'target': blockchain.test,
          'args': (DB,)},
         {'target': truthcoin_api.main,
          'args': (DB, DB['heart_queue'])},
