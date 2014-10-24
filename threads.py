@@ -39,7 +39,7 @@ def main(brainwallet, pubkey_flag=False):
     cmds=[]
     cmd=multiprocessing.Process(**processes[0])
     cmd.start()
-    tools.log('starting' + cmd.name)
+    tools.log('starting ' + cmd.name)
     time.sleep(4)
     cmds.append(cmd)
     tools.db_put('test', 'TEST')
@@ -87,5 +87,7 @@ def main(brainwallet, pubkey_flag=False):
     #print('all threads stopped')
     sys.exit(1)
 if __name__=='__main__': #for windows
-    main(sys.argv[1])
-
+    try:
+        main(sys.argv[1])
+    except Exception as exc:
+        tools.log(exc)
