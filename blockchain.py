@@ -234,7 +234,7 @@ def f(blocks_queue, txs_queue):
             ff(txs_queue, add_tx, tb, 'tx')
 import cProfile
 def main(DB): return f(DB["suggested_blocks"], DB["suggested_txs"])
-def test(DB):
+def profile(DB):
     import pprint
     p=cProfile.Profile()
     p.run('blockchain.main(custom.DB)')

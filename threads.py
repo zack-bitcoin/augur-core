@@ -14,7 +14,7 @@ def main(brainwallet, pubkey_flag=False):
          'args': (DB['heart_queue'],)},
         {'target':tools.heart_monitor,
          'args':(DB['heart_queue'], )},
-        {'target': blockchain.test,
+        {'target': blockchain.main,
          'args': (DB,)},
         {'target': truthcoin_api.main,
          'args': (DB, DB['heart_queue'])},
