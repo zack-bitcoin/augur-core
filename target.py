@@ -23,7 +23,7 @@ def target(length=0):
         return out
     def rat_power(a, b):#6 seconds per hundred blocks
         things=[]
-        while a>1 and b>1:
+        while b>1:
             if b%2==0:
                 a=(a*a).limit_denominator()
                 b=b/2
@@ -34,6 +34,9 @@ def target(length=0):
         if a==1: return 1
         if b==0: return 1
         if b==1: return multiply_things([a]+things)
+        else:
+            tools.log('a b: ' +str(a)+' '+str(b))
+            error()
     def weights(length):#uses float
         return [rat_power(custom.inflection, (length-i)).limit_denominator() for i in range(length)]
     def estimate_target():
