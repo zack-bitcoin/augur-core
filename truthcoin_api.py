@@ -6,12 +6,10 @@ def easy_add_transaction(tx_orig, DB, privkey='default'):
     if privkey in ['default', 'Default']:
         if tools.db_existence('privkey'):
             privkey=tools.db_get('privkey')
-            address=tools.db_get('address')
         else:
             return('no private key is known, so the tx cannot be signed. Here is the tx: \n'+str(tools.package(tx_orig).encode('base64').replace('\n', '')))
-    else:    
-        pubkey=tools.privtopub(privkey)
-        address=tools.make_address([pubkey], 1)
+    pubkey=tools.privtopub(privkey)
+    address=tools.make_address([pubkey], 1)
     try:
         tx['count'] = tools.count(address, {})
     except:
@@ -186,7 +184,8 @@ def main(DB, heart_queue):
             args=command[1:]
             try:
                 out=Do[command[0]](DB, args)
-            except:
+            except Exception as exc:
+                tools.log(exc)
                 out='truthcoin api main failure : ' +str(sys.exc_info())
         else: 
             out=str(command[0]) + ' is not a command. use "./truth_cli.py commands" to get the list of truthshell commands. use "./truth_cli.py help help" to learn about the help tool.'
