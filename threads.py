@@ -76,17 +76,17 @@ def main(brainwallet, pubkey_flag=False):
     tools.log('about to stop threads')
     DB['heart_queue'].put('stop')
     for p in [[custom.port, '127.0.0.1'],
-              [custom.api_port, '127.0.0.1'],
-              [custom.database_port, '127.0.0.1']]:
+              [custom.api_port, '127.0.0.1']]:
         networking.connect('stop', p[0], p[1])
     cmds.reverse()
     for cmd in cmds[:-1]:
         cmd.join()
         tools.log('stopped a thread: '+str(cmd))
     time.sleep(2)
-
+    networking.connect('stop', custom.database_port, '127.0.0.1')
+    cmds[-1].join()
+    tools.log('stopped a thread: '+str(cmds[-1]))
     tools.log('all threads stopped')
-    #print('all threads stopped')
     sys.exit(0)
 if __name__=='__main__': #for windows
     try:
