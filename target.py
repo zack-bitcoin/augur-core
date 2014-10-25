@@ -1,5 +1,9 @@
 import blockchain, custom, tools
-import cdecimal
+try:
+    import cdecimal
+except:
+    import decimal as cdecimal
+    tools.log('This would run much faster if you installed cdecimal.')
 memoized_weights=[custom.inflection**i for i in range(1000)]
 def denominator_limited_sum(l, a=0):
     if len(l)==0: return a
