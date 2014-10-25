@@ -1,5 +1,6 @@
 import blockchain, custom, tools
-from fractions import Fraction
+import cdecimal
+memoized_weights=[custom.inflection**i for i in range(1000)]
 def denominator_limited_sum(l, a=0):
     if len(l)==0: return a
     return denominator_limited_sum(l[1:], (a+l[0]).limit_denominator())
@@ -18,27 +19,14 @@ def target(length=0):
     def multiply_things(things):
         out=1
         while len(things)>0:
-            out=out*things[0].limit_denominator()
+            out=out*things[0]
             things=things[1:]
         return out
-    def rat_power(a, b):#6 seconds per hundred blocks
-        things=[]
-        while b>1:
-            if b%2==0:
-                a=(a*a).limit_denominator()
-                b=b/2
-            else:
-                things.append(a)
-                b=b-1
-        if a==0: return 0
-        if a==1: return 1
-        if b==0: return 1
-        if b==1: return multiply_things([a]+things)
-        else:
-            tools.log('a b: ' +str(a)+' '+str(b))
-            error()
     def weights(length):#uses float
-        return [rat_power(custom.inflection, (length-i)).limit_denominator() for i in range(length)]
+        #returns from small to big
+        out=memoized_weights[:length]
+        out.reverse()
+        return out
     def estimate_target():
         """
         We are actually interested in the average number of hashes required to
@@ -53,7 +41,7 @@ def target(length=0):
             return l[0]
         targets = blockchain.recent_blockthings('targets', custom.history_length)
         w = weights(len(targets))#should be rat instead of float
-        tw = denominator_limited_sum(w)
+        tw = sum(w)
         targets = map(blockchain.hexInvert, targets)
         def weighted_multiply(i):
             return targetTimesFloat(targets[i], w[i]/tw)#this should use rat division instead
@@ -61,11 +49,11 @@ def target(length=0):
         return blockchain.hexInvert(sumTargets(weighted_targets))
     def estimate_time():
         times = blockchain.recent_blockthings('times', custom.history_length)#should be deterministally turned into rats
-        times=map(Fraction, times)
+        times=map(cdecimal.Decimal, times)
         blocklengths = [times[i] - times[i - 1] for i in range(1, len(times))]
         w = weights(len(blocklengths))  # Geometric weighting
-        tw = denominator_limited_sum(w)  # Normalization constant
-        return denominator_limited_sum([w[i] * blocklengths[i] / tw for i in range(len(blocklengths))])
+        tw = sum(w)
+        return sum([w[i] * blocklengths[i] / tw for i in range(len(blocklengths))])
     retarget = estimate_time() / custom.blocktime(length)
     return targetTimesFloat(estimate_target(), retarget)
 
