@@ -1,6 +1,10 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
 import miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, database, threads
+#windows was complaining about lambda
+def peer_recieve_func(d, DB=custom.DB):
+    return peer_recieve.main(d, DB)
+
 def main(brainwallet, pubkey_flag=False):
     DB=custom.DB
     print('starting truthcoin')
@@ -9,27 +13,38 @@ def main(brainwallet, pubkey_flag=False):
         pubkey=tools.privtopub(privkey)
     else:
         pubkey=brainwallet
+
     processes= [
-        {'target': database.main,
-         'args': (DB['heart_queue'],)},
         {'target':tools.heart_monitor,
-         'args':(DB['heart_queue'], )},
+         'args':(DB['heart_queue'], ),
+         'name':'heart_monitor'},
         {'target': blockchain.main,
-         'args': (DB,)},
+         'args': (DB,),
+         'name': 'blockchain'},
         {'target': truthcoin_api.main,
-         'args': (DB, DB['heart_queue'])},
+         'args': (DB, DB['heart_queue']),
+         'name': 'truthcoin_api'},
         {'target': peers_check.main,
-         'args': (custom.peers, DB)},
+         'args': (custom.peers, DB),
+         'name': 'peers_check'},
         {'target': miner.main,
-         'args': (pubkey, DB)},
+         'args': (pubkey, DB),
+         'name': 'miner'},
         {'target': networking.serve_forever,
-         'args': (lambda d: peer_recieve.main(d, DB), custom.port, DB['heart_queue'], True)}
+         'args': (peer_recieve_func, custom.port, DB['heart_queue'], True),
+         'name': 'peer_recieve'}
     ]
-    cmds=[]
-    cmd=multiprocessing.Process(target=processes[0]['target'], args=processes[0]['args'])
-    cmd.start()
+    cmds=[database.DatabaseProcess(
+        DB['heart_queue'],
+        custom.database_name,
+        tools.log,
+        custom.database_port)]
+    try:
+        cmds[0].start()
+    except Exception as exc:
+        tools.log(exc)
+    tools.log('starting ' + cmds[0].name)
     time.sleep(4)
-    cmds.append(cmd)
     tools.db_put('test', 'TEST')
     tools.db_get('test')
     tools.db_put('test', 'undefined')
@@ -46,9 +61,10 @@ def main(brainwallet, pubkey_flag=False):
     tools.db_put('stop', False)
     tools.log('stop: ' +str(tools.db_get('stop')))
     for process in processes[1:]:
-        cmd=multiprocessing.Process(target=process['target'], args=process['args'])
+        cmd=multiprocessing.Process(**process)
         cmd.start()
         cmds.append(cmd)
+        tools.log('starting '+cmd.name)
     if not pubkey_flag:
         tools.db_put('privkey', privkey)
     else:
@@ -59,19 +75,21 @@ def main(brainwallet, pubkey_flag=False):
         time.sleep(0.5)
     tools.log('about to stop threads')
     DB['heart_queue'].put('stop')
-    for p in [[custom.port, '127.0.0.1'], [custom.api_port, 'localhost']]:
-        networking.connect('stop', p[0], p[1])
+    for p in [[custom.port, '127.0.0.1'],
+              [custom.api_port, '127.0.0.1']]:
         networking.connect('stop', p[0], p[1])
     cmds.reverse()
     for cmd in cmds[:-1]:
         cmd.join()
         tools.log('stopped a thread: '+str(cmd))
-    for p in [[custom.database_port, 'localhost']]:
-        networking.connect('stop', p[0], p[1])
-        networking.connect('stop', p[0], p[1])
     time.sleep(2)
-    del database.DB
+    networking.connect('stop', custom.database_port, '127.0.0.1')
+    cmds[-1].join()
+    tools.log('stopped a thread: '+str(cmds[-1]))
     tools.log('all threads stopped')
-    print('all threads stopped')
-    sys.exit(1)
-
+    sys.exit(0)
+if __name__=='__main__': #for windows
+    try:
+        main(sys.argv[1])
+    except Exception as exc:
+        tools.log(exc)
