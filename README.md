@@ -7,6 +7,13 @@ A podcast interview where I describe this project: http://economicsdetective.com
 Donations: 1GbpRPE83Vjg73KFvTVZ4EnS2qNkiLY5TT
 
 =====INSTALL 
+for Mac
+
+    sudo pip install numpy
+    sudo pip install m3-cdecimal 
+    git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
+    cd Truthcoin-POW
+
 for Ubuntu
 
     sudo apt-get update
@@ -15,21 +22,6 @@ for Ubuntu
     sudo pip2 install m3-cdecimal 
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW
-
-for Arch Linux)
-
-    sudo pacman -S python2-numpy python2-pip
-    git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
-    cd Truthcoin-POW    
-
-If you have trouble installing the dependencies in Arch Linux, you may want to update your mirror list with `reflector`.
-    sudo pacman -S reflector
-    reflector --verbose -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist
-
-Be warned, **this will alter your system!** You may want to make a backup first.
-    sudo cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bk
-    #do your thing...
-    sudo mv /etc/pacman.d/mirrorlist.bk /etc/pacman.d/mirrorlist
 
 ====RUN A NODE
 
