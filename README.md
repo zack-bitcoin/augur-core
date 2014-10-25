@@ -12,7 +12,7 @@ for Ubuntu
     sudo apt-get update
     sudo apt-get install python-numpy git
     sudo apt-get install libpython-dev
-    sudo pip2 --allow-external install cdecimal 
+    sudo pip2 install m3-cdecimal 
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW
 
