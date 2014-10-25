@@ -1,0 +1,19 @@
+fork_check sh
+
+mini blockchain
+
+proof of stake
+
+gmp for arithmetic speed? or maybe cdecimal would work even better.
+cdecimal stuff:
+You can get cdecimal via pip:
+pip install --allow-external cdecimal cdecimal
+And then to use it (in place of decimal), put this at the very beginning of your Python file (truth_cli.py):
+import sys
+try:
+   import cdecimal
+   sys.modules["decimal"] = cdecimal
+except:
+   pass
+import decimal 
+

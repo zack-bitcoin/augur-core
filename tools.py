@@ -114,7 +114,7 @@ def s_to_db(c):
 default_entry={'count': 0, 'amount': 0, 'votecoin':{}, 'votes':{}, 'shares':{}}
 def db_get(n, DB={}): return s_to_db({'type':'get', 'args':[str(n)]})
 def db_put(key, dic, DB={}): return s_to_db({'type':'put', 'args':[str(key), dic]})
-def db_delete(key, DB={}): return db_put(key, 'undefined', DB)
+def db_delete(key, DB={}): return s_to_db({'type':'delete', 'args':[str(key)]})#db_put(key, 'undefined', DB)
 def db_existence(key, DB={}): return s_to_db({'type':'existence', 'args':[str(key)]})
 def count(address, DB):
     # Returns the number of transactions that pubkey has broadcast.

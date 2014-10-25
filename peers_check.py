@@ -88,6 +88,7 @@ def main_once(DB):
     pr=tools.db_get('peers_ranked')
     pr=sorted(pr, key=lambda r: r[2])
     pr.reverse()
+    time.sleep(0.05)
     if DB['suggested_blocks'].empty() and tools.db_get('length')>3:
         time.sleep(10)
     i=0
