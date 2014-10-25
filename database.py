@@ -1,5 +1,4 @@
 from multiprocessing import Process
-import sys
 import os
 import json
 
@@ -14,30 +13,11 @@ class DatabaseProcess(Process):
     Manages operations on the database.
     '''
     def __init__(self, heart_queue, database_name, logf, port):
-        super(DatabaseProcess, self).__init__(name=name)
+        super(DatabaseProcess, self).__init__(name='database')
         self.heart_queue = heart_queue
         self.database_name = database_name
         self.logf = logf
         self.port = port
-        if sys.platform == 'win32':
-            import bsddb
-            self.DB = bsddb.hashopen(self.database_name)
-            self._get = self.DB.__getitem__
-            self._put = self.DB.__setitem__
-            self._del = self.DB.__delitem__
-            self._close = self.DB.close
-        else:
-            import leveldb
-            self.DB = leveldb.LevelDB(self.database_name)
-            self._get = self.DB.Get
-            self._put = self.DB.Put
-            self._del = self.DB.Delete
-            self._close = _noop # leveldb doesn't have a close func
-        try:
-            self.salt = self._get('salt')
-        except KeyError:
-            self.salt = os.urandom(5)
-            self._put('salt', salt)
 
     def get(self, args):
         '''Gets the key in args[0] using the salt'''
@@ -78,6 +58,26 @@ class DatabaseProcess(Process):
 
     def run(self):
         import networking
+        import sys
+        if sys.platform == 'win32':
+            import bsddb
+            self.DB = bsddb.hashopen(self.database_name)
+            self._get = self.DB.__getitem__
+            self._put = self.DB.__setitem__
+            self._del = self.DB.__delitem__
+            self._close = self.DB.close
+        else:
+            import leveldb
+            self.DB = leveldb.LevelDB(self.database_name)
+            self._get = self.DB.Get
+            self._put = self.DB.Put
+            self._del = self.DB.Delete
+            self._close = _noop # leveldb doesn't have a close func
+        try:
+            self.salt = self._get('salt')
+        except KeyError:
+            self.salt = os.urandom(5)
+            self._put('salt', self.salt)
         def command_handler(command):
             try:
                 name = command['type']

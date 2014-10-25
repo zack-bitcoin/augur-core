@@ -1,6 +1,10 @@
 """This program starts all the threads going. When it hears a kill signal, it kills all the threads.
 """
 import miner, peer_recieve, time, threading, tools, custom, networking, sys, truthcoin_api, blockchain, peers_check, multiprocessing, database, threads
+#windows was complaining about lambda
+def peer_recieve_func(d, DB=custom.DB):
+    return peer_recieve.main(d, DB)
+
 def main(brainwallet, pubkey_flag=False):
     DB=custom.DB
     print('starting truthcoin')
@@ -9,9 +13,6 @@ def main(brainwallet, pubkey_flag=False):
         pubkey=tools.privtopub(privkey)
     else:
         pubkey=brainwallet
-    #windows was complaining about lambda
-    def peer_recieve_func(d, DB=DB):
-        return peer_recieve.main(d, DB)
 
     processes= [
         {'target':tools.heart_monitor,
@@ -33,16 +34,17 @@ def main(brainwallet, pubkey_flag=False):
          'args': (peer_recieve_func, custom.port, DB['heart_queue'], True),
          'name': 'peer_recieve'}
     ]
-    cmds=[]
-    cmds.append(database.DatabaseProcess(
+    cmds=[database.DatabaseProcess(
         DB['heart_queue'],
         custom.database_name,
         tools.log,
-        custom.database_port))
-    cmds[0].start()
+        custom.database_port)]
+    try:
+        cmds[0].start()
+    except Exception as exc:
+        tools.log(exc)
     tools.log('starting ' + cmds[0].name)
     time.sleep(4)
-    cmds.append(cmd)
     tools.db_put('test', 'TEST')
     tools.db_get('test')
     tools.db_put('test', 'undefined')
@@ -80,13 +82,15 @@ def main(brainwallet, pubkey_flag=False):
     for cmd in cmds[:-1]:
         cmd.join()
         tools.log('stopped a thread: '+str(cmd))
+    '''
     for p in [[custom.database_port, 'localhost']]:
         networking.connect('stop', p[0], p[1])
         networking.connect('stop', p[0], p[1])
     time.sleep(2)
+    '''
     tools.log('all threads stopped')
     #print('all threads stopped')
-    sys.exit(1)
+    sys.exit(0)
 if __name__=='__main__': #for windows
     try:
         main(sys.argv[1])
