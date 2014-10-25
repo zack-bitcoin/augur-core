@@ -54,7 +54,7 @@ def target(length=0):
         w = weights(len(blocklengths))  # Geometric weighting
         tw = sum(w)
         return sum([w[i] * blocklengths[i] / tw for i in range(len(blocklengths))])
-    retarget = estimate_time() / custom.blocktime(length)
+    retarget = estimate_time() / custom.blocktime
     return targetTimesFloat(estimate_target(), retarget)
 
 

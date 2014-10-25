@@ -10,8 +10,7 @@ def download_blocks(peer, DB, peers_block_count, length):
     if not isinstance(blocks, list): return []
     length=tools.db_get('length')
     block=tools.db_get(length)
-    for i in range(10):  # Only delete a max of 20 blocks, otherwise a
-        # peer might trick us into deleting everything over and over.
+    for i in range(10):#this part should be re-written so badly
         if tools.fork_check(blocks, DB, length, block):
             blockchain.delete_block(DB)
             length-=1
