@@ -45,9 +45,10 @@ def pushblock(dic, DB):
     else:
         DB['suggested_blocks'].put([dic['block'], peer])
     return 'success'
+def peers(dic, DB): return tools.db_get('peers_ranked')
 def main(dic, DB):
     funcs = {'blockCount': blockCount, 'rangeRequest': rangeRequest,
-             'txs': txs, 'pushtx': pushtx, 'pushblock': pushblock}
+             'txs': txs, 'pushtx': pushtx, 'pushblock': pushblock, 'peers':peers}
     if 'type' not in dic:
         return 'oops: ' +str(dic)
     if dic['type'] not in funcs:

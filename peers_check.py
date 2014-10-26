@@ -51,17 +51,25 @@ def peer_check(i, peers, DB):
     us = tools.buffer_(diffLength, size)
     them = tools.buffer_(block_count['diffLength'], size)
     if them < us:
-        return give_block(peer, DB, block_count['length'])
-    if us == them:
+        give_block(peer, DB, block_count['length'])
+    elif us == them:
         try:
-            return ask_for_txs(peer, DB)
+            ask_for_txs(peer, DB)
         except Exception as exc:
             tools.log('ask for tx error')
             tools.log(exc)
-    #try:
-    return download_blocks(peer, DB, block_count, length)
-    #except:
-    #    tools.log('could not download blocks')
+    else:
+        download_blocks(peer, DB, block_count, length)
+    F=False
+    my_peers=tools.db_get('peers_ranked')
+    their_peers=cmd(peer, {'type':'peers'})
+    if type(my_peers)==list:
+        for p in their_peers:
+            if p not in my_peers:
+                F=True
+                my_peers.append(p)
+    if F:
+        tools.db_put('peers_ranked', my_peers)
 def exponential_random(r, i=0):
     if random.random()<r: return i
     return exponential_random(r, i+1)
