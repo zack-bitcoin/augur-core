@@ -6,7 +6,7 @@ database_name = 'DB.db'
 port=8900
 api_port=8899
 database_port=8898
-version = "0.0008"
+version = "0.0009"
 block_reward = 10 ** 5
 premine = 5 * 10 ** 6
 fee = 10 ** 3
@@ -30,7 +30,7 @@ download_many = 50  # Max number of blocks to request from a peer at the same ti
 max_download = 58000
 #buy_shares_target='0'*4+'1'+'9'*59
 buy_shares_target='0'*3+'1'+'9'*60
-blocktime=30
+blocktime=120
 DB = {
     'reward_peers_queue':multiprocessing.Queue(),
     'suggested_blocks': multiprocessing.Queue(),

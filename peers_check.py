@@ -24,7 +24,7 @@ def ask_for_txs(peer, DB):
     for tx in txs:
         DB['suggested_txs'].put(tx)
     T=tools.db_get('txs')
-    pushers = [x for x in T if x not in txs]
+    pushers = filter(lambda t: t not in txs, T)
     for push in pushers:
         cmd(peer, {'type': 'pushtx', 'tx': push})
     return 0
@@ -55,8 +55,9 @@ def peer_check(i, peers, DB):
     if us == them:
         try:
             return ask_for_txs(peer, DB)
-        except:
+        except Exception as exc:
             tools.log('ask for tx error')
+            tools.log(exc)
     #try:
     return download_blocks(peer, DB, block_count, length)
     #except:

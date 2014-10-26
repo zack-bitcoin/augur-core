@@ -2,6 +2,12 @@
 """
 import pt, hashlib, re, subprocess, time, copy, networking, custom, logging, random
 from json import dumps as package, loads as unpackage
+def dump_out(queue):
+    while not queue.empty():
+        try:
+            queue.get(False)
+        except:
+            pass
 def heart_monitor(queue):
     beats={}
     while True:

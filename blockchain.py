@@ -228,7 +228,10 @@ def f(blocks_queue, txs_queue):
                 tools.log(exc)
     while True:
         time.sleep(0.1)
-        if tools.db_get('stop'): return
+        if tools.db_get('stop'):
+            tools.dump_out(blocks_queue)
+            tools.dump_out(txs_queue)
+            return
         while not bb() or not tb():
             ff(blocks_queue, add_block, bb, 'block')
             ff(txs_queue, add_tx, tb, 'tx')

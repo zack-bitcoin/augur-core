@@ -15,6 +15,11 @@ E_check=tools.E_check
 is_number=tools.is_number
 def create_jury_check(tx, txs, out, DB):
     address=addr(tx)
+    mine=filter(lambda t: t['type']=='create_jury', txs)
+    mine=filter(lambda t: addr(t)==address, mine)
+    if len(mine)>0:
+        out[0]+='you cannot create 2 juries on the same block from the same address'
+        return False
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False

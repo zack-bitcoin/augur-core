@@ -61,15 +61,9 @@ def new_worker(solution_queue):
     proc.daemon=True
     proc.start()
     return({'in_queue':in_queue, 'restart':restart, 'solution_queue':solution_queue, 'proc':proc})
-def dump_out(queue):
-    while not queue.empty():
-        try:
-            queue.get(False)
-        except:
-            pass
 def restart_workers(workers):
     for worker in workers:
-        dump_out(worker['in_queue'])
+        tools.dump_out(worker['in_queue'])
         worker['restart'].set()
 def main(pubkey, DB):
     num_cores = multiprocessing.cpu_count()
@@ -80,6 +74,7 @@ def main(pubkey, DB):
             DB['heart_queue'].put('miner')
             if tools.db_get('stop'): 
                 tools.log('shutting off miner')
+                restart_workers(workers)
                 return
             elif tools.db_get('mine'):
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
@@ -114,6 +109,9 @@ def main_once(pubkey, DB, num_cores, solution_queue, workers):
 def miner(restart, solution_queue, in_queue):
     while True:
         #try:
+        if tools.db_get('stop'): 
+            tools.log('shutting off miner')
+            return
         if not(in_queue.empty()):
             candidate_block=in_queue.get()#False)
         else:
