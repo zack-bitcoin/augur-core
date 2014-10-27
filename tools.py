@@ -25,7 +25,7 @@ def heart_monitor(queue):
             if beat not in beats:
                 log('adding thread: ' +str(beat))
             beats[beat]=t
-logging.basicConfig(filename='log.py', level=logging.INFO)
+logging.basicConfig(filename=custom.log_file, level=logging.INFO)
 def log(junk):
     if isinstance(junk, Exception):
         logging.exception(junk)
