@@ -3,7 +3,7 @@ import tools, hashlib, multiprocessing, os
 import cdecimal
 peers = [['192.241.212.114', 8900]]#,['69.164.196.239', 8900]]
 current_loc=os.path.dirname(os.path.abspath(__file__))
-database_name = current_loc+'/DB.db'
+database_name = os.path.join(current_loc, 'DB.db')
 port=8900
 api_port=8899
 database_port=8898
