@@ -7,6 +7,7 @@ def peer_recieve_func(d, DB=custom.DB):
 
 def main(brainwallet, pubkey_flag=False):
     DB=custom.DB
+    tools.log('custom.current_loc: ' +str(custom.current_loc))
     print('starting truthcoin')
     if not pubkey_flag:
         privkey=tools.det_hash(brainwallet)

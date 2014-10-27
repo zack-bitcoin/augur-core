@@ -1,8 +1,9 @@
 """This is to make magic numbers easier to deal with."""
-import tools, hashlib, multiprocessing
+import tools, hashlib, multiprocessing, os
 import cdecimal
 peers = [['192.241.212.114', 8900]]#,['69.164.196.239', 8900]]
-database_name = 'DB.db'
+current_loc=os.path.dirname(os.path.abspath(__file__))
+database_name = current_loc+'/DB.db'
 port=8900
 api_port=8899
 database_port=8898
