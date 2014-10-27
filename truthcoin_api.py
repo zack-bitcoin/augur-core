@@ -168,14 +168,23 @@ def stop_(DB, args):
     return('turning off all threads')
 def commands(DB, args): return str(sorted(Do.keys()+['start', 'new_address', 'make_PM', 'buy_shares']))
 def mine(DB, args):
-    if len(args)>0 and args[0]=='off': 
-        tools.db_put('mine', False)
-        return('miner is now turned off')
-    elif tools.db_existence('privkey'):
-        tools.db_put('mine', True)
-        return ('miner on. (use "./truth_cli.py mine off" to turn off)')
+    if len(args)>0:
+        if args[0]=='off': 
+            tools.db_put('mine', False)
+            return('miner is now turned off')
+        elif args[0]=='on':
+            if tools.db_existence('privkey'):
+                tools.db_put('mine', True)
+                return ('miner on. (use "./truth_cli.py mine off" to turn off)')
+            else:
+                return('there is no private key with which to sign blocks. If you want to mine, you need to uncomment the "brain_wallet" line in custom.py')
     else:
-        return('there is no private key with which to sign blocks. If you want to mine, you need to uncomment the "brain_wallet" line in custom.py')
+        m=tools.db_get('mine')
+        if m: 
+            m='on'
+        else: 
+            m='off'
+        return('miner is currently: ' +m)
 def pass_(DB, args): return ' '
 def error_(DB, args): return error
 Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'mine':mine, 'peers':peers}
