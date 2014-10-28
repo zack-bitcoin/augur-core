@@ -73,6 +73,13 @@ def peer_check(i, peers, DB):
 def exponential_random(r, i=0):
     if random.random()<r: return i
     return exponential_random(r, i+1)
+def add_peer(peer, current_peers=0):
+    if current_peers==0:
+        current_peers=tools.db_get('peers_ranked')
+    if peer not in map(lambda x: x[0][0], current_peers):
+        tools.log('add peer')
+        current_peers.append([peer, 5, '0', 0])
+        tools.db_put(current_peers, 'peers_ranked')
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
@@ -81,8 +88,7 @@ def main(peers, DB):
         time.sleep(3)
         return main(peers, DB)
     for peer in peers:
-        tools.log('add peer')
-        p.append([peer, 5, '0', 0])
+        add_peer(peer, p)
     tools.db_put('peers_ranked', p)
     try:
         while True:

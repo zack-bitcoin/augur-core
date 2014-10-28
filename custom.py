@@ -1,5 +1,5 @@
 """This is to make magic numbers easier to deal with."""
-import tools, hashlib, multiprocessing, os
+import multiprocessing, os
 import cdecimal
 peers = [['192.241.212.114', 8900]]#,['69.164.196.239', 8900]]
 current_loc=os.path.dirname(os.path.abspath(__file__))

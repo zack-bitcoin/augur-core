@@ -1,0 +1,30 @@
+INFO:root:starting peer_recieve
+INFO:root:stop: False
+ERROR:root:'int' object has no attribute 'items'
+Traceback (most recent call last):
+  File "/home/zack/Hacking/test/peers_check.py", line 91, in main
+    main_once(DB)
+  File "/home/zack/Hacking/test/peers_check.py", line 111, in main_once
+    r=peer_check(i, pr, DB)
+  File "/home/zack/Hacking/test/peers_check.py", line 62, in peer_check
+    download_blocks(peer, DB, block_count, length)
+  File "/home/zack/Hacking/test/peers_check.py", line 15, in download_blocks
+    blockchain.delete_block(DB)
+  File "/home/zack/Hacking/test/blockchain.py", line 205, in delete_block
+    transactions.update[tx['type']](tx, DB, False)
+  File "/home/zack/Hacking/test/transactions.py", line 95, in spend
+    txs_tools.memory_leak_votecoin(tx['vote_id'], tx['to'], DB, add_block)#this should get rid of any zeros in the jury so we don't leak memory.
+  File "/home/zack/Hacking/test/txs_tools.py", line 232, in memory_leak_votecoin
+    bool_=memory_leak_helper(['votecoin', vote_id], address, DB, add_block)
+  File "/home/zack/Hacking/test/txs_tools.py", line 229, in memory_leak_helper
+    adjust_dict(loc, address, True, {loc[-1]: 0}, DB, add_block)
+  File "/home/zack/Hacking/test/txs_tools.py", line 200, in adjust_dict
+    adjust(pubkey, DB, f)
+  File "/home/zack/Hacking/test/txs_tools.py", line 178, in adjust
+    f(acc)
+  File "/home/zack/Hacking/test/txs_tools.py", line 196, in f
+    current=dict(dic.items() + current.items())
+AttributeError: 'int' object has no attribute 'items'
+zack@iloSona:~/Hacking/test$ ./truth_cli.py blockcount
+1432
+zack@iloSona:~/Hacking/test$ ./truth_cli.py stop
