@@ -64,7 +64,7 @@ def propose_decision_check(tx, txs, out, DB):
         out[0]+='that vote id has not been created yet'
         return False
     if tools.db_existence(tx['decision_id'], DB): 
-        out[0]+='that decision id has not been created yet'
+        out[0]+='that decision id has already been used'
         return False
     for t in txs:
         if 'decision_id' in t:
