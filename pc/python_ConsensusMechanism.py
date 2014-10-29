@@ -1,5 +1,5 @@
-from numpy import dot
 import python_CustomMath
+dot=python_CustomMath.dot
 
 def DemocracyRep(X):
     v=[]
@@ -16,9 +16,10 @@ def GetRewardWeights(M, Rep=-1, alpha=0.1):
     FirstScore=Results['Scores']
     Set1=FirstScore+min(map(abs,FirstScore))
     Set2=FirstScore-max(FirstScore)
-    Old=dot(Rep,M)
-    New1=python_CustomMath.GetWeight(dot(Set1,M))
-    New2=python_CustomMath.GetWeight(dot(Set2,M))
+    Old=python_CustomMath.dot(Rep, M)
+    #Old=dot(Rep,M)
+    New1=python_CustomMath.GetWeight(python_customMath.dot(Set1, M))
+    New2=python_CustomMath.GetWeight(python_customMath.dot(Set2, M))
     RefInd = sum( (New1-Old)**2) -  sum( (New2-Old)**2)
     if(RefInd<=0): AdjPrinComp = Set1  
     else: AdjPrinComp = Set2  
@@ -54,7 +55,7 @@ def GetRewardWeights(M, Rep=-1, Alpha=0.1):
     b=max(FirstScore)
     Set1=map(lambda x: x+a, FirstScore)
     Set2=map(lambda x: x-b, FirstScore)
-    Old=dot(python_CustomMath.switch_row_cols(Rep), M)
+    Old=dot(Rep, M)
     New1=dot(GetWeight(Set1), M)
     New2=dot(GetWeight(Set2), M)
     a=0

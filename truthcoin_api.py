@@ -91,7 +91,7 @@ def ask_decision(DB, args):
     if len(args)<3:
         return('not enough inputs')
     #print('DB args: ' +str(args))
-    tx={'type':'propose_decision', 'vote_id':args[0], 'decision_id':args[1], 'txt':accumulate_words(args[1:])[1:]}
+    tx={'type':'propose_decision', 'vote_id':args[0], 'decision_id':args[1], 'txt':accumulate_words(args[2:])[1:]}
     return easy_add_transaction(tx, DB)
 def vote_on_decision(DB, args):
     if len(args)<3:

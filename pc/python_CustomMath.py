@@ -63,6 +63,72 @@ def ReWeight(v):
     w=map(lambda x: 0 if type(x)==str else x, v)
     s=sum(w)
     return map(lambda x: x*1.0/s, w)
+def matrix_multiply(matrix, v):
+    matrix=copy.deepcopy(matrix)
+    for w in range(len(v)):
+        matrix[w]=map(lambda m: m*v[w], matrix[w])
+    return matrix
+def weighted_sample_mean(matrix, weighting):
+    #smashes matrix flat. Each vector gets replaced with it's weighted mean.
+    weighting=ReWeight(weighting)
+    matrix=matrix_multiply(matrix, weighting)
+    out=[]
+    for i in range(len(matrix[0])):
+        n=0
+        for m in matrix:
+            n+=m[i]
+        out.append(n)
+    return out
+def test_weighted_sample_mean():
+    m=[[1,0,1],[1,1,1],[1,0,1]]
+    c=[1,1,1]
+    Mat=numpy.ma.masked_array(m)
+    Coins=numpy.array(map(lambda x: [x], c))
+    print(weighted_sample_mean(m, c))
+    print(numpy.ma.average(Mat, axis=0, weights=numpy.hstack(Coins))) # Computing the weighted sample mean (fast, efficient and precise)
+def subtract_vector(m, v):
+    out=[]
+    for row in range(len(m[0])):
+        n=[]
+        for column in range(len(v)):
+            n.append(m[row][column]-v[column])
+        out.append(n)
+    return out
+def test_subtract_vector():
+    m=[[1,0,1],[1,1,1],[1,0,1]]
+    Mat=numpy.ma.masked_array(m)
+    v=[.5, .5, 0]
+    #print(Mat)
+    print(numpy.matrix(Mat-numpy.array(v)))
+    print(subtract_vector(m, v))
+def test_matrix_multiply():
+    m=[[1,0,1],[1,1,1],[1,0,1]]
+    Mat=numpy.ma.masked_array(m)
+    coins=numpy.ma.masked_array([[1],[1],[2]])
+    print(matrix_multiply(Mat, coins))
+    print(numpy.ma.multiply(Mat, coins))
+def dot(m1, m2):
+    def f(y): return map(lambda x: [x], y) if type(x[0])!=list else y
+    m1=f(m1)
+    m2=f(m2)
+    out=[]
+    r_m1=range(len(m1))
+    for row in r_m1:
+        new_row=[]
+        for column in range(len(m2[0])):
+            new_element=0
+            for r in r_m1:
+                new_element+=m1[row][r]*m2[r][column]
+            new_row.append(new_element)
+        out.append(new_row)
+    return out
+def dot_test():
+    m=[[1,2,3],[1,0,0],[0,0,0]]
+    Mat=numpy.ma.masked_array(m)
+    a=numpy.dot(Mat, Mat)
+    b=dot(m, m)
+    print(a)
+    print(b)
 def WeightedCov(Mat,Rep=-1):
     """Takes 1] a masked array, and 2] an [n x 1] dimentional array of weights, and computes the weighted covariance
     matrix and center of a given array.
@@ -73,21 +139,24 @@ def WeightedCov(Mat,Rep=-1):
     Coins = copy.deepcopy(Rep)
     for i in range(len(Rep)):
         Coins[i] = (int( (Rep[i] * 1000000) )) 
-    Mean = numpy.ma.average(Mat, axis=0, weights=numpy.hstack(Coins)) # Computing the weighted sample mean (fast, efficient and precise)
-    XM = numpy.matrix( Mat-Mean ) # xm = X diff to mean
-    #XM = numpy.matrix( map(lambda l: map(lambda x:x-Mean, l), Mat)) # xm = X diff to mean
-    sigma2 = numpy.matrix( 1/(sum(Coins)-1) * numpy.dot(switch_row_cols(numpy.ma.multiply(XM, AsMatrix(Coins))), XM) ); # Compute the unbiased weighted sample covariance
-
-    return( {'Cov':numpy.array(sigma2), 'Center':numpy.array(XM) } )
-#print(WeightedCov([[1,0,1,0,1],[0,0,1,0,0],[0,0,0,0,0]],[100,1,1]))
+    Mean = weighted_sample_mean(Mat, Coins)
+    XM=subtract_vector(Mat, Mean)
+    as_matrix_coins=AsMatrix(Coins)
+    mul=matrix_multiply(XM, as_matrix_coins)
+    do=dot(switch_row_cols(mul), XM)
+    c=1/(sum(Coins)-1)
+    sigma2=map(lambda row: map(lambda i: c*i, row), do)
+    return( {'Cov':sigma2, 'Center':XM } )
+print(WeightedCov([[1,0,1,0,1],[0,0,1,0,0],[0,0,0,0,0]],[100,1,1]))
 def WeightedPrinComp(M, Weights):
     if len(Weights)!=len(M):
         print('Weights must be equal in length to rows')
         return 'error'
     wCVM=WeightedCov(M, Weights)
     print('wCVM: ' +str(wCVM))
-    SVD=numpy.linalg.svd(wCVM['Cov'])
+    SVD=svd.svd(wCVM['Cov'])
+    #SVD=numpy.linalg.svd(wCVM['Cov'])
     L=SVD[0]
     #S=numpy.dot(scale(M, center=wCVM['Center'], scale=False), L)
-    S=switch_row_cols(numpy.dot(wCVM['Center'], L))[0]
+    S=switch_row_cols(dot(wCVM['Center'], L))[0]
     return{'Scores':S, 'Loadings':L}
