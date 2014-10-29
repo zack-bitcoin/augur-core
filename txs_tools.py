@@ -70,6 +70,22 @@ def decisions_keepers(vote_id, jury, DB):
         else:
             tools.log('participation times certainty was too low to include this decision: ' +str(jury['decisions'][i]))
     return out
+'''
+from decimal import Decimal
+def log_e(x):
+    return(x.ln)
+def cost_to_buy_shares(tx):
+    pm=tools.db_get(tx['PM_id'])
+    shares_purchased=pm['shares_purchased']
+    buy=tx['buy']
+    B=Decimal(pm['B'])
+    E=Decimal('2.718281828459045')
+    dec C(shares, B): return B*((sum(map(lambda x: E**(x/B), shares))).ln())
+    C_old=C(shares_purchased, B)
+    def add(a, b): return a+b
+    C_new=C(map(add, shares_purchased, buy), B)
+    return int(C_new-C_old)
+'''
 def cost_to_buy_shares(tx):
     pm=tools.db_get(tx['PM_id'])
     shares_purchased=pm['shares_purchased']

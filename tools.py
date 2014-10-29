@@ -2,6 +2,7 @@
 """
 import pt, hashlib, re, subprocess, time, copy, networking, custom, logging, random
 from json import dumps as package, loads as unpackage
+#print(json.dumps(x, indent=3, sort_keys=True))  for pretty printing
 def dump_out(queue):
     while not queue.empty():
         try:

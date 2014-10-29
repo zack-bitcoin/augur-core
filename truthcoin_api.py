@@ -62,9 +62,9 @@ def create_jury(DB, args):
         return('not enough inputs')
     return easy_add_transaction({'type': 'create_jury', 'vote_id': args[0]}, DB)
 def peers(DB, args):
-    return(str(tools.db_get('peers_ranked')))
+    return(tools.db_get('peers_ranked'))
 def DB_print(DB, args):
-    return(str(DB))
+    return(DB)
 def info(DB, args): 
     if len(args)<1:
         return ('not enough inputs')
@@ -72,9 +72,9 @@ def info(DB, args):
         address=tools.db_get('address')
     else:
         address=args[0]
-    return(str(tools.db_get(address, DB)))   
+    return(tools.db_get(address, DB))
 def my_address(DB, args):
-    return(str(tools.db_get('address')))
+    return(tools.db_get('address'))
 def spend(DB, args): 
     if len(args)<2:
         return('not enough inputs')
@@ -151,22 +151,22 @@ def collect_winnings(DB, args):
     tx['shares']=acc['shares'][tx['PM_id']]
     tools.log('collect_winnings 2')
     return easy_add_transaction(tx, DB)
-def blockcount(DB, args): return(str(tools.db_get('length')))
-def txs(DB, args):        return(str(tools.db_get('txs')))
-def difficulty(DB, args): return(str(target.target(DB)))
+def blockcount(DB, args): return(tools.db_get('length'))
+def txs(DB, args):        return(tools.db_get('txs'))
+def difficulty(DB, args): return(target.target(DB))
 def my_balance(DB, args, address='default'): 
     if address=='default':
         address=tools.db_get('address')
-    return(str(tools.db_get(address, DB)['amount']-txs_tools.cost_0(tools.db_get('txs'), address)['truthcoin_cost']))
+    return(tools.db_get(address, DB)['amount']-txs_tools.cost_0(tools.db_get('txs'), address)['truthcoin_cost'])
 def balance(DB, args): 
     if len(args)<1:
         return('what address do you want the balance for?')
-    return(str(my_balance(DB, args, args[0])))
+    return(my_balance(DB, args, args[0]))
 def log(DB, args): tools.log(accumulate_words(args)[1:])
 def stop_(DB, args): 
     tools.db_put('stop', True)
     return('turning off all threads')
-def commands(DB, args): return str(sorted(Do.keys()+['start', 'new_address', 'make_PM', 'buy_shares']))
+def commands(DB, args): return sorted(Do.keys()+['start', 'new_address', 'make_PM', 'buy_shares'])
 def mine(DB, args):
     if len(args)>0:
         if args[0]=='off': 
@@ -203,5 +203,6 @@ def main(DB, heart_queue):
         return out
     try:
         return networking.serve_forever(responder, custom.api_port, heart_queue)
-    except:
-        print('api error: ' +str(sys.exc_info()))
+    except exc as Exception:
+        tools.log('api error')
+        tools.log(exc)
