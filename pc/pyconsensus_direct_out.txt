@@ -1,0 +1,46 @@
+{u'Certainty': Decimal('0.5833333333333333333333333332'), u'Agents': {u'ThisRep': array([Decimal('0.1666666666666666666666666667')], dtype=object), u'RelativePart': None, u'ParticipationR': [Decimal('0.25'), Decimal('0.25'), Decimal('0.25'), Decimal('0.25'), Decimal('0.25'), Decimal('0.25')], u'OldRep': array([Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667')], dtype=object), u'NArow': array([0, 0, 0, 0, 0, 0]), u'RowBonus': None, u'SmoothRep': array([Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667'),
+       Decimal('0.1666666666666666666666666667')], dtype=object)}, u'Filled': array([[Decimal('0.0'), Decimal('0'), Decimal('0'), Decimal('0')],
+       [Decimal('0.0'), Decimal('0'), Decimal('0'), Decimal('0')],
+       [Decimal('0.0'), Decimal('0'), Decimal('0'), Decimal('0')],
+       [Decimal('0.0'), Decimal('0'), Decimal('1'), Decimal('0')],
+       [Decimal('0.0'), Decimal('0'), Decimal('1'), Decimal('1')],
+       [Decimal('0.0'), Decimal('0'), Decimal('1'), Decimal('1')]], dtype=object), u'Decisions': {u'Certainty': masked_array(data = [Decimal('1.0') Decimal('1.0') Decimal('2E-28')
+ Decimal('0.3333333333333333333333333332')],
+             mask = [False False False False],
+       fill_value = ?)
+, u'NAs Filled': masked_array(data = [0 0 0 0],
+             mask = [False False False False],
+       fill_value = 999999)
+, u'ParticipationC': masked_array(data =
+ [[Decimal('1.000000000000000000000000000')
+  Decimal('1.000000000000000000000000000')
+  Decimal('1.000000000000000000000000000')
+  Decimal('1.000000000000000000000000000')]],
+             mask =
+ False,
+       fill_value = ?)
+, u'First Loading': array([Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0')], dtype=object), u'DecisionOutcome_Final': [Decimal('0.00'), Decimal('0.0'), Decimal('0.5'), 0], u'Author Bonus': array([[Decimal('0.4285714285714285714285714286'),
+        Decimal('0.4285714285714285714285714286'),
+        Decimal('8.571428571428571428571428573E-29'),
+        Decimal('0.1428571428571428571428571428')]], dtype=object), u'DecisionOutcomes_Raw': masked_array(data = [Decimal('0.0') Decimal('0') Decimal('0.5000000000000000000000000001')
+ Decimal('0.3333333333333333333333333334')],
+             mask = False,
+       fill_value = ?)
+, u'Consensus Reward': array([Decimal('0.4285714285714285714285714286'),
+       Decimal('0.4285714285714285714285714286'),
+       Decimal('8.571428571428571428571428573E-29'),
+       Decimal('0.1428571428571428571428571428')], dtype=object)}, u'Original': array([[1, 1, 0, 0],
+       [1, 0, 0, 0],
+       [1, 1, 0, 0],
+       [1, 1, 1, 0],
+       [0, 0, 1, 1],
+       [0, 0, 1, 1]]), u'Participation': Decimal('1.000000000000000000000000000')}

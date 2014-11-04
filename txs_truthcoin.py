@@ -57,7 +57,7 @@ def propose_decision_check(tx, txs, out, DB):
     if is_number(tx['vote_id']) or is_number(tx['decision_id']):
         out[0]+='that can not be a number'
         return False
-    if len(tx['decision_id'])>6**4: 
+    if len(tx['decision_id'])>custom.max_key_length: 
         out[0]+='decision id too long'
         return False
     if not tools.db_existence(tx['vote_id'], DB): 
@@ -362,7 +362,7 @@ def create_jury(tx, DB, add_block):
     address=addr(tx)
     adjust_int(['count'], address, 1, DB, add_block)
     adjust_int(['amount'], address, -custom.create_jury_fee, DB, add_block)
-    adjust_dict(['votecoin'], address, False, {tx['vote_id']: 6**4}, DB, add_block)
+    adjust_dict(['votecoin'], address, False, {tx['vote_id']: custom.total_votecoins}, DB, add_block)
     jury={'decisions':[], 'members':[address]}
     symmetric_put(tx['vote_id'], jury, DB, add_block)
 def propose_decision(tx, DB, add_block):
@@ -371,9 +371,10 @@ def propose_decision(tx, DB, add_block):
     adjust_list(['decisions'], tx['vote_id'], False, tx['decision_id'], DB, add_block)
     adjust_int(['amount'], address, -custom.propose_decision_fee, DB, add_block)
     decision={'state':'proposed',#proposed, yes, no
+              #'maturation':tx['maturation'],
               'txt':tx['txt']}
     symmetric_put(tx['decision_id'], decision, DB, add_block)
-def jury_vote(tx, DB, add_block):
+def jury_vote(tx, DB, add_block):#while votes exist, should not be able to send votecoins
     address=addr(tx)
     acc=tools.db_get(address, DB)
     if tx['decision_id'] not in acc['votes']:

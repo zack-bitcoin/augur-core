@@ -32,13 +32,11 @@ Usage:
 from __future__ import division, print_function, unicode_literals, absolute_import
 import sys
 try:
-    import cdecimal
-    sys.modules["decimal"] = cdecimal
+    from cdecimal import Decimal, getcontext, ROUND_HALF_EVEN
 except:
-    pass
+    from decimal import Decimal, getcontext, ROUND_HALF_EVEN
 import os
 import getopt
-from decimal import Decimal, getcontext, ROUND_HALF_EVEN
 from numpy import *
 from numpy.linalg import *
 
@@ -93,7 +91,7 @@ class Oracle(object):
                 w_median = mean(s_data[idx:idx+2])
             else:
                 w_median = s_data[idx+1]
-        return w_median
+                return w_median
 
     def Rescale(self, UnscaledMatrix, Scales):
         """Forces a matrix of raw (user-supplied) information
@@ -137,7 +135,8 @@ class Oracle(object):
             New = New + mean(New)
         if sum(New) == 0:    #Catch an error here
             New = New + 1
-        New = New/sum(New)   #Normalize
+        a=sum(New)
+        New = New/a   #Normalize
         return(New)
 
     def Catch(self, X, Tolerance=0):
@@ -156,7 +155,7 @@ class Oracle(object):
         Out = []
         for i in range(1, N):
             Out.append(Weight[i]/Expected[i])
-        return(Out)
+            return(Out)
 
     def ReWeight(self, Vec):
         """Get the relative influence of numbers, treat NaN as influence-less."""
@@ -182,22 +181,23 @@ class Oracle(object):
         Coins = ma.copy(Rep)
         for i in range(len(Rep)):
             Coins[i] = (int( (Rep[i] * 1000000)[0] )) 
-
-        # Computing the weighted sample mean (fast, efficient and precise)
-        Mean = ma.average(Mat, axis=0, weights=hstack(Coins))
-        XM = matrix( Mat-Mean ) # xm = X diff to mean
-        # Compute the unbiased weighted sample covariance
-        c=ma.multiply(XM, Coins).T
-        b=ma.multiply(XM, Coins).T.dot(XM)
-        sigma2 = matrix( 1/(sum(Coins)-1) * ma.multiply(XM, Coins).T.dot(XM) );
-
-        return {'Cov': array(sigma2), 'Center': array(XM)}
+            # Computing the weighted sample mean (fast, efficient and precise)
+            Mean = ma.average(Mat, axis=0, weights=hstack(Coins))
+            XM = matrix( Mat-Mean ) # xm = X diff to mean
+            # Compute the unbiased weighted sample covariance
+            a=1/(sum(Coins)-1)
+            c=ma.multiply(XM, Coins).T
+            print('c: ' +str(c))
+            b=c.dot(XM)
+            sigma2 = matrix( a * b );
+            return {'Cov': array(sigma2), 'Center': array(XM)}
 
     def WeightedPrinComp(self, Mat, Rep=-1):
         """Takes a matrix and row-weights and manually computes the statistical procedure known as Principal Components Analysis (PCA)
         This version of the procedure is so basic, that it can also be thought of as merely a singular-value decomposition on a weighted covariance matrix."""      
+        print('Mat: ' +str(Mat))
         wCVM = self.WeightedCov(Mat,Rep)
-        print('wcvm: ' +str(wCVM))
+        print('wCVM: ' +str(wCVM))
         SVD = svd(wCVM['Cov'])
 
         L = SVD[0].T[0]                      #First loading
@@ -211,10 +211,13 @@ class Oracle(object):
         Principal Component Analysis (PCA).
 
         """
+        print('Rep: ' +str(Rep))
         if type(Rep) is int:
             Rep = self.DemocracyCoin(M)
-                
+            
+        print('Rep: ' +str(Rep))
         Results = self.WeightedPrinComp(M, Rep)        
+        print('step 1:'+str(Results))
         Rep = self.GetWeight(Rep)  #Need the old reputation back for the rest of this.
         FirstLoading = Results[0] #The first loading is designed to indicate which Decisions were more 'agreed-upon' than others. 
         FirstScore   = Results[1] #The scores show loadings on consensus (to what extent does this observation represent consensus?)
@@ -229,14 +232,15 @@ class Oracle(object):
         Old = dot(Rep.T,M)
         New1 = dot(self.GetWeight(Set1), M)
         New2 = dot(self.GetWeight(Set2), M)
-
+        print('New1')
+        print(New1)
         #Difference in Sum of squared errors, if >0, then New1 had higher errors (use New2), and conversely if <0 use 1.
         RefInd = sum( (New1-Old)**2) -  sum( (New2-Old)**2)
         if(RefInd <= 0):
             AdjPrinComp = Set1
-        if(RefInd > 0):
-            AdjPrinComp = Set2
-        
+            if(RefInd > 0):
+                AdjPrinComp = Set2
+                
         if Verbose:
             print("")
             print("Estimations using: Previous Rep, Option 1, Option 2")
@@ -244,7 +248,7 @@ class Oracle(object):
             print("")
             print("Previous period reputations, Option 1, Option 2, Selection")
             print( vstack([ Rep.T, Set1, Set2, AdjPrinComp]).T )
-      
+            
         #Declared here, filled below (unless there was a perfect consensus).
         RowRewardWeighted = Rep # (set this to uniform if you want a passive diffusion toward equality when people cooperate [not sure why you would]). Instead diffuses towards previous reputation (Smoothing does this anyway).
         if(max(abs(AdjPrinComp))!=0):
@@ -252,7 +256,7 @@ class Oracle(object):
             RowRewardWeighted = self.GetWeight( AdjPrinComp * (Rep/mean(Rep)).T )
 
         #note: Rep/mean(Rep) is a correction ensuring Reputation is additive. Therefore, nothing can be gained by splitting/combining Reputation into single/multiple accounts.
-              
+        
         #Freshly-Calculated Reward (Reputation) - Exponential Smoothing
         #New Reward: RowRewardWeighted
         #Old Reward: Rep
@@ -290,17 +294,13 @@ class Oracle(object):
             # Discriminate Based on Contract Type
             if not ScaledIndex[i]:
                 # Our Current best-guess for this Binary Decision (weighted average)
-                print('Row: ' +str(Row))
-                print('Col: ' +str(Col))
                 DecisionOutcomes_Raw.append(dot(Col, Row))
             else:
                 # Our Current best-guess for this Scaled Decision (weighted median)
                 wmed = self.WeightedMedian(Row[:,0], Col)
                 DecisionOutcomes_Raw.append()
 
-        a=array(DecisionOutcomes_Raw).T
-        print(a)
-        return a
+        return array(DecisionOutcomes_Raw).T
 
     def FillNa(self, Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
         """Uses exisiting data and reputations to fill missing observations.
@@ -393,6 +393,8 @@ class Oracle(object):
         # Consensus - "Who won?" Decision Outcome    
         # Simple matrix multiplication ... highest information density at RowBonus,
         # but need DecisionOutcomes.Raw to get to that
+        print('filled: ' +str(Filled))
+        print('player info: ' +str(PlayerInfo['SmoothRep']))
         DecisionOutcomes_Raw = dot(PlayerInfo['SmoothRep'], Filled).squeeze()
 
         # Discriminate Based on Contract Type
@@ -471,7 +473,7 @@ class Oracle(object):
                 'ParticipationR': ParticipationR.base,
                 'RelativePart': NAbonusR.base,
                 'RowBonus': RowBonus.base,
-                },
+            },
             'Decisions': {
                 'First Loading': AdjLoadings,
                 'DecisionOutcomes_Raw': DecisionOutcomes_Raw,
@@ -481,7 +483,7 @@ class Oracle(object):
                 'ParticipationC': ParticipationC,
                 'Author Bonus': ColBonus,
                 'DecisionOutcome_Final': DecisionOutcome_Final,
-                },
+            },
             'Participation': 1 - PercentNA,
             'Certainty': Avg_Certainty,
         }
@@ -491,45 +493,36 @@ class Oracle(object):
 def main(argv=None):
     if argv is None:
         argv = sys.argv
-    try:
-        short_opts = 'h'
-        long_opts = ['help']
-        opts, vals = getopt.getopt(argv[1:], short_opts, long_opts)
-    except getopt.GetoptError as e:
-        sys.stderr.write(e.msg)
-        sys.stderr.write("for help use --help")
-        return 2
-    for opt, arg in opts:
-        if opt in ('-h', '--help'):
-            print(__doc__)
-            return 0
+        try:
+            short_opts = 'h'
+            long_opts = ['help']
+            opts, vals = getopt.getopt(argv[1:], short_opts, long_opts)
+        except getopt.GetoptError as e:
+            sys.stderr.write(e.msg)
+            sys.stderr.write("for help use --help")
+            return 2
+            for opt, arg in opts:
+                if opt in ('-h', '--help'):
+                    print(__doc__)
+                    return 0
 
 if __name__ == '__main__':
-    my_votes = [[1, 1, 0, nan],
+    my_votes = [[1, 1, 0, 0],
                 [1, 0, 0, 0],
                 [1, 1, 0, 0],
                 [1, 1, 1, 0],
                 [0, 0, 1, 1],
                 [0, 0, 1, 1]]
-    '''
     my_decision_bounds = [
         {"scaled": True, "min": 0.1, "max": 0.5},
         {"scaled": True, "min": 0.2, "max": 0.7},
         {"scaled": False, "min": 0, "max": 1},
         {"scaled": False, "min": 0, "max": 1},
     ]
-    '''
-    oracle = Oracle(votes=my_votes)#, decision_bounds=my_decision_bounds)
-    oracle.consensus()
+
+    oracle = Oracle(votes=my_votes, decision_bounds=my_decision_bounds)
+    #oracle.consensus()
     #M=[[0,0,1,1],[1,1,0,1],[0,0,0,1],[0,0,0,1]]
     #oracle.WeightedPrinComp(matrix(M), array([[1,1,1,1]]))
-    M=[[1,    1,    nan,    0],
-       [1,    0,    0,    0],
-       [1,    1,    0,    0],
-       [1,    1,    1,    0],
-       [0,    0,    1,    1],
-       [0,    0,    1,    1]]
-
-
-
+    oracle.GetRewardWeights(my_votes)
 
