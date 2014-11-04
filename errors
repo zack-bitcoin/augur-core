@@ -28,3 +28,26 @@ AttributeError: 'int' object has no attribute 'items'
 zack@iloSona:~/Hacking/test$ ./truth_cli.py blockcount
 1432
 zack@iloSona:~/Hacking/test$ ./truth_cli.py stop
+
+
+
+
+Traceback (most recent call last):
+  File "/root/Truthcoin-POW/blockchain.py", line 225, in ff
+    g(queue.get(False))
+  File "/root/Truthcoin-POW/blockchain.py", line 176, in add_block
+    transactions.update[tx['type']](tx, DB, True)
+  File "/root/Truthcoin-POW/transactions.py", line 95, in spend
+    txs_tools.memory_leak_votecoin(tx['vote_id'], tx['to'], DB, add_block)#this should get rid of any zeros in the jury so we don't leak memory.
+  File "/root/Truthcoin-POW/txs_tools.py", line 232, in memory_leak_votecoin
+    bool_=memory_leak_helper(['votecoin', vote_id], address, DB, add_block)
+  File "/root/Truthcoin-POW/txs_tools.py", line 229, in memory_leak_helper
+    adjust_dict(loc, address, True, {loc[-1]: 0}, DB, add_block)
+  File "/root/Truthcoin-POW/txs_tools.py", line 200, in adjust_dict
+    adjust(pubkey, DB, f)
+  File "/root/Truthcoin-POW/txs_tools.py", line 178, in adjust
+    f(acc)
+  File "/root/Truthcoin-POW/txs_tools.py", line 198, in f
+    current.pop(dic.keys()[0])
+AttributeError: 'int' object has no attribute 'pop'
+root@NEWS1:~/Truthcoin-POW# 
