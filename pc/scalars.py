@@ -5,7 +5,7 @@ def factorial(n): return 1 if not dec_greater_than(n, 1) else n*factorial(n-1)
 def alternate_sum(v, positive=1, s=0): return s if len(v)==0 else alternate_sum(v[1:], -positive, s+v[0]*positive)
 Taylor_series_depth=13
 def trig(x, t):
-    if not dec_greater_than(x, Decimal('0.0000001')): return 1-t
+    if not dec_greater_than(x, Decimal('0.0000001')) and dec_greate_than(x, Decimal('-0.0000001')): return 1-t
     if not dec_greater_than(x, -pi): return trig(x+2*pi, t)
     if dec_greater_than(x, pi): return trig(x-2*pi, t)
     a=filter(lambda y: y%2==t, range(Taylor_series_depth))
