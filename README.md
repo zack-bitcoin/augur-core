@@ -33,9 +33,18 @@ It will take time to download the blockchain.
 
     ./truthd.py
 
-
+====About this software
 
 For now, there is a 20-block cycle.
 1-10: votecoin-holders may give encrypted votes on decisions. (in the final version of truthcoin, this step will take 1000+ blocks)
 11-15: votecoin-holders may decrypt their votes
 16-20: if there are at least 3 votecoin-holders, and at least 5 decisions they have voted on, then we can do SVD to come to consensus about these decisions.
+
+Security assumption for truthcoin-pow is a lot weaker than bitcoin. It is only
+secure if there is always at least one person mining for blocks.
+If more than 2 hours pass where no-one is mining, then it becomes far easier to attack.
+
+This blockchain currently has a bad retargetting algorithm. Because of this, it is not
+suitable for holding real value. It is still good for testing and developing a truthcoin
+system.
+Long term goal is to use proof-of-stake anyway.

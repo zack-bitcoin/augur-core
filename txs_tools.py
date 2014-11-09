@@ -211,7 +211,10 @@ def adjust_dict(location, pubkey, remove, dic, DB, add_block):
         if remove != add_block:# 'xor' and '!=' are the same.
             current=dict(dic.items() + current.items())
         else: 
-            current.pop(dic.keys()[0])
+            try:
+                current.pop(dic.keys()[0])
+            except:
+                tools.log('current dic: ' +str(current) + ' ' +str(dic)+' '+str(location))
         set_(location, acc, current)
     adjust(pubkey, DB, f)    
 def adjust_list(location, pubkey, remove, item, DB, add_block):

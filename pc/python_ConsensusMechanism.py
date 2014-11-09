@@ -45,31 +45,15 @@ def test_GetRewardWeights():
          [0, 0, 1, 1],
          [0, 0, 1, 1]]
     '''
-{'FirstL': [Decimal('-0.5395366037873049834610773420'),
-            Decimal('-0.4570560722424117163006049290'),
-            Decimal('0.4570560722424117163006049291'),
-            Decimal('0.5395366037873049834610773410')],
- 'OldRep': [Decimal('0.1666666666666666666666666667'),
-            Decimal('0.1666666666666666666666666667'),
-            Decimal('0.1666666666666666666666666667'),
-            Decimal('0.1666666666666666666666666667'),
-            Decimal('0.1666666666666666666666666667'),
-            Decimal('0.1666666666666666666666666667')],
- 'SmoothRep': [Decimal('0.1782375696127678871611093569'),
-               Decimal('0.1717624303872321128388906431'),
-               Decimal('0.1782375696127678871611093569'),
-               Decimal('0.1717624303872321128388906431'),
-               Decimal('0.1500000000000000000000000000'),
-               Decimal('0.1500000000000000000000000000')],
- 'ThisRep': [Decimal('0.2823756961276788716110935692'),
-             Decimal('0.2176243038723211283889064308'),
-             Decimal('0.2823756961276788716110935692'),
-             Decimal('0.2176243038723211283889064308'),
-             Decimal('0'),
-             Decimal('0')]}
+{u'ThisRep': array([[ 0.2823757,  0.2176243,  0.2823757,  0.2176243,  0.       ,  0.       ]]), u'FirstL': array([-0.5395366 , -0.45705607,  0.45705607,  0.5395366 ]), u'SmoothRep': array([[ 0.17823757,  0.17176243,  0.17823757,  0.17176243,  0.15      ,
+         0.15      ]]), u'OldRep': array([[ 0.16666667,  0.16666667,  0.16666667,  0.16666667,  0.16666667,
+         0.16666667]])}
     '''
     import pprint
     pprint.pprint(GetRewardWeights(M))
+def v_dot(a, b): 
+    def mul(c, d): return c*d
+    return sum(map(mul, a, b))
 def GetDecisionOutcomes(Mtemp, Rep):
 # Determines the Outcomes of Decisions based on the provided reputation (weighted vote)
     #For each column
@@ -79,22 +63,122 @@ def GetDecisionOutcomes(Mtemp, Rep):
         Col=[]
         c=map(lambda x: x[i], Mtemp)
         for j in range(len(c)):
-            if type(j) not in [str, unicode]:
+            if type(c[j]) not in [str, unicode]:
                 Row.append(Rep[j])
                 Col.append(c[j])
         Row=custommath.ReWeight(Row)
-        #out.append(custommath.weighted_median(Row, Col))
-        print('Row: ' +str(Row))
-        print('Col: ' +str(Col))
-        out.append(custommath.dot(Col, Row))
+        out.append(v_dot(Col, Row))
     return custommath.switch_row_cols(out)
 def test_getdecisionoutcomes():
-    M=[[1,    1,    0,    'NA'],
+    M=[[1,    1,    0,    0],
        [1,    0,    0,    0],
        [1,    1,    0,    0],
        [1,    1,    1,    0],
        [0,    0,    1,    1],
        [0,    0,    1,    1]]
     print(GetDecisionOutcomes(M, [1]*6))
+    #[[Decimal('0.6666666666666666666666666668'), Decimal('0.5000000000000000000000000001'), Decimal('0.5000000000000000000000000001'), Decimal('0.3333333333333333333333333334')]]
+def any_NA(M):
+    for row in M:
+        for i in row:
+            if i=='NA': return True
+    return False
+def diag(v):
+    if type(v[0])==list: v=v[0]
+    out=[]
+    l=len(v)
+    for i in range(l):
+        row=[0]*l
+        row[i]=v[i]
+        out.append(row)
+    return out
+def FillNa(Mna, Rep, Catchp=Decimal('0.1')):
+    Mnew = Mna
+    MnewC=Mna
+    if any_NA(Mna):
+        DecisionOutcomesRaw=GetDecisionOutcomes(Mna, Rep)
+        NAmat=map(lambda row: map(lambda x: 1 if x=='NA' else 0, row), Mna)
+        Mnew=map(lambda row: map(lambda x: 0 if x=='NA' else x, row), Mna)
+        NAsToFill=custommath.dot(NAmat, diag(DecisionOutcomesRaw))
+        for row in range(len(Mnew)):
+            for i in range(len(Mnew[row])):
+                Mnew[row][i]=Mnew[row][i]+NAsToFill[row][i]
+        return(map(lambda row: map(lambda x: custommath.Catch(x, Catchp), row), Mnew))
+    return(Mna)
+def FillNa_test():
+    M=[[1,    1,    0,    0],
+       [1,    0,    'NA',    'NA'],
+       [1,    'NA',    0,    'NA'],
+       [1,    1,    1,    'NA'],
+       [0,    'NA',    1,    'NA'],
+       [0,    0,    1,    1]]
+    print(FillNa(M, [1,1,1,1,1,1]))
+#[[Decimal('1'), Decimal('1'), Decimal('0'), Decimal('0')], [Decimal('1'), Decimal('0'), Decimal('1'), Decimal('0.5')], [Decimal('1'), Decimal('0.5'), Decimal('0'), Decimal('0.5')], [Decimal('1'), Decimal('1'), Decimal('1'), Decimal('0.5')], [Decimal('0'), Decimal('0.5'), Decimal('1'), Decimal('0.5')], [Decimal('0'), Decimal('0'), Decimal('1'), Decimal('1')]]
+def Factory(M0, Rep, CatchP=Decimal('0.1'), MaxRow=5000):
+    Filled=FillNa(M0, Rep, CatchP)
+    PlayerInfo=GetRewardWeights(Filled, Rep, Decimal('0.1'))
+    AdjLoadings=PlayerInfo['FirstL']
+    #print('smoothrep: ' +str(PlayerInfo['SmoothRep']))#way wrong
+    #print('Filled: ' +str(Filled))
+    DecisionOutcomesRaw=custommath.dot([PlayerInfo['SmoothRep']], Filled)[0]
+    #print('raw outcomes: ' +str(DecisionOutcomesRaw))
+    DecisionOutcomeAdj=map(lambda x: custommath.Catch(x, CatchP), DecisionOutcomesRaw)
+    Certainty=map(lambda x: 2*(x-Decimal('0.5')), DecisionOutcomesRaw)
+    Certainty=map(abs, Certainty)
+    ConReward=custommath.GetWeight(Certainty)
+    Avg_Certainty=custommath.mean(Certainty)
+    DecisionOutcomeAdj=[]
+    for i, raw in enumerate(DecisionOutcomesRaw):
+        DecisionOutcomeAdj.append(custommath.Catch(raw, CatchP))
+    DecisionOutcomeFinal=DecisionOutcomeAdj
+    NAmat=map(lambda row: map(lambda x: 1 if type(x) in [str, unicode] else 0, row), M0)
+    a=custommath.dot([PlayerInfo['SmoothRep']], NAmat)[0]
+    ParticipationC=map(lambda x: 1-x, a)
+    v=map(sum, NAmat)
+    ParticipationR=map(lambda x: 1-x/Decimal(len(NAmat[0])), v)
+    PercentNA=1-custommath.mean(ParticipationC)
+    NAbonusR = custommath.GetWeight(ParticipationR)
+    def plus(a, b): return a+b
+    RowBonus = map(plus, map(lambda x: x*PercentNA, NAbonusR), map(lambda x: x*(1-PercentNA),  PlayerInfo['SmoothRep']))
+    NAbonusC=custommath.GetWeight(ParticipationC)
+    ColBonus=map(plus, map(lambda x: x*PercentNA, NAbonusC), map(lambda x: x*(1-PercentNA), ConReward))
+    namatsum=[]
+    for i in range(len(NAmat[0])):
+        namatsum.append(sum(map(lambda x: x[i], NAmat)))
+    Output = {
+        'Original': M0,
+        'Filled': Filled,
+        'Agents': {
+            'OldRep': PlayerInfo['OldRep'],#[0],
+            'ThisRep': PlayerInfo['ThisRep'][0],
+            'SmoothRep': PlayerInfo['SmoothRep'][0],
+            'NArow': map(sum, NAmat),#.sum(axis=1).base,
+            'ParticipationR': ParticipationR,#.base,
+            'RelativePart': NAbonusR,#.base,
+            'RowBonus': RowBonus,#.base,
+        },
+        'Decisions': {
+            'First Loading': AdjLoadings,
+            'DecisionOutcomes_Raw': DecisionOutcomesRaw,
+            'Consensus Reward': ConReward,
+            'Certainty': Certainty,
+            'NAs Filled': namatsum,#NAmat.sum(axis=0),
+            'ParticipationC': ParticipationC,
+            'Author Bonus': ColBonus,
+            'DecisionOutcome_Final': DecisionOutcomeFinal,
+        },
+        'Participation': 1 - PercentNA,
+        'Certainty': Avg_Certainty,
+    }
+    return Output
 
-test_getdecisionoutcomes()
+def Factory_test():
+    import pprint
+    M1=[[1,    1,    0,    'NA'],
+        [1,    0,    0,    0],
+        [1,    1,    0,    0],
+        [1,    1,    1,    0],
+        [0,    0,    1,    1],
+        [0,    0,    1,    1]]
+    pprint.pprint(Factory(M1, [1,1,1,1,1,1]))
+Factory_test()

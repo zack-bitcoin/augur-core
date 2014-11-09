@@ -187,6 +187,8 @@ class Oracle(object):
         Mean = ma.average(Mat, axis=0, weights=hstack(Coins))
         XM = matrix( Mat-Mean ) # xm = X diff to mean
         # Compute the unbiased weighted sample covariance
+        #print('XM: ' +str(XM))
+        #print('Coins: ' +str(Coins))
         c=ma.multiply(XM, Coins).T
         b=ma.multiply(XM, Coins).T.dot(XM)
         sigma2 = matrix( 1/(sum(Coins)-1) * ma.multiply(XM, Coins).T.dot(XM) );
@@ -196,11 +198,12 @@ class Oracle(object):
     def WeightedPrinComp(self, Mat, Rep=-1):
         """Takes a matrix and row-weights and manually computes the statistical procedure known as Principal Components Analysis (PCA)
         This version of the procedure is so basic, that it can also be thought of as merely a singular-value decomposition on a weighted covariance matrix."""      
+        #print('Weights: ' +str(Rep))
         wCVM = self.WeightedCov(Mat,Rep)
-        print('wcvm: ' +str(wCVM))
         SVD = svd(wCVM['Cov'])
 
-        L = SVD[0].T[0]                      #First loading
+        L = SVD[0].T[0]           
+           #First loading
         S = dot(wCVM['Center'],SVD[0]).T[0]   #First Score
 
         return (L,S)
@@ -290,8 +293,6 @@ class Oracle(object):
             # Discriminate Based on Contract Type
             if not ScaledIndex[i]:
                 # Our Current best-guess for this Binary Decision (weighted average)
-                print('Row: ' +str(Row))
-                print('Col: ' +str(Col))
                 DecisionOutcomes_Raw.append(dot(Col, Row))
             else:
                 # Our Current best-guess for this Scaled Decision (weighted median)
@@ -299,7 +300,6 @@ class Oracle(object):
                 DecisionOutcomes_Raw.append()
 
         a=array(DecisionOutcomes_Raw).T
-        print(a)
         return a
 
     def FillNa(self, Mna, ScaledIndex, Rep=-1, CatchP=.1, Verbose=False):
@@ -393,8 +393,10 @@ class Oracle(object):
         # Consensus - "Who won?" Decision Outcome    
         # Simple matrix multiplication ... highest information density at RowBonus,
         # but need DecisionOutcomes.Raw to get to that
+        #print('smoothrep : ' +str(PlayerInfo['SmoothRep']))
+        #print('filled: ' +str(Filled))
         DecisionOutcomes_Raw = dot(PlayerInfo['SmoothRep'], Filled).squeeze()
-
+        #print('raw outcomes: ' +str(DecisionOutcomes_Raw))
         # Discriminate Based on Contract Type
         ncols = Filled.shape[1]
         for i in range(ncols):
@@ -520,16 +522,28 @@ if __name__ == '__main__':
     ]
     '''
     oracle = Oracle(votes=my_votes)#, decision_bounds=my_decision_bounds)
-    oracle.consensus()
+    print(oracle.consensus())
+    M = [[1, 1, 0, 0],
+         [1, 0, 0, 0],
+         [1, 1, 0, 0],
+         [1, 1, 1, 0],
+         [0, 0, 1, 1],
+         [0, 0, 1, 1]]
     #M=[[0,0,1,1],[1,1,0,1],[0,0,0,1],[0,0,0,1]]
-    #oracle.WeightedPrinComp(matrix(M), array([[1,1,1,1]]))
+    N=[[1,0,1,0],
+       [1,0,1,0],
+       [1,0,0,1]]
+
+    #print(oracle.GetRewardWeights(M))
+    #print(oracle.WeightedPrinComp(matrix(M), array([[1,1,1,1]])))
+    '''
     M=[[1,    1,    nan,    0],
        [1,    0,    0,    0],
        [1,    1,    0,    0],
        [1,    1,    1,    0],
        [0,    0,    1,    1],
        [0,    0,    1,    1]]
-
+    '''
 
 
 

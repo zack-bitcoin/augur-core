@@ -1,0 +1,109 @@
+ack@iloSona:~/Hacking/truthcoin/pc$ python pyconsensus.py 
+{u'Certainty': 0.22823756961276787, u'Agents': {u'ThisRep': array([ 0.2823757,  0.2176243,  0.2823757,  0.2176243,  0.       ,  0.       ]), u'RelativePart': array([ 0.13043478,  0.17391304,  0.17391304,  0.17391304,  0.17391304,
+        0.17391304]), u'ParticipationR': array([ 0.75,  1.  ,  1.  ,  1.  ,  1.  ,  1.  ]), u'OldRep': array([ 0.16666667,  0.16666667,  0.16666667,  0.16666667,  0.16666667,
+        0.16666667]), u'NArow': array([ 1.,  0.,  0.,  0.,  0.,  0.]), u'RowBonus': array([[ 0.17610751,  0.17185826,  0.17804487,  0.17185826,  0.15106555,
+         0.15106555]]), u'SmoothRep': array([ 0.17823757,  0.17176243,  0.17823757,  0.17176243,  0.15      ,
+        0.15      ])}, u'Filled': array([[ 1.,  1.,  0.,  0.],
+       [ 1.,  0.,  0.,  0.],
+       [ 1.,  1.,  0.,  0.],
+       [ 1.,  1.,  1.,  0.],
+       [ 0.,  0.,  1.,  1.],
+       [ 0.,  0.,  1.,  1.]]), u'Decisions': {u'Certainty': masked_array(data = [0.40000000000000013 0.05647513922553582 0.0564751392255356
+ 0.3999999999999999],
+             mask = [False False False False],
+       fill_value = 1e+20)
+, u'NAs Filled': masked_array(data = [0.0 0.0 0.0 1.0],
+             mask = [False False False False],
+       fill_value = 1e+20)
+, u'ParticipationC': masked_array(data =
+ [[ 1.          1.          1.          0.82176243]],
+             mask =
+ False,
+       fill_value = 1e+20)
+, u'First Loading': array([-0.5395366 , -0.45705607,  0.45705607,  0.5395366 ]), u'DecisionOutcome_Final': [1, 0.5, 0.5, 0], u'Author Bonus': masked_array(data =
+ [[0.4302760943117392 0.070762975744293 0.07076297574429276
+  0.42819795419967505]],
+             mask =
+ [[False False False False]],
+       fill_value = 1e+20)
+, u'DecisionOutcomes_Raw': masked_array(data = [ 0.7         0.52823757  0.47176243  0.3       ],
+             mask = False,
+       fill_value = 1e+20)
+, u'Consensus Reward': masked_array(data = [0.43813996166214836 0.06186003833785187 0.06186003833785163
+ 0.43813996166214814],
+             mask = [False False False False],
+       fill_value = 1e+20)
+}, u'Original': array([[  1.,   1.,   0.,  nan],
+       [  1.,   0.,   0.,   0.],
+       [  1.,   1.,   0.,   0.],
+       [  1.,   1.,   1.,   0.],
+       [  0.,   0.,   1.,   1.],
+       [  0.,   0.,   1.,   1.]]), u'Participation': 0.95544060759680804}
+zack@iloSona:~/Hacking/truthcoin/pc$ ##########################################################
+zack@iloSona:~/Hacking/truthcoin/pc$ python python_ConsensusMechanism.py 
+{'Agents': {'NArow': [1, 0, 0, 0, 0, 0],
+            'OldRep': [1, 1, 1, 1, 1, 1],#bad .1666 for all
+            'ParticipationR': [Decimal('0.75'),
+                               Decimal('1'),
+                               Decimal('1'),
+                               Decimal('1'),
+                               Decimal('1'),
+                               Decimal('1')],
+            'RelativePart': [Decimal('0.1304347826086956521739130435'),
+                             Decimal('0.1739130434782608695652173913'),
+                             Decimal('0.1739130434782608695652173913'),
+                             Decimal('0.1739130434782608695652173913'),
+                             Decimal('0.1739130434782608695652173913'),
+                             Decimal('0.1739130434782608695652173913')],
+            'RowBonus': [Decimal('0.7430999396030297039939489194'),
+                         Decimal('0.7482169560520366178693398019'),
+                         Decimal('0.7531894784031684853761348907'),
+                         Decimal('0.7482169560520366178693398019'),
+                         Decimal('0.7315047020376823509174942798'),
+                         Decimal('0.7315047020376823509174942798')],#bad all should be about .16
+            'SmoothRep': Decimal('0.9282375696127678871611093569'),#bad should be a vector all about .17
+            'ThisRep': Decimal('0.2823756961276788716110935692')},#bad should be a vector 
+ 'Certainty': Decimal('4.50000000000000000000000000'),#bad should be a vector all around 0.05
+ 'Decisions': {'Author Bonus': [Decimal('0.3485915584300296999381389472'),#bad
+                                Decimal('0.2699405805576428674558505120'),
+                                Decimal('0.2651217413653126153539303762'),
+                                Decimal('0.1163461196470148172520801646')],
+               'Certainty': [Decimal('6.400000000000000000000000000'),#bad
+                             Decimal('4.556475139225535774322218714'),
+                             Decimal('4.443524860774464225677781286'),
+                             Decimal('2.600000000000000000000000000')],
+               'Consensus Reward': [Decimal('0.3555555555555555555555555556'),#bad
+                                    Decimal('0.2531375077347519874623454841'),
+                                    Decimal('0.2468624922652480125376545159'),
+                                    Decimal('0.1444444444444444444444444444')],
+               'DecisionOutcome_Final': [Decimal('1'),#bad
+                                         Decimal('1'),
+                                         Decimal('1'),
+                                         Decimal('1')],
+               'DecisionOutcomes_Raw': [Decimal('3.700000000000000000000000000'),#bad
+                                        Decimal('2.778237569612767887161109357'),
+                                        Decimal('2.721762430387232112838890643'),
+                                        Decimal('1.800000000000000000000000000')],
+               'First Loading': [Decimal('-0.5395366037873049834610773407'),
+                                 Decimal('-0.4570560722424117163006049289'),
+                                 Decimal('0.4570560722424117163006049290'),
+                                 Decimal('0.5395366037873049834610773410')],
+               'NAs Filled': [0, 0, 0, 1],
+               'ParticipationC': [Decimal('1.000000000000000000000000000'),
+                                  Decimal('1.000000000000000000000000000'),
+                                  Decimal('1.000000000000000000000000000'),
+                                  Decimal('0.0717624303872321128388906431')]},
+ 'Filled': [[Decimal('1'), Decimal('1'), Decimal('0'), Decimal('0')],
+            [Decimal('1'), Decimal('0'), Decimal('0'), Decimal('0')],
+            [Decimal('1'), Decimal('1'), Decimal('0'), Decimal('0')],
+            [Decimal('1'), Decimal('1'), Decimal('1'), Decimal('0')],
+            [Decimal('0'), Decimal('0'), Decimal('1'), Decimal('1')],
+            [Decimal('0'), Decimal('0'), Decimal('1'), Decimal('1')]],
+ 'Original': [[1, 1, 0, 'NA'],
+              [1, 0, 0, 0],
+              [1, 1, 0, 0],
+              [1, 1, 1, 0],
+              [0, 0, 1, 1],
+              [0, 0, 1, 1]],
+ 'Participation': Decimal('0.7679406075968080282097226608')}#bad
+zack@iloSona:~/Hacking/truthcoin/pc$ 

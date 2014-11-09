@@ -65,6 +65,7 @@ def Influence(Weight):
     l=len(Weight)
     return map(lambda x: x*l, Weight)
 def ReWeight(v):
+    if type(v[0])==list: v=map(lambda x: x[0], v)
     w=map(lambda x: 0 if type(x)==str else x, v)
     s=sum(w)
     return map(lambda x: x*Decimal('1.0')/s, w)
@@ -130,26 +131,31 @@ def v_average(M, W):
     return out
 def ma_multiply(m, v):
     out=[]
-    for row in range(len(m)):
-        r=[]
-        for i in range(len(m[0])):
-            r.append(m[row][i]*v[i])
-        out.append(r)
+    if type(v[0])==list and len(v)>0:#if v is vertical
+        for row in range(len(m)):
+            out.append(map(lambda x: x*v[row][0], m[row]))
+    else:
+        if type(v[0])==list: v=v[0]
+        for row in range(len(m)):
+            out.append(map(lambda i: m[row][i]*v[i], range(len(m[0]))))
     return out
 def ma_multiply_test():
-    XM=[[1,0,1],[0,1,0],[0,0,100]]
-    Coins=[1,2,3]
+    XM=[[1,0,1,0],[0,1,0,0],[0,0,100, 0]]
+    Coins=[[1],[2],[3]]
     from numpy import ma
-    print(ma.multiply(XM, Coins))#.T.dot(XM))
-    print(ma_multiply(XM, Coins))#.T.dot(XM))
+    print(ma.multiply(XM, Coins))
+    print(ma_multiply(XM, Coins))
+    Coins=[1,2,3,4]
+    print(ma.multiply(XM, Coins))
+    print(ma_multiply(XM, Coins))
 def WeightedCov(Mat, Rep=-1):#should only output square matrices.
     if type(Rep) is int: Rep=map(lambda x: x/Decimal(len(Mat)), [1]*len(Mat))
     Coins=copy.deepcopy(Rep)
-    if type(Coins[0])==list: Coins=map(lambda x: x[0], Coins)
-    Coins=map(lambda y: y*1000000, Coins)
+    #if type(Coins[0])==list: Coins=map(lambda x: x[0], Coins)
+    Coins=map(lambda y: [y[0]*1000000], Coins)
     Mean=v_average(Mat, ReWeight(Coins))
     XM=subtract_vector(Mat, Mean)
-    a=Decimal('1')/(sum(Coins)-1)
+    a=Decimal('1')/(sum(map(lambda x: x[0], Coins))-1)
     c=switch_row_cols(ma_multiply(XM,Coins))
     b=dot(c,XM)
     sigma2=map(lambda row: map(lambda x: x*a, row), b)
@@ -158,8 +164,8 @@ def WeightedPrinComp(M, Weights):
     if len(Weights)!=len(M):
         print('Weights must be equal in length to rows')
         return 'error'
+    if type(Weights[0])!=list: Weights=map(lambda x: [x], Weights)
     wCVM=WeightedCov(M, Weights)
-    print('wcvm: ' +str(wCVM))
     SVD=svd.svd(wCVM['Cov'])
     L=switch_row_cols(SVD[0])[0]
     S=switch_row_cols(dot(wCVM['Center'], L))[0]
