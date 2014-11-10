@@ -20,18 +20,19 @@ for Ubuntu
     sudo apt-get install python-numpy git
     sudo apt-get install libpython-dev
     sudo pip2 install m3-cdecimal 
+    sudo pip install six
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW
 
 ====RUN A NODE
 
-    ./threads.py
+    python2.7 truth_cli.py start
 
 It will take time to download the blockchain.
 
 ====TALK TO THE NODE
 
-    ./truthd.py
+    python2.7 truth_cli.py
 
 ====About this software
 

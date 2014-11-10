@@ -38,7 +38,16 @@ def cost_to_buy_shares(current_state, shares, B):
     a=C(current_state, B)
     b=C(map(add, current_state, shares), B)
     return b-a
+def dirac_delta(a, l): return [Decimal('0.1')]+[a]*(l-1)
+def dirac_test():
+    a=dirac_delta(Decimal('0.1'), 100)
+    print(a)
+    R=200
+    for i in range(R):
+        print(plug_in(Decimal(1)*i/R, a))
+dirac_test()
 
-print(cost_to_buy_shares([Decimal('10'),Decimal('50'),0,0,0], [Decimal('10'),0,0,0,0], 1000))
-print(cost_to_buy_shares([Decimal('10'),Decimal('50'),0,0,0], [Decimal('5'),0,0,0,0], 1000))
-print(cost_to_buy_shares([Decimal('10'),Decimal('50'),0,0,0], [Decimal('5'),Decimal('5'),0,0,0], 1000))
+
+#print(cost_to_buy_shares([Decimal('10'),Decimal('50'),0,0,0], [Decimal('10'),0,0,0,0], 1000))
+#print(cost_to_buy_shares([Decimal('10'),Decimal('50'),0,0,0], [Decimal('5'),0,0,0,0], 1000))
+#print(cost_to_buy_shares([Decimal('10'),Decimal('50'),0,0,0], [Decimal('5'),Decimal('5'),0,0,0], 1000))
