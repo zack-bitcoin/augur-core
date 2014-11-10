@@ -88,8 +88,10 @@ def E_check(dic, key, type_):
     else:
         if not dic[key] == type_[0]: return E_check(dic, key, type_[1:])
     return True
-def reveal_time_p(DB={}, n=10):
-    return db_get('length')%20>=(20-n)
+def reveal_time_p(DB={}, n=custom.vote_reveal_length+custom.SVD_length):
+    r=custom.voting_cycle_length
+    return db_get('length')%r>=(r-n)
+    #return db_get('length')%20>=(20-n)
 def is_number(s):
     try:
         int(s)

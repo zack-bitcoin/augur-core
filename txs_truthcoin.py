@@ -10,6 +10,7 @@ import blockchain
 import transactions
 import numpy
 import copy
+from cdecimal import Decimal
 addr=tools.addr
 E_check=tools.E_check
 is_number=tools.is_number
@@ -45,6 +46,9 @@ def create_jury_check(tx, txs, out, DB):
     if not txs_tools.fee_check(tx, txs, DB): return False
     return True
 def propose_decision_check(tx, txs, out, DB):
+    if 'maturation' in tx:
+        n=tx['maturation']
+        if type(n)!=int or n<0: return False
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
@@ -187,7 +191,7 @@ def part_cert(matrix, weights):
 def SVD_consensus_check(tx, txs, out, DB):
     if not E_check(tx, 'vote_id', [str, unicode]): return False    
     if not E_check(tx, 'decisions', [list]): return False    
-    if not tools.reveal_time_p(DB, 5): 
+    if not tools.reveal_time_p(DB, custom.SVD_length): 
         out[0]+='this is not the correct time to do SVD'
         return False
     if is_number(tx['vote_id']):
@@ -213,7 +217,7 @@ def SVD_consensus_check(tx, txs, out, DB):
     k=txs_tools.decisions_keepers(tx['vote_id'], jury, DB)
     for decision in tx['decisions']:
         if not decision in k:
-            out[0]+='one of the decisions has insufficient participation*certainty: ' +str(decision)
+            out[0]+='one of the decisions has insufficient participation*certainty or has not matured yet: ' +str(decision)+' '+str(tools.db_get(decision))
             return False
     if not txs_tools.fee_check(tx, txs, DB): 
         out[0]+='you do not have enough money'
@@ -371,7 +375,7 @@ def propose_decision(tx, DB, add_block):
     adjust_list(['decisions'], tx['vote_id'], False, tx['decision_id'], DB, add_block)
     adjust_int(['amount'], address, -custom.propose_decision_fee, DB, add_block)
     decision={'state':'proposed',#proposed, yes, no
-              #'maturation':tx['maturation'],
+              'maturation':tx['maturation'],
               'txt':tx['txt']}
     symmetric_put(tx['decision_id'], decision, DB, add_block)
 def jury_vote(tx, DB, add_block):#while votes exist, should not be able to send votecoins
@@ -421,7 +425,7 @@ def SVD_consensus(tx, DB, add_block):
 def prediction_market(tx, DB, add_block):#also used to increase liquidity of existing market, eventually
     address=addr(tx)
     adjust_int(['count'], address, 1, DB, add_block)
-    adjust_int(['amount'], address, int(-tx['B']*math.log(len(tx['states']))), DB, add_block)
+    adjust_int(['amount'], address, int(-tx['B']*(Decimal(len(tx['states']))).ln()), DB, add_block)
     pm={}
     for i in ['fees', 'B', 'states', 'states_combinatory', 'decisions']:
         pm[i]=tx[i]

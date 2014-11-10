@@ -38,7 +38,7 @@ def plug_in(x, v):
     return sum(c)
 def v2f(v): return lambda x: plug_in(x, v)
 def v2f_test():
-    print(graph(v2f([1,1,1,1,1])))
+    print(graph(v2f([1,1,1,1,1])))#should be dirac delta at 0
 def integrate(f, m=5): return sum(map(lambda x: f(Decimal(x)/m), range(m)))/m#this m determines initial liaudity=B*ln(m)
 def integrate_test():
     def f(x): return x*Decimal('1')

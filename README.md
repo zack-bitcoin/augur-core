@@ -36,10 +36,10 @@ It will take time to download the blockchain.
 
 ====About this software
 
-For now, there is a 20-block cycle.
-1-10: votecoin-holders may give encrypted votes on decisions. (in the final version of truthcoin, this step will take 1000+ blocks)
-11-15: votecoin-holders may decrypt their votes
-16-20: if there are at least 3 votecoin-holders, and at least 5 decisions they have voted on, then we can do SVD to come to consensus about these decisions.
+For now, there is a week-long cycle.
+for the first 7/8ths of the cycle: votecoin-holders may give encrypted votes on decisions. (in the final version of truthcoin, this step will take 1000+ blocks)
+for the next 1/10th of the cycle: votecoin-holders may decrypt their votes
+for the final 1/40th of the cycle: if there are at least 3 votecoin-holders, and at least 5 decisions they have voted on, then we can do SVD to come to consensus about these decisions.
 
 Security assumption for truthcoin-pow is a lot weaker than bitcoin. It is only
 secure if there is always at least one person mining for blocks.

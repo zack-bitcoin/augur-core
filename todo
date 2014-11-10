@@ -1,3 +1,6 @@
+1)We want to add an earliest to each decision/event (what are they called?), and make it so that decisions/events cannot expire before the date written on them.
+2) we want to decrease the frequency of voting periods a lot. From 40 min to once per week.
+
 maturation date
 
 any vote must block the coins from being sent until svd is over

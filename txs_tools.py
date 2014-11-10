@@ -2,6 +2,8 @@
 tools.py contains functions that are used everywhere.
 """
 import blockchain, custom, math, tools, numpy
+from cdecimal import Decimal
+
 addr=tools.addr
 
 def weights(vote_id, DB, jury='default'):
@@ -69,7 +71,13 @@ def decisions_keepers(vote_id, jury, DB):
             out.append(jury['decisions'][i])
         else:
             tools.log('participation times certainty was too low to include this decision: ' +str(jury['decisions'][i]))
-    return out
+    l=tools.db_get('length')
+    for i in out:
+        o=[]
+        dec=tools.db_get(i)
+        if not'maturation' in dec and dec['maturation']>l:
+            o.append(i)
+    return o
 '''
 from decimal import Decimal
 def log_e(x):
@@ -86,12 +94,13 @@ def cost_to_buy_shares(tx):
     C_new=C(map(add, shares_purchased, buy), B)
     return int(C_new-C_old)
 '''
+E=Decimal('2.718281828459045')
 def cost_to_buy_shares(tx):
     pm=tools.db_get(tx['PM_id'])
     shares_purchased=pm['shares_purchased']
     buy=tx['buy']
-    B=pm['B']*1.0
-    def C(shares, B): return B*math.log(sum(map(lambda x: math.e**(x/B), shares)))
+    B=pm['B']*Decimal('1.0')
+    def C(shares, B): return B*math.log(sum(map(lambda x: E**(x/B), shares)))
     C_old=C(shares_purchased, B)
     def add(a, b): return a+b
     C_new=C(map(add, shares_purchased, buy), B)
@@ -124,7 +133,7 @@ def cost_0(txs, address):
             'SVD_consensus':(lambda: total_cost.append(custom.SVD_consensus_fee)),
             'collect_winnings':(lambda: total_cost.append(-custom.collect_winnings_reward)),
             'buy_shares':buy_shares_,
-            'prediction_market':(lambda: total_cost.append(Tx['B']*math.log(len(Tx['states']))))}
+            'prediction_market':(lambda: total_cost.append(Tx['B']*(Decimal(len(Tx['states']))).ln()))}
         Do[Tx['type']]()
     return {'truthcoin_cost':sum(total_cost), 'votecoin_cost':votecoin_cost}
 def fee_check(tx, txs, DB):

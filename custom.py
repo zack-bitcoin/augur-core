@@ -8,7 +8,7 @@ log_file=os.path.join(current_loc, 'log')
 port=8900
 api_port=8899
 database_port=8898
-version = "0.0009"
+version = "0.0010"
 max_key_length=6**4
 total_votecoins=6**4
 block_reward = 10 ** 5
@@ -41,3 +41,8 @@ DB = {
     'suggested_txs': multiprocessing.Queue(),
     'heart_queue': multiprocessing.Queue(),
 }
+seconds_per_week=604800
+voting_cycle_length=seconds_per_week/blocktime
+vote_reveal_length=voting_cycle_length/10
+SVD_length=voting_cycle_length/40
+voting_length=voting_cycle_length-vote_reveal_length-SVD_length
