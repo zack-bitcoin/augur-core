@@ -1,0 +1,18 @@
+Given an initial allocation of goods among a set of individuals, a change to a different allocation that makes at least one individual better off without making any other individual worse off is called a Pareto improvement. An allocation is defined as "Pareto efficient" or "Pareto optimal" when no further Pareto improvements can be made.
+
+Under "Kaldor–Hicks efficiency", an outcome is more efficient if those that are made better off could in theory compensate those that are made worse off and lead to a Pareto optimal outcome. The compensation does not actually have to occur (there's no presumption in favor of status-quo) and thus, a more efficient outcome can in fact leave some people worse off.
+
+A "Kaldor-Hicks improvement" increases Kaldor-Hicks efficiency.
+
+
+
+Is POW mining a block a Kaldor-Hicks improvement?
+Sometimes. It depends on how big the mining reward is. If the mining reward is less than or equal to the security needs of users, then it is Kaldor-Hicks efficient because the people who benefit from security have benefits which exceed the cost to pay the miners.
+If the mining reward is greater than security needs of users, then it is not Kaldor-Hicks efficient. The benefits to security are not enough to afford to pay the miners.
+There is no known way to make mining reward size dependent upon security needs. So, there is no known way to make a POW blockchain be Kaldor-Hicks. In practice, the mining reward is a constant choosen at the genesis block.
+
+
+
+Is Slasher POS buying a block a Kaldor-Hicks improvement?
+Always. Coins are only destroyed, never created. The act of creating the next block destroys some coins. Only one person's coins are destroyed, and many other people gain because they can spend transactions in the block.
+The block-buyer voluntarily agrees to sign the block. In practice, people send transaction fees to the block-buyer, so the block-buyer makes a profit.
