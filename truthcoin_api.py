@@ -32,7 +32,7 @@ def help_(DB, args):
         'my_address':'tells you your own address',
         'spend':'spends money, in satoshis, to an address <addr>. Example: spend 1000 11j9csj9802hc982c2h09ds',
         'votecoin_spend':'spend votecoins from jury <jury>, to address <addr>. Example: votecoin_spend 1000 <jury> <addr>',
-        'ask_decision': 'If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truth_cli.py ask_decision <jury> weather_question_203 what will the weather be tomorrow',
+        'ask_decision': 'If you wanted to ask the jury <jury>, the question "what will the weather be tomorrow", with the unique identifier "weather_question_203", you would type: ./truth_cli.py ask_decision <jury> maturation_date weather_question_203 what will the weather be tomorrow',
         'vote_on_decision':'If you want to vote in jury <jury>, and you want to vote on decision <decision>, and you want to vote "yes", for example: vote_on_decision <jury> <decision> yes',
         'reveal_vote':'If you want to reveal your vote for the decision with the unique identifier <decision> which was asked ofjury <jury>, then: reveal_vote <jury> <decision>',
         'SVD_consensus':'If you want to resolve decisions asked of jury <jury>, then: SVD_consensus <jury>',
@@ -88,10 +88,14 @@ def accumulate_words(l, out=''):
     if len(l)>0: return accumulate_words(l[1:], out+' '+l[0])
     return out
 def ask_decision(DB, args):
-    if len(args)<3:
+    if len(args)<4:
         return('not enough inputs')
-    #print('DB args: ' +str(args))
-    tx={'type':'propose_decision', 'vote_id':args[0], 'decision_id':args[1], 'txt':accumulate_words(args[2:])[1:]}
+    try:
+        args[1]=int(args[1])
+    except:
+        return('maturation must be an int. it is a blocklength. '+str(args[1]))
+    tx={'type':'propose_decision', 'vote_id':args[0], 'decision_id':args[2], 'maturation':args[1], 'txt':accumulate_words(args[3:])[1:]}
+    tools.log('tx: '+str(tx))
     return easy_add_transaction(tx, DB)
 def vote_on_decision(DB, args):
     if len(args)<3:
