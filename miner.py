@@ -73,6 +73,7 @@ def main(pubkey, DB):
         while True:
             DB['heart_queue'].put('miner')
             if tools.db_get('stop'): 
+                tools.dump_out(solution_queue)
                 tools.log('shutting off miner')
                 restart_workers(workers)
                 return
