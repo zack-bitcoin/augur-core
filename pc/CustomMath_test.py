@@ -93,3 +93,36 @@ def b_test():
 def weighted_cov_test():
     Mat=[[0,0,1],[1,1,0],[0,0,0]]
     print(WeightedCov(Mat, [1,1,1]))
+def weighted_median_test():
+    print(weighted_median([3,4,5],[Decimal('.2'),Decimal('.2'),Decimal('.6')]))
+    print(weighted_median([3,4,5],[Decimal('.2'),Decimal('.2'),Decimal('.5')]))
+    print(weighted_median([3,4,5],[Decimal('.2'),Decimal('.2'),Decimal('.4')]))
+def dot_test():
+    a=[[1,0],
+       [0,1]]
+    n=[[2,0],
+       [0,1]]
+    c=[[-33333.33333333,  66666.66666667, -33333.33333333],
+       [-33333.33333333,  66666.66666667, -33333.33333333],
+       [ 66666.66666667, -33333.33333333, -33333.33333333]]
+    XM=[[-0.33333333, -0.33333333,  0.66666667],
+        [ 0.66666667,  0.66666667, -0.33333333],
+        [-0.33333333, -0.33333333, -0.33333333]]
+    print(dot(c, XM))
+    import numpy
+    print(numpy.dot(c, XM))
+def ma_multiply_test():
+    XM=[[1,0,1,0],[0,1,0,0],[0,0,100, 0]]
+    Coins=[[1],[2],[3]]
+    from numpy import ma
+    print(ma.multiply(XM, Coins))
+    print(ma_multiply(XM, Coins))
+    Coins=[1,2,3,4]
+    print(ma.multiply(XM, Coins))
+    print(ma_multiply(XM, Coins))
+def weightedprincomp_test():
+    import pprint
+    M=[[0,0,1],[1,1,0],[0,0,0]]
+    V=[Decimal('.1')]*3#]#, [Decimal('.1')], [Decimal('.8')], [Decimal('.1')]]
+    a=WeightedPrinComp(M,V)
+    pprint.pprint(WeightedPrinComp(M,V))

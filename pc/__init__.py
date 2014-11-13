@@ -1,1 +1,2 @@
-from pyconsensus import *
+#from pyconsensus import *
+from ConsensusMechanism import Factory

@@ -1,5 +1,5 @@
 from cdecimal import Decimal
-import python_CustomMath as custommath
+import CustomMath as custommath
 def DemocracyRep(x):
     v=[]
     for i in range(len(x)):
@@ -37,20 +37,6 @@ def GetRewardWeights(M, Rep=-1, alpha=Decimal('0.1')):
         SmoothedR.append(alpha*RowRewardWeighted[i]+(1-alpha)*Rep[i])
     Out = {"FirstL":FirstLoading, "OldRep":Rep, "ThisRep":RowRewardWeighted, "SmoothRep":SmoothedR}  
     return(Out)
-def test_GetRewardWeights():
-    M = [[1, 1, 0, 0],
-         [1, 0, 0, 0],
-         [1, 1, 0, 0],
-         [1, 1, 1, 0],
-         [0, 0, 1, 1],
-         [0, 0, 1, 1]]
-    '''
-{u'ThisRep': array([[ 0.2823757,  0.2176243,  0.2823757,  0.2176243,  0.       ,  0.       ]]), u'FirstL': array([-0.5395366 , -0.45705607,  0.45705607,  0.5395366 ]), u'SmoothRep': array([[ 0.17823757,  0.17176243,  0.17823757,  0.17176243,  0.15      ,
-         0.15      ]]), u'OldRep': array([[ 0.16666667,  0.16666667,  0.16666667,  0.16666667,  0.16666667,
-         0.16666667]])}
-    '''
-    import pprint
-    pprint.pprint(GetRewardWeights(M))
 def v_dot(a, b): 
     def mul(c, d): return c*d
     return sum(map(mul, a, b))
@@ -69,15 +55,6 @@ def GetDecisionOutcomes(Mtemp, Rep):
         Row=custommath.ReWeight(Row)
         out.append(v_dot(Col, Row))
     return custommath.switch_row_cols(out)
-def test_getdecisionoutcomes():
-    M=[[1,    1,    0,    0],
-       [1,    0,    0,    0],
-       [1,    1,    0,    0],
-       [1,    1,    1,    0],
-       [0,    0,    1,    1],
-       [0,    0,    1,    1]]
-    print(GetDecisionOutcomes(M, [1]*6))
-    #[[Decimal('0.6666666666666666666666666668'), Decimal('0.5000000000000000000000000001'), Decimal('0.5000000000000000000000000001'), Decimal('0.3333333333333333333333333334')]]
 def any_NA(M):
     for row in M:
         for i in row:
@@ -105,16 +82,8 @@ def FillNa(Mna, Rep, Catchp=Decimal('0.1')):
                 Mnew[row][i]=Mnew[row][i]+NAsToFill[row][i]
         return(map(lambda row: map(lambda x: custommath.Catch(x, Catchp), row), Mnew))
     return(Mna)
-def FillNa_test():
-    M=[[1,    1,    0,    0],
-       [1,    0,    'NA',    'NA'],
-       [1,    'NA',    0,    'NA'],
-       [1,    1,    1,    'NA'],
-       [0,    'NA',    1,    'NA'],
-       [0,    0,    1,    1]]
-    print(FillNa(M, [1,1,1,1,1,1]))
-#[[Decimal('1'), Decimal('1'), Decimal('0'), Decimal('0')], [Decimal('1'), Decimal('0'), Decimal('1'), Decimal('0.5')], [Decimal('1'), Decimal('0.5'), Decimal('0'), Decimal('0.5')], [Decimal('1'), Decimal('1'), Decimal('1'), Decimal('0.5')], [Decimal('0'), Decimal('0.5'), Decimal('1'), Decimal('0.5')], [Decimal('0'), Decimal('0'), Decimal('1'), Decimal('1')]]
 def Factory(M0, Rep, CatchP=Decimal('0.1'), MaxRow=5000):
+    Rep=custommath.ReWeight(Rep)
     Filled=FillNa(M0, Rep, CatchP)
     PlayerInfo=GetRewardWeights(Filled, Rep, Decimal('0.1'))
     AdjLoadings=PlayerInfo['FirstL']
@@ -150,8 +119,8 @@ def Factory(M0, Rep, CatchP=Decimal('0.1'), MaxRow=5000):
         'Filled': Filled,
         'Agents': {
             'OldRep': PlayerInfo['OldRep'],#[0],
-            'ThisRep': PlayerInfo['ThisRep'][0],
-            'SmoothRep': PlayerInfo['SmoothRep'][0],
+            'ThisRep': PlayerInfo['ThisRep'],
+            'SmoothRep': PlayerInfo['SmoothRep'],
             'NArow': map(sum, NAmat),#.sum(axis=1).base,
             'ParticipationR': ParticipationR,#.base,
             'RelativePart': NAbonusR,#.base,
@@ -172,13 +141,3 @@ def Factory(M0, Rep, CatchP=Decimal('0.1'), MaxRow=5000):
     }
     return Output
 
-def Factory_test():
-    import pprint
-    M1=[[1,    1,    0,    'NA'],
-        [1,    0,    0,    0],
-        [1,    1,    0,    0],
-        [1,    1,    1,    0],
-        [0,    0,    1,    1],
-        [0,    0,    1,    1]]
-    pprint.pprint(Factory(M1, [1,1,1,1,1,1]))
-Factory_test()

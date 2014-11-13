@@ -1,3 +1,7 @@
+peers aren't being shared correctly
+
+stop/start isn't working correctly
+
 Allow users to send shares to each other, but charge double trading fees.
 
 make sure that trading fees are rewarded to authors and voters correctly.

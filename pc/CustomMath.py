@@ -1,8 +1,6 @@
 from cdecimal import Decimal
 import copy, svd
-def AsMatrix(v):
-    #turns a vector into a 1-col matrix
-    return map(lambda i: [i], v)
+def AsMatrix(v): return map(lambda i: [i], v)
 def matrix_p(v): return type(v[0])==list
 def mean(v): return sum(v)*Decimal('1.0')/len(v)
 def replace_na(x, m):
@@ -34,10 +32,6 @@ def median_walker(so_far_w, limit, x, w, prev_x):
 def weighted_median(x, w):
     x, w=zip(*sorted(zip(x, w)))
     return median_walker(0, sum(w)*Decimal('1.0')/2, x, w, x[0])
-def weighted_median_test():
-    print(weighted_median([3,4,5],[Decimal('.2'),Decimal('.2'),Decimal('.6')]))
-    print(weighted_median([3,4,5],[Decimal('.2'),Decimal('.2'),Decimal('.5')]))
-    print(weighted_median([3,4,5],[Decimal('.2'),Decimal('.2'),Decimal('.4')]))
 def switch_row_cols(m):
     if not matrix_p(m):
         m=AsMatrix(m)
@@ -83,20 +77,6 @@ def dot(m, n):
             row.append(sum( m[i][k] * map(lambda x: x[j], n)[k] for k in range(len(m[0]))))
         out.append(row)
     return out
-def dot_test():
-    a=[[1,0],
-       [0,1]]
-    n=[[2,0],
-       [0,1]]
-    c=[[-33333.33333333,  66666.66666667, -33333.33333333],
-       [-33333.33333333,  66666.66666667, -33333.33333333],
-       [ 66666.66666667, -33333.33333333, -33333.33333333]]
-    XM=[[-0.33333333, -0.33333333,  0.66666667],
-        [ 0.66666667,  0.66666667, -0.33333333],
-        [-0.33333333, -0.33333333, -0.33333333]]
-    print(dot(c, XM))
-    import numpy
-    print(numpy.dot(c, XM))
 def weighted_sample_mean(matrix, weighting):
     weighting=ReWeight(weighting)
     matrix=dot(matrix, weighting)
@@ -139,15 +119,6 @@ def ma_multiply(m, v):
         for row in range(len(m)):
             out.append(map(lambda i: m[row][i]*v[i], range(len(m[0]))))
     return out
-def ma_multiply_test():
-    XM=[[1,0,1,0],[0,1,0,0],[0,0,100, 0]]
-    Coins=[[1],[2],[3]]
-    from numpy import ma
-    print(ma.multiply(XM, Coins))
-    print(ma_multiply(XM, Coins))
-    Coins=[1,2,3,4]
-    print(ma.multiply(XM, Coins))
-    print(ma_multiply(XM, Coins))
 def WeightedCov(Mat, Rep=-1):#should only output square matrices.
     if type(Rep) is int: Rep=map(lambda x: x/Decimal(len(Mat)), [1]*len(Mat))
     Coins=copy.deepcopy(Rep)
@@ -170,12 +141,3 @@ def WeightedPrinComp(M, Weights):
     L=switch_row_cols(SVD[0])[0]
     S=switch_row_cols(dot(wCVM['Center'], L))[0]
     return{'Scores':S, 'Loadings':L}
-
-if __name__ == '__main__':
-    if True:
-        import pprint
-        M=[[0,0,1],[1,1,0],[0,0,0]]
-        #V=[[Decimal('.1')], [Decimal('.1')], [Decimal('.8')]]
-        V=[Decimal('.1')]*3#]#, [Decimal('.1')], [Decimal('.8')], [Decimal('.1')]]
-        a=WeightedPrinComp(M,V)
-        pprint.pprint(WeightedPrinComp(M,V))

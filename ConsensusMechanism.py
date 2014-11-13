@@ -26,6 +26,15 @@ def GetWeight(Vec, AddMean=0):
     return(New)
 
 def main(m, weights):
+    a=pc.Factory(m, weights)
+    return {'outcome':a['Decisions']['DecisionOutcome_Final'],
+            'author_bonus':a['Decisions']['Author Bonus'],
+            'participation':a['Participation'],
+            'certainty':numpy.array(a['Decisions']['Certainty']),
+            'votecoin_bonus_for_voters':a['Agents']['SmoothRep'],
+            'truthcoin_bonus_for_voters':a['Agents']['RowBonus']}
+'''
+def main(m, weights):
     weights=numpy.array(weights)
     #weights=GetWeight(weights)
     a=numpy.array(m)
@@ -39,11 +48,11 @@ def main(m, weights):
             'certainty':numpy.array(a['Decisions']['Certainty']),
             'votecoin_bonus_for_voters':a['Agents']['SmoothRep'],
             'truthcoin_bonus_for_voters':a['Agents']['RowBonus']}
-
+'''
 if __name__ == "__main__":
     m=[[1, 1, 1, 1, 1], ['NA', 'NA', 'NA', 'NA', 'NA'], ['NA', 'NA', 'NA', 'NA', 'NA']]
     m=[[1, 1, 1, 1, 0], [0, 0, 0, 0, 1], [0, 0, 0, 0, 0]]
-    m=[[1, 1, 0, numpy.nan], 
+    m=[[1, 1, 0, 'NA'], 
        [1, 0, 0, 0], 
        [1, 1, 0, 0],
        [1, 1, 1, 0],
