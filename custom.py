@@ -8,7 +8,7 @@ log_file=os.path.join(current_loc, 'log')
 port=8900
 api_port=8899
 database_port=8898
-version = "0.0010"
+version = "0.0011"
 max_key_length=6**4
 total_votecoins=6**4
 block_reward = 10 ** 5
@@ -34,15 +34,16 @@ download_many = 50  # Max number of blocks to request from a peer at the same ti
 max_download = 58000
 #buy_shares_target='0'*4+'1'+'9'*59
 buy_shares_target='0'*3+'1'+'9'*60
-blocktime=120
+blocktime=60
 DB = {
     'reward_peers_queue':multiprocessing.Queue(),
     'suggested_blocks': multiprocessing.Queue(),
     'suggested_txs': multiprocessing.Queue(),
     'heart_queue': multiprocessing.Queue(),
 }
-seconds_per_week=604800
-voting_cycle_length=seconds_per_week/blocktime
-vote_reveal_length=voting_cycle_length/10
-SVD_length=voting_cycle_length/40
-voting_length=voting_cycle_length-vote_reveal_length-SVD_length
+#seconds_per_week=604800
+#cycle_length=seconds_per_week/blocktime#cycle_length
+cycle_length=40
+vote_reveal_length=cycle_length/10
+SVD_length=cycle_length/40
+voting_length=cycle_length-vote_reveal_length-SVD_length

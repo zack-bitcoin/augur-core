@@ -70,6 +70,9 @@ def peer_check(i, peers, DB):
                 my_peers.append(p)
     if F:
         tools.db_put('peers_ranked', my_peers)
+    for p in my_peers:
+        if p not in their_peers:
+            cmd(peer, {'type':'recieve_peer', 'peer':p})
 def exponential_random(r, i=0):
     if random.random()<r: return i
     return exponential_random(r, i+1)

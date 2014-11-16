@@ -7,6 +7,9 @@ def security_check(dic):
     else:
         #we could add security features here.
         return {'bool': True, 'newdic': dic}
+def recieve_peer(dic, DB):
+    peer=dic['peer']
+    peers_check.add_peer(peer)
 def blockCount(dic, DB):
     length = tools.db_get('length')
     if length >= 0:
@@ -47,8 +50,8 @@ def pushblock(dic, DB):
     return 'success'
 def peers(dic, DB): return tools.db_get('peers_ranked')
 def main(dic, DB):
-    funcs = {'blockCount': blockCount, 'rangeRequest': rangeRequest,
-             'txs': txs, 'pushtx': pushtx, 'pushblock': pushblock, 'peers':peers}
+    tools.log(dic)
+    funcs = {'recieve_peer':recieve_peer, 'blockCount': blockCount, 'rangeRequest': rangeRequest,'txs': txs, 'pushtx': pushtx, 'pushblock': pushblock, 'peers':peers}
     if 'type' not in dic:
         return 'oops: ' +str(dic)
     if dic['type'] not in funcs:
