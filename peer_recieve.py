@@ -9,14 +9,14 @@ def security_check(dic):
         return {'bool': True, 'newdic': dic}
 def recieve_peer(dic, DB):
     peer=dic['peer']
-    peers_check.add_peer(peer)
+    ps=tools.db_get('peers_ranked')
+    if peer[0] not in map(lambda x: x[0][0], ps):
+        tools.add_peer(peer)
 def blockCount(dic, DB):
     length = tools.db_get('length')
-    if length >= 0:
-        return {'length': length,
-                'diffLength': tools.db_get('diffLength')}
-    else:
-        return {'length': -1, 'diffLength': '0'}
+    d='0'
+    if length >= 0: d=tools.db_get('diffLength')
+    return {'length': length, 'diffLength': d}
 def rangeRequest(dic, DB):
     ran = dic['range']
     out = []
@@ -50,7 +50,7 @@ def pushblock(dic, DB):
     return 'success'
 def peers(dic, DB): return tools.db_get('peers_ranked')
 def main(dic, DB):
-    tools.log(dic)
+    #tools.log(dic)
     funcs = {'recieve_peer':recieve_peer, 'blockCount': blockCount, 'rangeRequest': rangeRequest,'txs': txs, 'pushtx': pushtx, 'pushblock': pushblock, 'peers':peers}
     if 'type' not in dic:
         return 'oops: ' +str(dic)
@@ -61,5 +61,6 @@ def main(dic, DB):
         return check
     try:
         return funcs[dic['type']](check['newdic'], DB)
-    except:
-        pass
+    except Exception as exc:
+        tools.log(exc)
+

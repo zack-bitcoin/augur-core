@@ -3,6 +3,13 @@
 import pt, hashlib, re, subprocess, time, copy, networking, custom, logging, random
 from json import dumps as package, loads as unpackage
 #print(json.dumps(x, indent=3, sort_keys=True))  for pretty printing
+def add_peer(peer, current_peers=0):
+    if current_peers==0:
+        current_peers=db_get('peers_ranked')
+    if peer[0][0] not in map(lambda x: x[0][0], current_peers):
+        log('add peer: '+str(peer))
+        current_peers.append([peer, 5, '0', 0])
+        db_put('peers_ranked',current_peers)
 def dump_out(queue):
     while not queue.empty():
         try:

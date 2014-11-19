@@ -228,12 +228,16 @@ def prediction_market_check(tx, txs, out, DB):
         out[0]+='signature check'
         return False
     address=addr(tx)
+    #if type(tx['fee'])!=int or tx['fee']<0 or tx['fee']>100000:
+    #    out[0]+='fee is not in range 0%-100%'
+    #    return False
     for l in ['states', 'states_combinatory', 'decisions']:
         if not E_check(tx, l, list): 
             out[0]+=str(l)+ ' error'
             return False
     for dec in tx['decisions']:
-        if not tools.db_existence(dec, DB): 
+        txs=tools.db_get('txs')
+        if not tools.db_existence(dec, DB) and dec not in map(lambda x: x['PM_id']): 
             out[0]+='decision is not in the database: ' +str(dec)
             return False
         if is_number(dec):
@@ -431,6 +435,10 @@ def prediction_market(tx, DB, add_block):#also used to increase liquidity of exi
         pm[i]=tx[i]
     pm['author']=address
     pm['shares_purchased']=[]
+    #if 'fee' in tx:
+    #    pm['fee']=tx['fee']
+    #else:
+    #    pm['fee']=1000# 1% fee
     for i in range(len(tx['states'])): pm['shares_purchased'].append(0)
     symmetric_put(tx['PM_id'], pm, DB, add_block)
     #tools.log('created PM: '+str(tx['PM_id']))

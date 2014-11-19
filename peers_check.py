@@ -63,26 +63,19 @@ def peer_check(i, peers, DB):
     F=False
     my_peers=tools.db_get('peers_ranked')
     their_peers=cmd(peer, {'type':'peers'})
-    if type(my_peers)==list:
+    if type(their_peers)==list:
         for p in their_peers:
             if p not in my_peers:
                 F=True
                 my_peers.append(p)
+        for p in my_peers:
+            if p not in their_peers:
+                cmd(peer, {'type':'recieve_peer', 'peer':p})
     if F:
         tools.db_put('peers_ranked', my_peers)
-    for p in my_peers:
-        if p not in their_peers:
-            cmd(peer, {'type':'recieve_peer', 'peer':p})
 def exponential_random(r, i=0):
     if random.random()<r: return i
     return exponential_random(r, i+1)
-def add_peer(peer, current_peers=0):
-    if current_peers==0:
-        current_peers=tools.db_get('peers_ranked')
-    if peer not in map(lambda x: x[0][0], current_peers):
-        tools.log('add peer')
-        current_peers.append([peer, 5, '0', 0])
-        tools.db_put(current_peers, 'peers_ranked')
 def main(peers, DB):
     # Check on the peers to see if they know about more blocks than we do.
     #DB['peers_ranked']=[]
@@ -91,7 +84,7 @@ def main(peers, DB):
         time.sleep(3)
         return main(peers, DB)
     for peer in peers:
-        add_peer(peer, p)
+        tools.add_peer(peer, p)
     tools.db_put('peers_ranked', p)
     try:
         while True:
@@ -119,12 +112,16 @@ def main_once(DB):
     t1=time.time()
     r=peer_check(i, pr, DB)
     t2=time.time()
-    pr[i][1]*=0.8
-    if r==0:
-        pr[i][1]+=0.2*(t2-t1)
-    else:
-        pr[i][1]+=0.2*30
-    tools.db_put('peers_ranked', pr)
+    p=pr[i][0]
+    pr=tools.db_get('peers_ranked')
+    for peer in pr:
+        if peer[0]==p:
+            pr[i][1]*=0.8
+            if r==0:
+                pr[i][1]+=0.2*(t2-t1)
+            else:
+                pr[i][1]+=0.2*30
+    tools.db_put('peers_ranked', pr)#BAD pr got edited in peer_check()
     DB['heart_queue'].put('peers check')
 
 
