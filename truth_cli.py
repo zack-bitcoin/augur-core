@@ -25,7 +25,7 @@ def build_buy_shares():
     tx['pubkeys']=[pubkey]
     tx['count'] = tools.count(address, {})
     cost=txs_tools.cost_to_buy_shares(tx)
-    tx['price_limit']=int(cost*1.01)
+    tx['price_limit']=int(cost*1.01)+1
     print('now for a little proof of work. This may take several minutes. The purpose of this pow is to make it more difficult for a front runner to steal your trade.')
     tx=tools.unpackage(tools.package(tx))
     tx=tools.POW(tx)
