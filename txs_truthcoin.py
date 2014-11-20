@@ -235,8 +235,11 @@ def prediction_market_check(tx, txs, out, DB):
             out[0]+=str(l)+ ' error'
             return False
     for dec in tx['decisions']:
-        if not tools.db_existence(dec, DB) and dec not in map(lambda x: x['PM_id']): 
+        l=map(lambda x: x['decision_id'], filter(lambda x: x['type']=='propose_decision', txs))
+        if not tools.db_existence(dec, DB) and dec not in l:
             out[0]+='decision is not in the database: ' +str(dec)
+            out[0]+='  zeroth confimation txs: ' +str(l)
+            out[0]+='  txs: '+str(txs)
             return False
         if is_number(dec):
             out[0]+='decision_id can not be a number'
