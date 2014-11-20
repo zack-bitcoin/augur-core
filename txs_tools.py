@@ -1,7 +1,7 @@
 """These are functions that are exclusively used for the truthcoin aspects of the blockchain.
 tools.py contains functions that are used everywhere.
 """
-import blockchain, custom, math, tools, numpy
+import blockchain, custom, tools, numpy
 from cdecimal import Decimal
 
 addr=tools.addr
@@ -100,7 +100,7 @@ def cost_to_buy_shares(tx):
     shares_purchased=pm['shares_purchased']
     buy=tx['buy']
     B=pm['B']*Decimal('1.0')
-    def C(shares, B): return B*math.log(sum(map(lambda x: E**(x/B), shares)))
+    def C(shares, B): return B*(sum(map(lambda x: E**(x/B), shares))).ln()
     C_old=C(shares_purchased, B)
     def add(a, b): return a+b
     C_new=C(map(add, shares_purchased, buy), B)

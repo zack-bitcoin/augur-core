@@ -2,7 +2,6 @@
 """
 import txs_tools
 import ConsensusMechanism
-import math
 import pprint
 import custom
 import tools
