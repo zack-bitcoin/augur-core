@@ -207,6 +207,6 @@ def main(DB, heart_queue):
         return out
     try:
         return networking.serve_forever(responder, custom.api_port, heart_queue)
-    except exc as Exception:
+    except Exception as exc:
         tools.log('api error')
         tools.log(exc)
