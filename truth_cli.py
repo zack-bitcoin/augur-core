@@ -58,9 +58,11 @@ def build_pm():
             tx['states_combinatory'].append(map(int, next_comb.split(' ')))
     print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
-def main():
-    info=sys.argv
-    p={'command':sys.argv[1:]}
+def main(c=0):
+    if type(c)==int:
+        p={'command':sys.argv[1:]}
+    else:
+        p={'command':c}
     if len(p['command'])==0:
         p['command'].append(' ')
     c=p['command']
@@ -111,5 +113,6 @@ def run_command(p):
     else:
         print(response)
 
-main()
+if __name__=='__main__': #for windows
+    main()
 
