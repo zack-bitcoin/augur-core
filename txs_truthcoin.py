@@ -39,7 +39,7 @@ def create_jury_check(tx, txs, out, DB):
         return False
     acc=tools.db_get(address, DB)
     for t in txs:
-        if 'jury_id' in t:
+        if t['type']=='prediction_market':
             if t['jury_id']==tx['jury_id']:
                 out[0]+='this zeroth confirmation transaction already exists'
                 return False
@@ -236,7 +236,6 @@ def prediction_market_check(tx, txs, out, DB):
             out[0]+=str(l)+ ' error'
             return False
     for dec in tx['decisions']:
-        txs=tools.db_get('txs')
         if not tools.db_existence(dec, DB) and dec not in map(lambda x: x['PM_id']): 
             out[0]+='decision is not in the database: ' +str(dec)
             return False
@@ -276,7 +275,7 @@ def prediction_market_check(tx, txs, out, DB):
         out[0]+='this PM_id is already being used'
         return False
     for t in txs:
-        if 'PM_id' in t:
+        if t['type']=='prediction_market':
             if t['PM_id']==tx['PM_id']:
                 out[0]+='Someone used that PM in this block already'
                 return False

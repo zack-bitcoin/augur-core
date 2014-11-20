@@ -103,15 +103,15 @@ def add_block(block_pair, DB={}):
             start = copy.deepcopy(txs)
             out = []
             start_copy = []
-            while start != start_copy:
-                if start == []:
-                    return False  # Block passes this test
-                start_copy = copy.deepcopy(start)
-                if transactions.tx_check[start[-1]['type']](start[-1], out, [''], DB):
+            error_msg=['']
+            while True:
+                if start == []: return False  # Block passes this test
+                if transactions.tx_check[start[-1]['type']](start[-1], out, error_msg, DB):
                     out.append(start.pop())
                 else:
+                    log_('bad block: ' +str(txs))
+                    log_('error message: ' +str(error_msg))
                     return True  # Block is invalid
-            return True  # Block is invalid
         if not isinstance(block, dict): return False
         if 'error' in block: return False
         if not tools.E_check(block, 'length', [int]):
@@ -138,6 +138,7 @@ def add_block(block_pair, DB={}):
         half_way=tools.make_half_way(block)
         if tools.det_hash(half_way) > block['target']:
             log_('det hash error 2')
+
             return False
         if block['target'] != target.target(block['length']):
             log_('block: ' +str(block))
