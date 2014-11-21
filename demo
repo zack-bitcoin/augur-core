@@ -1,3 +1,24 @@
+#Here I go through the steps of using the python interpreter to look up a transaction in the blockchain, and to look up how much money the creator of the transaction has
+
+>>> import tools, truth_cli
+>>> truth_cli.main(['blockcount'])
+1940
+>>> truth_cli.main(['info', 1001])
+{u'nonce': 9256365515361252087965937608247566201543L, u'target': u'000003b077726d6c91d86637347e47efd4443445d0de96673ce8400000000000', u'time': 1416238195.288335, u'length': 1001, u'version': u'0.0011', u'diffLength': u'e6cb379b5861036b2fa5f0ea4ce4d02ec22d6aefc9004721771178a4a21e50e8f4a3bb2d', u'prevHash': u'4a2fd2067dbc2c152f2295c0332ce755dcf6be455cf281b31089a1a5f2fb492f', u'txs': [{u'count': 785, u'pubkeys': [u'042a6bb7e11ce33608eeaebe27d8b19b3bbc21ab814759119c6f20418b33b30816d48baf42f595e2930b9ae767f43c5dad8c9e176cd0e36a80af7eef777a2f1a14'], u'signatures': [u'first_sig'], u'type': u'mint'}]}
+>>> truth_cli.main(['info', 1001])['txs']
+[{u'count': 785, u'pubkeys': [u'042a6bb7e11ce33608eeaebe27d8b19b3bbc21ab814759119c6f20418b33b30816d48baf42f595e2930b9ae767f43c5dad8c9e176cd0e36a80af7eef777a2f1a14'], u'signatures': [u'first_sig'], u'type': u'mint'}]
+>>> truth_cli.main(['info', 1001])['txs'][0]
+{u'count': 785, u'pubkeys': [u'042a6bb7e11ce33608eeaebe27d8b19b3bbc21ab814759119c6f20418b33b30816d48baf42f595e2930b9ae767f43c5dad8c9e176cd0e36a80af7eef777a2f1a14'], u'signatures': [u'first_sig'], u'type': u'mint'}
+>>> tools.addr(truth_cli.main(['info', 1001])['txs'][0])
+'114msX6KqpdZg3hLqf6vMQDBU2NGUbj'
+>>> address=tools.addr(truth_cli.main(['info', 1001])['txs'][0])
+>>> truth_cli.main(['info', address])
+{u'count': 1602, u'votes': {}, u'votecoin': {}, u'amount': 160200000, u'shares': {}}
+>>> 
+
+
+
+#this older demo is probably expired. VVV
 #comments in this walk-through start with a # in the front of the line. Lines of shell shart with '$$'. Everything else is stuff the program printed out while running.
 #this goes through 4 major steps
 #1) creating votecoins

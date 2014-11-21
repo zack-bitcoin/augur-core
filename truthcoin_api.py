@@ -37,7 +37,9 @@ def help_(DB, args):
         'reveal_vote':'If you want to reveal your vote for the decision with the unique identifier <decision> which was asked ofjury <jury>, then: reveal_vote <jury> <decision>',
         'SVD_consensus':'If you want to resolve decisions asked of jury <jury>, then: SVD_consensus <jury>',
         'make_PM':'example: ./truth_cli.py make_PM',
-        'buy_shares':'example: ./truth_cli.py buy_shares"',
+        'create_pm':'example: ./truth_cli.py create_pm PM_id B decisions states states_combinatory \n example2: ./truth_cli.py create_pm pm_id_0 1000 decision_0,decision_1 case_1,case_2,case_3,case_4 0,0.1,0.0,1]',
+        'buy_shares':'example: ./truth_cli.py buy_shares',
+        'trade_shares':'example: ./truth_cli.py PM_id -200,1000 #this would sell 200 of the first state in PM_id, and buy 1000 of the second',
         'collect_winnings':'To transform your winning shares from prediction market <PM> into truthcoin: collect_winnings <PM>',
         'blockcount':'returns the number of blocks since the genesis block',
         'txs':'returns a list of the zeroth confirmation transactions that are expected to be included in the next block',
@@ -57,6 +59,31 @@ def help_(DB, args):
         return tell_about_command[args[0]]    
     except:
         return(str(args[0])+' is not yet documented')
+def trade_shares(DB, args): #args = [ PM_id, buy ]
+   privkey = tools.db_get('privkey')
+   pubkey = tools.privtopub(privkey)
+   address = tools.make_address([pubkey], 1)
+   tx = {'type': 'buy_shares', 
+         'PM_id': args[0],
+         'buy': map(int, args[1].split(',')),   # comma seperated list
+         'pubkeys': [ pubkey ],
+         'count': tools.count(address, {})}
+   cost = txs_tools.cost_to_buy_shares(tx)
+   tx['price_limit'] = int(cost * 1.01) + 1
+   tx = tools.unpackage(tools.package(tx))
+   tx = tools.POW(tx)
+   tx['signatures'] = [tools.sign(tools.det_hash(tx), privkey)]
+   return easy_add_transaction(tx, DB, privkey)
+
+def create_pm(DB, args):
+    tx = {'PM_id': args[0],
+          'type': 'prediction_market', 
+          'fees': 0,
+          'B': int(args[1]),
+          'decisions': args[2].split(','),# comma seperated list
+          'states': args[3].split(','),# comma seperated list
+          'states_combinatory': map(lambda x: map(int, x.split(',')), args[4].split('.'))}
+    return easy_add_transaction(tx, DB, tools.db_get('privkey'))
 def create_jury(DB, args): 
     if len(args)<1:
         return('not enough inputs')
@@ -140,9 +167,15 @@ def SVD_consensus(DB, args):
     tx={'type':'SVD_consensus', 'vote_id':vote_id, 'decisions':k}
     return(easy_add_transaction(tx, DB))
 def pushtx(DB, args):
-    tx=tools.unpackage(args[0].decode('base64'))
+    try:
+        a=args[0].decode('base64')
+    except:
+        a=args[0]
+    tx=tools.unpackage(a)
     if len(args)==1:
         return easy_add_transaction(tx, DB)
+    if args[1]=='default':
+        return easy_add_transaction(tx, DB, tools.db_get('privkey'))
     privkey=tools.det_hash(args[1])
     return easy_add_transaction(tx, DB, privkey)
 def collect_winnings(DB, args):
@@ -170,7 +203,7 @@ def log(DB, args): tools.log(accumulate_words(args)[1:])
 def stop_(DB, args): 
     tools.db_put('stop', True)
     return('turning off all threads')
-def commands(DB, args): return sorted(Do.keys()+['start', 'new_address', 'make_PM', 'buy_shares'])
+def commands(DB, args): return sorted(Do.keys()+['start', 'new_address', 'buy_shares'])
 def mine(DB, args):
     if len(args)>0:
         if args[0]=='off': 
@@ -191,7 +224,7 @@ def mine(DB, args):
         return('miner is currently: ' +m)
 def pass_(DB, args): return ' '
 def error_(DB, args): return error
-Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'mine':mine, 'peers':peers}
+Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'create_pm':create_pm, 'mine':mine, 'peers':peers, 'trade_shares':trade_shares}
 def main(DB, heart_queue):
     def responder(dic):
         command=dic['command']

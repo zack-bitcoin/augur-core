@@ -2,6 +2,11 @@
 import networking, sys, tools, custom, os, multiprocessing, threads, txs_tools, truthcoin_api, blockchain
 
 def daemonize(f):
+    if sys.platform == 'win32':
+        pypath = list(os.path.split(sys.executable))
+        pypath[-1] = 'pythonw.exe'
+        os.system('start '+os.path.join(*pypath)+' threads.py '+p)
+        sys.exit(0)
     pid=os.fork()
     if pid==0: f()
     else: sys.exit(0)
@@ -12,13 +17,7 @@ def get_address(tx):
     else:
         out=pubkey    
     return tx
-def build_buy_shares():
-    tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?\n>'))}
-    num_states=int(raw_input('how many states does this pm have?\n>'))
-    tx['buy']=[]
-    for i in range(num_states):
-        tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.\n>')))
-    brainwallet=str(raw_input('What is your brainwallet\n>'))
+def common_buy_shares(tx, num_states, brainwallet):
     privkey=tools.det_hash(brainwallet)
     pubkey=tools.privtopub(privkey)
     address=tools.make_address([pubkey], 1)
@@ -32,6 +31,14 @@ def build_buy_shares():
     tx['signatures']=[tools.sign(tools.det_hash(tx), privkey)]
     print('tx for copy/pasting into pushtx: '+tools.package(tx).encode('base64'))
     return tx
+def build_buy_shares():
+    tx={'type':'buy_shares', 'PM_id':str(raw_input('What is the unique name for this prediction market?\n>'))}
+    num_states=int(raw_input('how many states does this pm have?\n>'))
+    tx['buy']=[]
+    for i in range(num_states):
+        tx['buy'].append(int(raw_input('how many shares do you want to buy of state '+str(i)+'? To sell states, use negative numbers.\n>')))
+    brainwallet=str(raw_input('What is your brainwallet\n>'))
+    return common_buy_shares(tx, num_states, brainwallet)
 def build_pm():
     tx={'type':'prediction_market', 'fees':0}
     pubkey=str(raw_input('What is the address or pubkey of the owner of the PM?\n>'))
@@ -68,21 +75,15 @@ def main(c=0):
     c=p['command']
     if c[0]=='make_PM':
         tx=build_pm()
-        run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
+        return run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
     elif c[0]=='buy_shares':
         tx=build_buy_shares()
-        run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
+        return run_command({'command':['pushtx', tools.package(tx).encode('base64')]})
     elif c[0]=='start':
         r=connect({'command':'blockcount'})
         if is_truthcoin_off(r):
             p=raw_input('what is your password?\n')
-            if sys.platform == 'win32':
-                pypath = list(os.path.split(sys.executable))
-                pypath[-1] = 'pythonw.exe'
-                os.system('start '+os.path.join(*pypath)+' threads.py '+p)
-                sys.exit(0)
-            else:
-                daemonize(lambda: threads.main(p))
+            daemonize(lambda: threads.main(p))
         else:
             print('truthcoin is already running')
     elif c[0]=='new_address':
@@ -92,12 +93,12 @@ def main(c=0):
             privkey=tools.det_hash(c[1])
             pubkey=tools.privtopub(privkey)
             address=tools.make_address([pubkey], 1)
-            print('brain: ' +str(c[1]))
-            print('privkey: ' +str(privkey))
-            print('pubkey: ' +str(pubkey))
-            print('address: ' +str(address))
+            return({'brain':str(c[1]),
+                    'privkey':str(privkey),
+                    'pubkey':str(pubkey),
+                    'address':str(address)})
     else:
-        run_command(p)
+        return run_command(p)
 def connect(p):
     peer=['localhost', custom.api_port]
     response=networking.send_command(peer, p, 5)
@@ -108,11 +109,9 @@ def is_truthcoin_off(response): return type(response)==type({'a':1}) and 'error'
 def run_command(p):
     response=connect(p)
     if is_truthcoin_off(response):
-        print('response was: ' +str(response))
         print('truthcoin is probably off. Use command: "./truth_cli.py start" to turn it on.')
-    else:
-        print(response)
+    return response
 
 if __name__=='__main__': #for windows
-    main()
+    print(main())
 

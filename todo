@@ -1,3 +1,8 @@
+1) we need trading fees to reward the reputation holders and prediction-market creators.
+2)conditional markets are supported, but in a limited way. We need to encode an entire matrix to do it correctly, I think.
+3) we will probably update to Liquidity-Sensitive LMSR
+
+
 Allow users to send shares to each other, but charge double trading fees.
 
 make sure that trading fees are rewarded to authors and voters correctly.
