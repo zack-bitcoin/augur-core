@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import networking, sys, tools, custom, os, multiprocessing, threads, txs_tools, truthcoin_api, blockchain
+import networking, sys, tools, custom, os, multiprocessing, threads, txs_tools, truthcoin_api, blockchain, json
 
 def daemonize(f):
     if sys.platform == 'win32':
@@ -110,7 +110,7 @@ def run_command(p):
     response=connect(p)
     if is_truthcoin_off(response):
         print('truthcoin is probably off. Use command: "./truth_cli.py start" to turn it on.')
-    return response
+    return json.dumps(response, indent=3, sort_keys=True)
 
 if __name__=='__main__': #for windows
     print(main())
