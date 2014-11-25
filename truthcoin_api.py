@@ -37,7 +37,7 @@ def help_(DB, args):
         'reveal_vote':'If you want to reveal your vote for the decision with the unique identifier <decision> which was asked ofjury <jury>, then: reveal_vote <jury> <decision>',
         'SVD_consensus':'If you want to resolve decisions asked of jury <jury>, then: SVD_consensus <jury>',
         'make_PM':'example: ./truth_cli.py make_PM',
-        'create_pm':'example: ./truth_cli.py create_pm PM_id B decisions states states_combinatory \n example2: ./truth_cli.py create_pm pm_id_0 1000 decision_0,decision_1 case_1,case_2,case_3,case_4 0,0.1,0.0,1]',
+        'create_pm':'example: ./truth_cli.py create_pm PM_id B decisions states states_combinatory /n example2: ./truth_cli.py create_pm pm_id_0 1000 decision_0,decision_1 case_1,case_2,case_3,case_4 0,0.1,0.0,1',
         'buy_shares':'example: ./truth_cli.py buy_shares',
         'trade_shares':'example: ./truth_cli.py PM_id -200,1000 #this would sell 200 of the first state in PM_id, and buy 1000 of the second',
         'collect_winnings':'To transform your winning shares from prediction market <PM> into truthcoin: collect_winnings <PM>',
