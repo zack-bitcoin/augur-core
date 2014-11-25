@@ -12,8 +12,6 @@ def add_peer(peer, current_peers=0):
             return
     if current_peers==0:
         current_peers=db_get('peers_ranked')
-    log('ole: ' +str(map(lambda x: x[0][0], current_peers)))
-    log('new: ' +str(peer[0][0]))
     if peer[0] not in map(lambda x: x[0][0], current_peers):
         log('add peer: '+str(peer))
         current_peers.append([peer, 5, '0', 0])
