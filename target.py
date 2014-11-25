@@ -5,9 +5,6 @@ except:
     import decimal as cdecimal
     tools.log('This would run much faster if you installed cdecimal.')
 memoized_weights=[custom.inflection**i for i in range(1000)]
-def denominator_limited_sum(l, a=0):
-    if len(l)==0: return a
-    return denominator_limited_sum(l[1:], (a+l[0]).limit_denominator())
 def target(length=0):
     """ Returns the target difficulty at a paticular blocklength. """
     db_length=tools.db_get('length')

@@ -69,7 +69,8 @@ def peer_check(i, peers, DB):
         for p in their_peers:
             if p not in my_peers:
                 F=True
-                my_peers.append(p)
+                tools.add_peer(p)
+                #my_peers.append(p)
         for p in my_peers:
             if p not in their_peers:
                 cmd(peer, {'type':'recieve_peer', 'peer':p})
@@ -123,7 +124,7 @@ def main_once(DB):
                 pr[i][1]+=0.2*(t2-t1)
             else:
                 pr[i][1]+=0.2*30
-    tools.db_put('peers_ranked', pr)#BAD pr got edited in peer_check()
+    tools.db_put('peers_ranked', pr)
     DB['heart_queue'].put('peers check')
 
 

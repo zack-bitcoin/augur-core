@@ -112,6 +112,7 @@ def add_block(block_pair, DB={}):
                     log_('bad block: ' +str(txs))
                     log_('error message: ' +str(error_msg))
                     return True  # Block is invalid
+            return True
         if not isinstance(block, dict): return False
         if 'error' in block: return False
         if not tools.E_check(block, 'length', [int]):

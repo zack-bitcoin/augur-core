@@ -203,7 +203,7 @@ def log(DB, args): tools.log(accumulate_words(args)[1:])
 def stop_(DB, args): 
     tools.db_put('stop', True)
     return('turning off all threads')
-def commands(DB, args): return sorted(Do.keys()+['start', 'new_address', 'buy_shares'])
+def commands(DB, args): return sorted(Do.keys()+['start', 'new_address'])
 def mine(DB, args):
     if len(args)>0:
         if args[0]=='off': 
