@@ -51,6 +51,7 @@ def help_(DB, args):
         'mine':'turn the miner on/off. Example to turn on: "./truth_cli.py mine on", example to turn off: "./truth_cli.py mine off"',
         'DB':'returns a database of information that is shared between threads',
         'pushtx':'publishes this transaction to the blockchain, will automatically sign the transaction if necessary: ./truth_cli.py pushtx tx privkey',
+        'blocks':'./truth_cli.py blocks 100 200',
         'peers':'tells you your list of peers'
     }
     if len(args)==0:
@@ -224,7 +225,17 @@ def mine(DB, args):
         return('miner is currently: ' +m)
 def pass_(DB, args): return ' '
 def error_(DB, args): return error
-Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'create_pm':create_pm, 'mine':mine, 'peers':peers, 'trade_shares':trade_shares}
+def blocks(DB, args):
+    args=map(int, args)
+    out=[]
+    length=tools.db_get('length')
+    r=args[0]
+    while args[0]<args[1]:
+        if args[0]>length: return out
+        out.append(tools.db_get(args[0]))
+        args[0]+=1
+    return out
+Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'create_pm':create_pm, 'mine':mine, 'peers':peers, 'trade_shares':trade_shares, 'blocks':blocks}
 def main(DB, heart_queue):
     def responder(dic):
         command=dic['command']
