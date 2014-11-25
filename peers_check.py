@@ -62,7 +62,6 @@ def peer_check(i, peers, DB):
             tools.log(exc)
     else:
         download_blocks(peer, DB, block_count, length)
-    F=False
     my_peers=tools.db_get('peers_ranked')
     their_peers=cmd(peer, {'type':'peers'})
     if type(their_peers)==list:
@@ -74,8 +73,6 @@ def peer_check(i, peers, DB):
         for p in my_peers:
             if p not in their_peers:
                 cmd(peer, {'type':'recieve_peer', 'peer':p})
-    if F:
-        tools.db_put('peers_ranked', my_peers)
 def exponential_random(r, i=0):
     if random.random()<r: return i
     return exponential_random(r, i+1)
@@ -88,7 +85,6 @@ def main(peers, DB):
         return main(peers, DB)
     for peer in peers:
         tools.add_peer(peer, p)
-    tools.db_put('peers_ranked', p)
     try:
         while True:
             if tools.db_get('stop'): return
