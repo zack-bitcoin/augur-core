@@ -4,12 +4,17 @@ import pt, hashlib, re, subprocess, time, copy, networking, custom, logging, ran
 from json import dumps as package, loads as unpackage
 #print(json.dumps(x, indent=3, sort_keys=True))  for pretty printing
 def add_peer(peer, current_peers=0):
-    if type(peer[0][0]) not in [unicode, str]:
-        log('not a proper peer:'+str(peer))
-        return
+    if type(peer[0]) not in [unicode, str]:
+        if type(peer[0][0]) in [unicode, str]:
+            peer=peer[0]
+        else:
+            log('not a proper peer:'+str(peer))
+            return
     if current_peers==0:
         current_peers=db_get('peers_ranked')
-    if peer[0][0] not in map(lambda x: x[0][0], current_peers):
+    log('ole: ' +str(map(lambda x: x[0][0], current_peers)))
+    log('new: ' +str(peer[0][0]))
+    if peer[0] not in map(lambda x: x[0][0], current_peers):
         log('add peer: '+str(peer))
         current_peers.append([peer, 5, '0', 0])
         db_put('peers_ranked',current_peers)
