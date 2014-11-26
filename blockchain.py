@@ -105,6 +105,7 @@ def add_block(block_pair, DB={}):
         def log_(txt): pass #return tools.log(txt)
         def tx_check(txs):
             start = copy.deepcopy(txs)
+            start.reverse()
             out = []
             start_copy = []
             error_msg=['']
