@@ -73,8 +73,9 @@ def serve_once(s, size, handler):
     client.close() 
     return 0
 def connect_error(msg, port, host, counter):
-    if counter>3:
-        return({'error':'could not get a response'})
+    if counter>10:
+        tools.log('networking connect error')
+        error()
     return(connect(msg, port, host, counter+1))
 def send_msg(data, sock):
     data=tools.package(data)
@@ -99,7 +100,8 @@ def connect(msg, port, host='localhost', counter=0):
     except:
         pass
     r=send_msg(msg, s)
-    if r=='peer died': return('peer died: ' +str(msg))
+    if r=='peer died': 
+        return connect_error(msg, port, host, counter)#return('peer died: ' +str(msg))
     data= recvall(s)
     if data=='broken connection':
         tools.log('broken connection: ' +str(msg))

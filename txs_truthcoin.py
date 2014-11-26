@@ -80,6 +80,7 @@ def propose_decision_check(tx, txs, out, DB):
         return False
     return True
 def jury_vote_check(tx, txs, out, DB):
+    #make sure that this person is one of the 1000 richest people for this rep type.
     if not transactions.signature_check(tx):
         out[0]+='signature check'
         return False
