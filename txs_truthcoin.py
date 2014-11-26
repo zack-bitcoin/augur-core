@@ -37,11 +37,6 @@ def create_jury_check(tx, txs, out, DB):
         out[0]+='this address is not used by anyone'
         return False
     acc=tools.db_get(address, DB)
-    for t in txs:
-        if t['type']=='prediction_market':
-            if t['jury_id']==tx['jury_id']:
-                out[0]+='this zeroth confirmation transaction already exists'
-                return False
     if not txs_tools.fee_check(tx, txs, DB): return False
     return True
 def propose_decision_check(tx, txs, out, DB):

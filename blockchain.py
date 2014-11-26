@@ -43,8 +43,12 @@ def add_tx(tx, DB={}):
         if too_big_block(tx, txs):
             out[0]+='too many txs'
             return False
-        if not transactions.tx_check[tx['type']](tx, txs, out, DB):
-            out[0]+= 'tx: ' + str(tx)
+        try:
+            if not transactions.tx_check[tx['type']](tx, txs, out, DB):
+                out[0]+= 'tx: ' + str(tx)
+                return False
+        except Exception as exc:
+            out[0]+='badly formatted tx caused error: ' +str(tx)
             return False
         return True
     #tools.log('attempt to add tx: ' +str(tx))
@@ -52,7 +56,7 @@ def add_tx(tx, DB={}):
     if verify_tx(tx, T, out):
         T.append(tx)
         tools.db_put('txs', T)
-        return('added tx: ' +str(tx))
+        return(tx)
     else:
         return('failed to add tx because: '+out[0])
 def recent_blockthings(key, size, length=0):
