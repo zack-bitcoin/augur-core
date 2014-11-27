@@ -306,6 +306,13 @@ def buy_shares_check(tx, txs, out, DB):
     if len(tx['buy'])!=len(pm['shares_purchased']):
         out[0]+='buy length error'
         return False
+    stop=True
+    for i in buy:
+        if i!=0:
+            stop=False
+    if stop:
+        out[0]+='you need to buy a non-zero amount of at least one share'
+        return False
     if 'price_limit' in tx:
         price = txs_tools.cost_to_buy_shares(tx)
         if price>tx['price_limit']:
