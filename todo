@@ -1,18 +1,23 @@
-1) we need trading fees to reward the reputation holders and prediction-market creators.
-2)conditional markets are supported, but in a limited way. We need to encode an entire matrix to do it correctly, I think.
-3) we will probably update to Liquidity-Sensitive LMSR
+truthcoin assurance contract
 
+launch a test-chain, and try adding tons and tons of IPs to see how it withstands the attack.
 
-Allow users to send shares to each other, but charge double trading fees.
+rename truthcoin-pow to augurcore
+
+ we need trading fees to reward the reputation holders and prediction-market creators.
+
+ conditional markets are supported, but in a limited way. We need to encode an entire matrix to do it correctly, I think.
+
+???Allow users to send shares to each other, but charge double trading fees.
 
 make sure that trading fees are rewarded to authors and voters correctly.
 
 Let users use liquidity-sensitive LMSR if they want.
 http://www.eecs.harvard.edu/cs286r/courses/fall12/papers/bmm-ec.pdf
 
-Let users use Paul's scalar LMSR for prediction markets if they want. in an excel demo on hig github.
+Let users use Paul's scalar LMSR for prediction markets if they want. in an excel demo on his github.
 
-Let users use Zack's scalar LMSR for prediction markets if they want. in pc/scalars.py
+Let users use Zack's scalar LMSR for prediction markets if they want. in pc/scalars.py it has cosine transforms.
 
 update verbage
 cashcoin/credit->cash
@@ -20,10 +25,8 @@ votecoin->reputation
 jury/branch->topic
 decision->prediction
 
-maturation date
-
 any vote must block the coins from being sent until svd is over
 
-mini blockchain
-
 proof of stake
+
+mini blockchain

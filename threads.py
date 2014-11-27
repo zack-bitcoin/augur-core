@@ -26,7 +26,7 @@ def main(brainwallet, pubkey_flag=False):
          'args': (DB, DB['heart_queue']),
          'name': 'truthcoin_api'},
         {'target': peers_check.main,
-         'args': (custom.peers, DB),
+         'args': (custom.peers+[[tools.getPublicIp(), custom.port]], DB),
          'name': 'peers_check'},
         {'target': miner.main,
          'args': (pubkey, DB),

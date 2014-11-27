@@ -307,7 +307,7 @@ def buy_shares_check(tx, txs, out, DB):
         out[0]+='buy length error'
         return False
     stop=True
-    for i in buy:
+    for i in tx['buy']:
         if i!=0:
             stop=False
     if stop:
