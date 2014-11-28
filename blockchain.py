@@ -185,6 +185,20 @@ def add_block(block_pair, DB={}):
             add_tx(tx, DB)
         #while tools.db_get('length')!=block['length']:
         #    time.sleep(0.0001)
+        if not peer==False:
+            blacklist=tools.db_get('blacklist')
+            p=tools.package(peer)
+            if p in blacklist and blacklist[p]>0:
+                blacklist[p]-=1
+                tools.db_put('blacklist', blacklist)
+    elif not peer==False:
+        blacklist=tools.db_get('blacklist')
+        p=tools.package(peer)
+        if p not in blacklist:
+            blacklist[p]=0
+        blacklist[p]+=1
+        tools.db_put('blacklist', blacklist)
+        
 
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """

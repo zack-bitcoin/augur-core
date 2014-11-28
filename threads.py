@@ -16,9 +16,6 @@ def main(brainwallet, pubkey_flag=False):
         pubkey=brainwallet
 
     processes= [
-        {'target':tools.heart_monitor,
-         'args':(DB['heart_queue'], ),
-         'name':'heart_monitor'},
         {'target': blockchain.main,
          'args': (DB,),
          'name': 'blockchain'},
@@ -51,6 +48,7 @@ def main(brainwallet, pubkey_flag=False):
     tools.db_put('test', 'undefined')
     b=tools.db_existence(0)
     if not b:
+        tools.db_put('blacklist', {})
         tools.db_put('length', -1)
         tools.db_put('memoized_votes', {})
         tools.db_put('txs', [])
@@ -61,7 +59,7 @@ def main(brainwallet, pubkey_flag=False):
         tools.db_put('diffLength', '0')
     tools.db_put('stop', False)
     tools.log('stop: ' +str(tools.db_get('stop')))
-    for process in processes[1:]:
+    for process in processes:
         cmd=multiprocessing.Process(**process)
         cmd.start()
         cmds.append(cmd)

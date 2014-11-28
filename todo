@@ -2,7 +2,7 @@ truthcoin assurance contract
 
 launch a test-chain, and try adding tons and tons of IPs to see how it withstands the attack.
 
-rename truthcoin-pow to augurcore
+rename truthcoin-pow to augur-core (all lower case)
 
  we need trading fees to reward the reputation holders and prediction-market creators.
 

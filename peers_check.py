@@ -38,6 +38,7 @@ def give_block(peer, DB, block_count_peer):
     return 0
 def peer_check(i, peers, DB):
     peer=peers[i][0]
+    #tools.log('before block count')
     block_count = cmd(peer, {'type': 'blockCount'})
     #tools.log('block count: ' +str(block_count))
     if not isinstance(block_count, dict):
@@ -47,21 +48,6 @@ def peer_check(i, peers, DB):
     peers[i][2]=block_count['diffLength']
     peers[i][3]=block_count['length']
     tools.db_put('peers_ranked', peers)
-    length = tools.db_get('length')
-    diffLength= tools.db_get('diffLength')
-    size = max(len(diffLength), len(block_count['diffLength']))
-    us = tools.buffer_(diffLength, size)
-    them = tools.buffer_(block_count['diffLength'], size)
-    if them < us:
-        give_block(peer, DB, block_count['length'])
-    elif us == them:
-        try:
-            ask_for_txs(peer, DB)
-        except Exception as exc:
-            tools.log('ask for tx error')
-            tools.log(exc)
-    else:
-        download_blocks(peer, DB, block_count, length)
     my_peers=tools.db_get('peers_ranked')
     their_peers=cmd(peer, {'type':'peers'})
     if type(their_peers)==list:
@@ -73,6 +59,21 @@ def peer_check(i, peers, DB):
         for p in my_peers:
             if p not in their_peers:
                 cmd(peer, {'type':'recieve_peer', 'peer':p})
+    length = tools.db_get('length')
+    diffLength= tools.db_get('diffLength')
+    size = max(len(diffLength), len(block_count['diffLength']))
+    us = tools.buffer_(diffLength, size)
+    them = tools.buffer_(block_count['diffLength'], size)
+    if them < us:
+        return give_block(peer, DB, block_count['length'])
+    elif us == them:
+        try:
+            return ask_for_txs(peer, DB)
+        except Exception as exc:
+            tools.log('ask for tx error')
+            tools.log(exc)
+    else:
+        return download_blocks(peer, DB, block_count, length)
 def exponential_random(r, i=0):
     if random.random()<r: return i
     return exponential_random(r, i+1)
@@ -87,41 +88,44 @@ def main(peers, DB):
         tools.add_peer(peer, p)
     try:
         while True:
+            time.sleep(0.01)
             if tools.db_get('stop'): return
             if len(peers)>0:
                 main_once(DB)
     except Exception as exc:
         tools.log(exc)
 def main_once(DB):
-    DB['heart_queue'].put('peers check')
     pr=tools.db_get('peers_ranked')
     pr=sorted(pr, key=lambda r: r[2])
     pr.reverse()
     time.sleep(0.05)
-    if DB['suggested_blocks'].empty() and tools.db_get('length')>3:
-        time.sleep(10)
+    #if DB['suggested_blocks'].empty() and tools.db_get('length')>3:
+    #    time.sleep(0)
     i=0
     while not DB['suggested_blocks'].empty():
         i+=1
         time.sleep(0.1)
-        if i%100==0: 
-            DB['heart_queue'].put('peers check')
-    DB['heart_queue'].put('peers check')
-    i=exponential_random(3.0/4)%len(pr)
+    i=exponential_random(2.0/4)%len(pr)
+    blacklist=tools.db_get('blacklist')
+    p=tools.package(pr[i][0])
+    while p in blacklist and blacklist[p]>500:
+        i=exponential_random(2.0/4)%len(pr)
+        p=tools.package(pr[i][0])
+        pr[i][1]=100
     t1=time.time()
     r=peer_check(i, pr, DB)
     t2=time.time()
     p=pr[i][0]
     pr=tools.db_get('peers_ranked')
+    a=0.5
     for peer in pr:
         if peer[0]==p:
-            pr[i][1]*=0.8
+            pr[i][1]*=(1-a)
             if r==0:
-                pr[i][1]+=0.2*(t2-t1)
+                pr[i][1]+=a*(t2-t1)
             else:
-                pr[i][1]+=0.2*30
+                pr[i][1]+=a*60
     tools.db_put('peers_ranked', pr)
-    DB['heart_queue'].put('peers check')
 
 
 

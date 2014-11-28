@@ -90,7 +90,8 @@ def send_msg(data, sock):
     return 0
 def connect(msg, port, host='localhost', counter=0):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.setblocking(5)
+    #s.setblocking(5)
+    s.settimeout(5)
     try:
         s.connect((host,port))
     except:

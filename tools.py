@@ -19,7 +19,7 @@ def add_peer(peer, current_peers=0):
         current_peers=db_get('peers_ranked')
     if peer[0] not in map(lambda x: x[0][0], current_peers):
         log('add peer: '+str(peer))
-        current_peers.append([peer, 5, '0', 0])
+        current_peers.append([peer, 40, '0', 0])
         db_put('peers_ranked',current_peers)
 def dump_out(queue):
     while not queue.empty():
@@ -27,23 +27,6 @@ def dump_out(queue):
             queue.get(False)
         except:
             pass
-def heart_monitor(queue):
-    beats={}
-    while True:
-        time.sleep(0.5)
-        t=time.time()
-        for beat in beats:
-            if t-beats[beat]>30:
-                beats[beat]=t
-                log('thread has an error: ' +str(beat))
-        while not(queue.empty()):
-            time.sleep(0.01)
-            beat=queue.get(False)
-            #log('heart monitor: ' +str(beat))
-            if beat=='stop': return
-            if beat not in beats:
-                log('adding thread: ' +str(beat))
-            beats[beat]=t
 logging.basicConfig(filename=custom.log_file, level=logging.INFO)
 def log(junk):
     if isinstance(junk, Exception):
