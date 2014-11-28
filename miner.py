@@ -92,7 +92,8 @@ def main_once(pubkey, DB, num_cores, solution_queue, workers):
         prev_block = tools.db_get(length, DB)
         try:
             candidate_block = make_block(prev_block, tools.db_get('txs'), pubkey, DB)
-        except:#sometimes a block gets deleted after we grab length and before we call make_block.
+        except Exception as exc:#sometimes a block gets deleted after we grab length and before we call make_block.
+            tools.log(exc)
             return main_once(pubkey, DB, num_cores, solution_queue, workers)
     work = candidate_block
     for worker in workers:

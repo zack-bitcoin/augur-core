@@ -241,7 +241,7 @@ def f(blocks_queue, txs_queue):
     def tb(): return txs_queue.empty()
     def ff(queue, g, b, s):
         while not b():
-            time.sleep(0.0001)
+            #time.sleep(0.0001)
             try:
                 g(queue.get(False))
             except Exception as exc:
