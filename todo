@@ -1,8 +1,11 @@
+store peers and blacklist this way: {'134.213.60.92':{'port':8900, 'difficulty':"f0661702aac612293e699c17bccb9d862ce8e180f19a14571c5df29dd7ef896f3dff2e4123", 'connection_lag':100, 'blocklength':17783, 'blacklisted':True},
+}
+
+minimum amount of money per address (maybe a new tx type for deleting addresses would be useful?)
+
 truthcoin assurance contract
 
 launch a test-chain, and try adding tons and tons of IPs to see how it withstands the attack.
-
-rename truthcoin-pow to augur-core (all lower case)
 
  we need trading fees to reward the reputation holders and prediction-market creators.
 
@@ -10,7 +13,7 @@ rename truthcoin-pow to augur-core (all lower case)
 
 ???Allow users to send shares to each other, but charge double trading fees.
 
-make sure that trading fees are rewarded to authors and voters correctly.
+make sure that trading fees are rewarded to authors and voters correctly. Also, reputation should rescale after every SVD. (probably need a un-vote transaction)
 
 Let users use liquidity-sensitive LMSR if they want.
 http://www.eecs.harvard.edu/cs286r/courses/fall12/papers/bmm-ec.pdf

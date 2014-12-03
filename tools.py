@@ -9,6 +9,10 @@ def getPublicIp():
     # data = '<html><head><title>Current IP Check</title></head><body>Current IP Address: 65.96.168.198</body></html>\r\n'
     return re.compile(r'Address: (\d+\.\d+\.\d+\.\d+)').search(data).group(1)
 def add_peer(peer, current_peers=0):
+    blacklist=db_get('blacklist')
+    p=package(peer[0])
+    if p in blacklist and blacklist[p]>500:
+        return False
     if type(peer[0]) not in [unicode, str]:
         if type(peer[0][0]) in [unicode, str]:
             peer=peer[0]

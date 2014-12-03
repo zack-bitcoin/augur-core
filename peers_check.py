@@ -107,11 +107,11 @@ def main_once(DB):
         time.sleep(0.1)
     i=exponential_random(2.0/4)%len(pr)
     blacklist=tools.db_get('blacklist')
-    p=tools.package(pr[i][0])
-    while p in blacklist and blacklist[p]>500:
-        i=exponential_random(2.0/4)%len(pr)
-        p=tools.package(pr[i][0])
-        pr[i][1]=100
+    #p=tools.package(pr[i][0])
+    #while p in blacklist and blacklist[p]>500:
+    #    i=exponential_random(2.0/4)%len(pr)
+    #    p=tools.package(pr[i][0])
+    #    pr[i][1]=100
     t1=time.time()
     r=peer_check(i, pr, DB)
     t2=time.time()

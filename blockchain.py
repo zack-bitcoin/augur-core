@@ -92,7 +92,7 @@ def hexSum(a, b):
 def hexInvert(n):
     # Use double-size for division, to reduce information leakage.
     return tools.buffer_(str(hex(int('f' * 128, 16) / int(n, 16)))[2: -1], 64)
-def add_block(block_pair, DB={}):
+def add_block(block_pair, recent_hashes, DB={}):
     """Attempts adding a new block to the blockchain.
      Median is good for weeding out liars, so long as the liars don't have 51%
      hashpower. """
@@ -171,6 +171,9 @@ def add_block(block_pair, DB={}):
     else:
         block=block_pair
         peer=False
+    if 'prevHash' in block and block['prevHash'] in recent_hashes:
+        tools.log('we have seen this block already')
+        return 0
     #tools.log('attempt to add block: ' +str(block))
     if block_check(block, DB):
         #tools.log('add_block: ' + str(block))
@@ -198,7 +201,10 @@ def add_block(block_pair, DB={}):
             blacklist[p]=0
         blacklist[p]+=1
         tools.db_put('blacklist', blacklist)
-        
+        if blacklist[p]>500:
+            a=tools.db_get('peers')
+            a=filter(lambda pr: pr[0]!=peer, a)
+            tools.db_put('peers', a)
 
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """
@@ -249,12 +255,16 @@ def f(blocks_queue, txs_queue):
                 tools.log(exc)
     while True:
         time.sleep(0.1)
+        l=tools.db_get('length')+1
+        v=range(l-10, l)
+        v=filter(lambda x: x>=0, v)
+        v=map(lambda x: tools.db_get(x)['prevHash'], v)
         if tools.db_get('stop'):
             tools.dump_out(blocks_queue)
             tools.dump_out(txs_queue)
             return
         while not bb() or not tb():
-            ff(blocks_queue, add_block, bb, 'block')
+            ff(blocks_queue, lambda x: add_block(x, v), bb, 'block')
             ff(txs_queue, add_tx, tb, 'tx')
 import cProfile
 def main(DB): return f(DB["suggested_blocks"], DB["suggested_txs"])
