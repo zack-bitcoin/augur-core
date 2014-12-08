@@ -1,7 +1,7 @@
 """These are functions that are exclusively used for the truthcoin aspects of the blockchain.
 tools.py contains functions that are used everywhere.
 """
-import blockchain, custom, tools, numpy
+import blockchain, custom, tools
 from cdecimal import Decimal
 
 addr=tools.addr
@@ -35,7 +35,7 @@ def decision_matrix(jury, decisions, DB):
             elif vote=='half': 
                 row.append(0.5)
             else:
-                row.append(numpy.nan)
+                row.append('NA')
         matrix.append(row)
     return matrix
 def decisions_keepers(vote_id, jury, DB):
@@ -57,7 +57,8 @@ def decisions_keepers(vote_id, jury, DB):
         a=0
         c=0
         for juror in range(len(matrix)):
-            if not numpy.isnan(matrix[juror][decision]):
+            if not matrix[juror][decision]=='NA':
+            #if not numpy.isnan(matrix[juror][decision]):
                 a+=wt[juror]
                 if matrix[juror][decision]==1:
                     c+=wt[juror]

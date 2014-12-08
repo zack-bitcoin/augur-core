@@ -172,7 +172,7 @@ def add_block(block_pair, recent_hashes, DB={}):
         block=block_pair
         peer=False
     if 'prevHash' in block and block['prevHash'] in recent_hashes:
-        tools.log('we have seen this block already')
+        #tools.log('we have seen this block already')
         return 0
     #tools.log('attempt to add block: ' +str(block))
     if block_check(block, DB):

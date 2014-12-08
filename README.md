@@ -9,7 +9,6 @@ Donations: 1GbpRPE83Vjg73KFvTVZ4EnS2qNkiLY5TT
 =====INSTALL 
 for Mac
 
-    sudo pip install numpy
     sudo pip install m3-cdecimal 
     git clone https://github.com/zack-bitcoin/Truthcoin-POW.git
     cd Truthcoin-POW
@@ -17,7 +16,6 @@ for Mac
 for Ubuntu
 
     sudo apt-get update
-    sudo apt-get install python-numpy git
     sudo apt-get install libpython-dev
     sudo pip2 install m3-cdecimal 
     sudo pip install six

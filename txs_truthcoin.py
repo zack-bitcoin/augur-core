@@ -7,7 +7,6 @@ import custom
 import tools
 import blockchain
 import transactions
-import numpy
 import copy
 from cdecimal import Decimal
 addr=tools.addr

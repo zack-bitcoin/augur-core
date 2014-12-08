@@ -1,7 +1,7 @@
 """a python version of the R program at https://github.com/psztorc/Truthcoin
 """
 #import python_ConsensusMechanism as consensus
-import numpy, tools, pc
+import tools, pc
 #import python_CustomMath as custommath
 
 def keep_nums(t):
@@ -30,25 +30,9 @@ def main(m, weights):
     return {'outcome':a['Decisions']['DecisionOutcome_Final'],
             'author_bonus':a['Decisions']['Author Bonus'],
             'participation':a['Participation'],
-            'certainty':numpy.array(a['Decisions']['Certainty']),
+            'certainty':a['Decisions']['Certainty'],
             'votecoin_bonus_for_voters':a['Agents']['SmoothRep'],
             'truthcoin_bonus_for_voters':a['Agents']['RowBonus']}
-'''
-def main(m, weights):
-    weights=numpy.array(weights)
-    #weights=GetWeight(weights)
-    a=numpy.array(m)
-    k=keep_nums(m)
-    a=numpy.ma.masked_array(a, mask=k)
-    oracle = pc.Oracle(votes=a, weights=weights)
-    a=oracle.consensus()
-    return {'outcome':a['Decisions']['DecisionOutcome_Final'],
-            'author_bonus':a['Decisions']['Author Bonus'],
-            'participation':a['Participation'],
-            'certainty':numpy.array(a['Decisions']['Certainty']),
-            'votecoin_bonus_for_voters':a['Agents']['SmoothRep'],
-            'truthcoin_bonus_for_voters':a['Agents']['RowBonus']}
-'''
 if __name__ == "__main__":
     m=[[1, 1, 1, 1, 1], ['NA', 'NA', 'NA', 'NA', 'NA'], ['NA', 'NA', 'NA', 'NA', 'NA']]
     m=[[1, 1, 1, 1, 0], [0, 0, 0, 0, 1], [0, 0, 0, 0, 0]]
