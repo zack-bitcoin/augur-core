@@ -99,19 +99,12 @@ def main_once(DB):
     pr=sorted(pr, key=lambda r: r[2])
     pr.reverse()
     time.sleep(0.05)
-    #if DB['suggested_blocks'].empty() and tools.db_get('length')>3:
-    #    time.sleep(0)
     i=0
     while not DB['suggested_blocks'].empty():
         i+=1
         time.sleep(0.1)
-    i=exponential_random(2.0/4)%len(pr)
+    i=exponential_random(9.0/10)%len(pr)
     blacklist=tools.db_get('blacklist')
-    #p=tools.package(pr[i][0])
-    #while p in blacklist and blacklist[p]>500:
-    #    i=exponential_random(2.0/4)%len(pr)
-    #    p=tools.package(pr[i][0])
-    #    pr[i][1]=100
     t1=time.time()
     r=peer_check(i, pr, DB)
     t2=time.time()
