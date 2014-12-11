@@ -202,9 +202,9 @@ def add_block(block_pair, recent_hashes, DB={}):
         blacklist[p]+=1
         tools.db_put('blacklist', blacklist)
         if blacklist[p]>500:
-            a=tools.db_get('peers')
+            a=tools.db_get('peers_ranked')
             a=filter(lambda pr: pr[0]!=peer, a)
-            tools.db_put('peers', a)
+            tools.db_put('peers_ranked', a)
 
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """

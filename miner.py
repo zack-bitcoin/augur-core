@@ -65,18 +65,6 @@ def restart_workers(workers):
     for worker in workers:
         tools.dump_out(worker['in_queue'])
         worker['restart'].set()
-def longest_peer():
-    if not tools.db_existence('peers'):
-        return 1000000
-    peers=tools.db_get('peers')
-    tools.log('peers: ' +str(peers))
-    peers=map(lambda p: peers[p], peers.keys())
-    tools.log('peers: ' +str(peers))
-    peers=filter(lambda x: x['blacklist']<500, peers)
-    tools.log('peers: ' +str(peers))
-    peers=sorted(peers, key=lambda x: x['diffLength'])
-    tools.log('peers: ' +str(peers))
-    return peers[-1]['length']
 
 def main(pubkey, DB):
     num_cores = multiprocessing.cpu_count()
@@ -91,7 +79,7 @@ def main(pubkey, DB):
                 tools.log('shutting off miner')
                 restart_workers(workers)
                 return
-            elif tools.db_get('mine') and longest_peer()<=length:
+            elif tools.db_get('mine'):
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
             else:
                 time.sleep(1)
