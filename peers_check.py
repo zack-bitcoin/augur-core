@@ -38,6 +38,9 @@ def give_block(peer, DB, block_count_peer):
     return 0
 def peer_check(i, peers, DB):
     peer=peers[i][0]
+    ip=tools.db_get('ip')
+    if peer[0]==ip:
+        return
     #tools.log('before block count')
     block_count = cmd(peer, {'type': 'blockCount'})
     #tools.log('block count: ' +str(block_count))
