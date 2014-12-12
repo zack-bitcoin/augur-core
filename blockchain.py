@@ -48,6 +48,7 @@ def add_tx(tx, DB={}):
                 out[0]+= 'tx: ' + str(tx)
                 return False
         except Exception as exc:
+            tools.log(exc)
             out[0]+='badly formatted tx caused error: ' +str(tx)
             return False
         return True
