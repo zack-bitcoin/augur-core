@@ -257,7 +257,7 @@ def f(blocks_queue, txs_queue):
         time.sleep(0.1)
         l=tools.db_get('length')+1
         v=range(l-10, l)
-        v=filter(lambda x: x>=0, v)
+        v=filter(lambda x: x>0, v)
         v=map(lambda x: tools.db_get(x)['prevHash'], v)
         if tools.db_get('stop'):
             tools.dump_out(blocks_queue)
