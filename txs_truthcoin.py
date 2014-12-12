@@ -240,7 +240,7 @@ def prediction_market_check(tx, txs, out, DB):
             out[0]+='decision_id can not be a number'
             return False
         decision=tools.db_get(dec)
-        if 'maturation' not in decision.keys:
+        if 'maturation' not in decision.keys():
             out[0]+='that is not a decision '+str(decision)
             return False
     if is_number(tx['PM_id']):
