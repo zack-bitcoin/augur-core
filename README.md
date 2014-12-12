@@ -1,6 +1,10 @@
 Truthcoin-POW
 =============
 
+If you are not a programmer, then you are lost. Click this link to get easy installers for any Mac, Windows, or Linux.
+------> http://www.augur.net/prototype/
+The above link is for a bundle including a graphical user interface.
+
 adding abilities from the truthcoin project to basiccoin. https://github.com/psztorc/Truthcoin
 A podcast interview where I describe this project: http://economicsdetective.com/2014/10/truthcoin-prediction-markets-and-anarchy-with-zack-hess/
 
