@@ -1,14 +1,15 @@
 """This is to make magic numbers easier to deal with."""
 import multiprocessing, os
 import cdecimal
-peers = [['192.241.212.114', 8900]]#,['69.164.196.239', 8900]]
+peers={'192.241.212.114:8900':{'port':8900, 'blacklist':0, 'lag':40.0, 'diffLength':"0", 'length':0},
+       '69.164.196.239:8900':{'port': 8900, 'blacklist':0, 'lag':0.15, 'diffLength':"0", 'length':0}}
 current_loc=os.path.dirname(os.path.abspath(__file__))
 database_name = os.path.join(current_loc, 'DB')
 log_file=os.path.join(current_loc, 'log')
 port=8900
 api_port=8899
 database_port=8898
-version = "0.0012"
+version = "0.0011"
 max_key_length=6**4
 total_votecoins=6**4
 block_reward = 10 ** 5

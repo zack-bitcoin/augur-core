@@ -58,7 +58,6 @@ def decisions_keepers(vote_id, jury, DB):
         c=0
         for juror in range(len(matrix)):
             if not matrix[juror][decision]=='NA':
-            #if not numpy.isnan(matrix[juror][decision]):
                 a+=wt[juror]
                 if matrix[juror][decision]==1:
                     c+=wt[juror]

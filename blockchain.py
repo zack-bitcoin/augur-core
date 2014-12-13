@@ -48,7 +48,6 @@ def add_tx(tx, DB={}):
                 out[0]+= 'tx: ' + str(tx)
                 return False
         except Exception as exc:
-            tools.log(exc)
             out[0]+='badly formatted tx caused error: ' +str(tx)
             return False
         return True
@@ -187,26 +186,16 @@ def add_block(block_pair, recent_hashes, DB={}):
             transactions.update[tx['type']](tx, DB, True)
         for tx in orphans:
             add_tx(tx, DB)
-        #while tools.db_get('length')!=block['length']:
-        #    time.sleep(0.0001)
         if not peer==False:
-            blacklist=tools.db_get('blacklist')
-            p=tools.package(peer)
-            if p in blacklist and blacklist[p]>0:
-                blacklist[p]-=1
-                tools.db_put('blacklist', blacklist)
+            peers=tools.db_get('peers')
+            if peers[peer]['blacklist']>0:
+                peers[peer]['blacklist']-=1
+            tools.db_put('peers', peers)
     elif not peer==False:
-        blacklist=tools.db_get('blacklist')
-        p=tools.package(peer)
-        if p not in blacklist:
-            blacklist[p]=0
-        blacklist[p]+=1
-        tools.db_put('blacklist', blacklist)
-        if blacklist[p]>500:
-            a=tools.db_get('peers_ranked')
-            a=filter(lambda pr: pr[0]!=peer, a)
-            tools.db_put('peers_ranked', a)
-
+        peers=tools.db_get('peers')
+        if peer not in peers:
+            peers[peer]=tools.empty_peer()
+        peers[peer]['blacklist']+=1
 def delete_block(DB):
     """ Removes the most recent block from the blockchain. """
     length=tools.db_get('length')
@@ -254,12 +243,17 @@ def f(blocks_queue, txs_queue):
             except Exception as exc:
                 tools.log('suggestions ' + s)
                 tools.log(exc)
-    while True:
+    def f():
         time.sleep(0.1)
         l=tools.db_get('length')+1
         v=range(l-10, l)
         v=filter(lambda x: x>0, v)
-        v=map(lambda x: tools.db_get(x)['prevHash'], v)
+        v=map(lambda x: tools.db_get(x), v)
+        try:
+            v=map(lambda x: x['prevHash'], v)
+        except:
+            tools.log('v: ' +str(v))
+            return
         if tools.db_get('stop'):
             tools.dump_out(blocks_queue)
             tools.dump_out(txs_queue)
@@ -267,6 +261,8 @@ def f(blocks_queue, txs_queue):
         while not bb() or not tb():
             ff(blocks_queue, lambda x: add_block(x, v), bb, 'block')
             ff(txs_queue, add_tx, tb, 'tx')
+    while True:
+        f()
 import cProfile
 def main(DB): return f(DB["suggested_blocks"], DB["suggested_txs"])
 def profile(DB):

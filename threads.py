@@ -14,7 +14,11 @@ def main(brainwallet, pubkey_flag=False):
         pubkey=tools.privtopub(privkey)
     else:
         pubkey=brainwallet
+    a=tools.empty_peer()
+    a['port']=custom.port
+    b=custom.peers
     my_ip=tools.getPublicIp()
+    b[my_ip+':'+str(custom.port)]=a
     processes= [
         {'target': blockchain.main,
          'args': (DB,),
@@ -23,7 +27,7 @@ def main(brainwallet, pubkey_flag=False):
          'args': (DB, DB['heart_queue']),
          'name': 'truthcoin_api'},
         {'target': peers_check.main,
-         'args': (custom.peers+[[my_ip, custom.port]], DB),
+         'args': (b, DB),
          'name': 'peers_check'},
         {'target': miner.main,
          'args': (pubkey, DB),
@@ -49,11 +53,10 @@ def main(brainwallet, pubkey_flag=False):
     b=tools.db_existence(0)
     if not b:
         tools.db_put('ip', my_ip)
-        tools.db_put('blacklist', {})
         tools.db_put('length', -1)
         tools.db_put('memoized_votes', {})
         tools.db_put('txs', [])
-        tools.db_put('peers_ranked', [])
+        tools.db_put('peers', {})
         tools.db_put('targets', {})
         tools.db_put('times', {})
         tools.db_put('mine', False)

@@ -18,6 +18,14 @@ def make_mint(pubkey, DB):
             'pubkeys': [pubkey],
             'signatures': ['first_sig'],
             'count': tools.count(address, DB)}
+def longest_peer():
+    if not tools.db_existence('peers'):
+        return 1000000
+    peers=tools.db_get('peers')
+    peers=map(lambda p: peers[p], peers.keys())
+    peers=filter(lambda x: x['blacklist']<500, peers)
+    peers=sorted(peers, key=lambda x: x['diffLength'])
+    return peers[-1]['length']
 def genesis(pubkey, DB):
     target_ = target.target()
     out = {'version': custom.version,
@@ -65,21 +73,20 @@ def restart_workers(workers):
     for worker in workers:
         tools.dump_out(worker['in_queue'])
         worker['restart'].set()
-
 def main(pubkey, DB):
     num_cores = multiprocessing.cpu_count()
     solution_queue = multiprocessing.Queue()
     workers = [new_worker(solution_queue) for _ in range(num_cores)]
     try:
         while True:
-            DB['heart_queue'].put('miner')
             length=tools.db_get('length')
+            l=longest_peer()
             if tools.db_get('stop'): 
                 tools.dump_out(solution_queue)
                 tools.log('shutting off miner')
                 restart_workers(workers)
                 return
-            elif tools.db_get('mine'):
+            elif tools.db_get('mine') and (l<=length or l<3):
                 main_once(pubkey, DB, num_cores, solution_queue, workers)
             else:
                 time.sleep(1)
