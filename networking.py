@@ -108,7 +108,7 @@ def connect(msg, port, host='localhost', counter=0):
         return connect_error(msg, port, host, counter)#return('peer died: ' +str(msg))
     data= recvall(s)
     if data=='broken connection':
-        tools.log('broken connection: ' +str(msg))
+        tools.log('broken connection: ')# +str(msg))
         return(connect_error(msg, port, host, counter))
     if data=='no length':
         tools.log('no length: ' +str(msg))
