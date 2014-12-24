@@ -38,8 +38,8 @@ def help_(DB, args):
         'SVD_consensus':'If you want to resolve decisions asked of jury <jury>, then: SVD_consensus <jury>',
         'make_PM':'example: ./truth_cli.py make_PM',
         'create_pm':'example: ./truth_cli.py create_pm PM_id B decisions states states_combinatory /n example2: ./truth_cli.py create_pm pm_id_0 1000 decision_0,decision_1 case_1,case_2,case_3,case_4 0,0.1,0.0,1',
-        'buy_shares':'example: ./truth_cli.py buy_shares',
-        'trade_shares':'example: ./truth_cli.py PM_id -200,1000 #this would sell 200 of the first state in PM_id, and buy 1000 of the second',
+        'trade_shares':'example: ./truth_cli.py trade_shares PM_id -200,1000 #this would sell 200 of the first state in PM_id, and buy 1000 of the second',
+        'price':'example: ./truth_cli.py price PM_id -200,1000 #this would find the price of selling 200 of the first state in PM_id, and buying 1000 of the second',
         'collect_winnings':'To transform your winning shares from prediction market <PM> into truthcoin: collect_winnings <PM>',
         'blockcount':'returns the number of blocks since the genesis block',
         'txs':'returns a list of the zeroth confirmation transactions that are expected to be included in the next block',
@@ -60,13 +60,17 @@ def help_(DB, args):
         return tell_about_command[args[0]]    
     except:
         return(str(args[0])+' is not yet documented')
+def csv2vec(a): return map(int, a.split(','))
+def price(DB, args):#args=[pm_id, [1,100,0,-20]]
+    tx={'PM_id':args[0], 'buy':csv2vec(args[1])}
+    return txs_tools.cost_to_buy_shares(tx)*1.01
 def trade_shares(DB, args): #args = [ PM_id, buy ]
    privkey = tools.db_get('privkey')
    pubkey = tools.privtopub(privkey)
    address = tools.make_address([pubkey], 1)
    tx = {'type': 'buy_shares', 
          'PM_id': args[0],
-         'buy': map(int, args[1].split(',')),   # comma seperated list
+         'buy': csv2vec(args[1]),
          'pubkeys': [ pubkey ],
          'count': tools.count(address, {})}
    cost = txs_tools.cost_to_buy_shares(tx)
@@ -235,7 +239,7 @@ def blocks(DB, args):
         out.append(tools.db_get(args[0]))
         args[0]+=1
     return out
-Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'create_pm':create_pm, 'mine':mine, 'peers':peers, 'trade_shares':trade_shares, 'blocks':blocks}
+Do={'SVD_consensus':SVD_consensus, 'reveal_vote':reveal_vote, 'vote_on_decision':vote_on_decision, 'ask_decision':ask_decision, 'create_jury':create_jury, 'spend':spend, 'votecoin_spend':votecoin_spend, 'collect_winnings':collect_winnings, 'help':help_, 'blockcount':blockcount, 'txs':txs, 'balance':balance, 'my_balance':my_balance, 'b':my_balance, 'difficulty':difficulty, 'info':info, '':pass_, 'DB':DB_print, 'my_address':my_address, 'log':log, 'stop':stop_, 'commands':commands, 'pushtx':pushtx, 'create_pm':create_pm, 'mine':mine, 'peers':peers, 'trade_shares':trade_shares, 'blocks':blocks, 'price':price}
 def main(DB, heart_queue):
     def responder(dic):
         command=dic['command']
