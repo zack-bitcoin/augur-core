@@ -39,6 +39,7 @@ print(share_value(example_pm, 'a'))
 print(share_value(example_pm, 'b'))
 print(share_value(example_pm, 'c'))
 print(share_value(example_pm, 'd'))
-example_pm={'results':[0.45], 'predictions':['price of BTC in USD within 200-900'], 'functions':['700 * 200 + 1 / 900 1 / swap - 700 *'], 'output states':['stable-coin', 'vol-coin'], 'algorithm':[0, ['stable-coin']]}
+example_pm={'results':[0.5], 'predictions':['price of BTC in USD within 200-900'], 'functions':['700 * 200 + 1 / 900 1 / swap - 200 *'], 'output states':['stable-coin', 'vol-coin'], 'algorithm':[0, ['stable-coin']]}
 print(share_value(example_pm, 'vol-coin'))
 print(share_value(example_pm, 'stable-coin'))
+#because the margins are so wide, there has to be a lot more vol-coins than stable coins.
