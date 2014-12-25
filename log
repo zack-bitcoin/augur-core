@@ -94,3 +94,695 @@ Traceback (most recent call last):
     f[0]=int(f[0])
 ValueError: invalid literal for int() with base 10: '-'
 INFO:root:stack: [0.55]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [0.45]
+INFO:root:stack: [1, 0.45]
+ERROR:root:invalid literal for int() with base 10: '/'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '/'
+INFO:root:stack: [2.2222222222222223]
+INFO:root:stack: [0.45]
+INFO:root:stack: [1, 0.45]
+ERROR:root:invalid literal for int() with base 10: '/'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '/'
+INFO:root:stack: [2.2222222222222223]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [0.45]
+INFO:root:stack: [700, 0.45]
+ERROR:root:invalid literal for int() with base 10: '*'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '*'
+INFO:root:stack: [315.0]
+INFO:root:stack: [200, 315.0]
+ERROR:root:invalid literal for int() with base 10: '+'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '+'
+INFO:root:stack: [515.0]
+INFO:root:stack: [1, 515.0]
+ERROR:root:invalid literal for int() with base 10: '/'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '/'
+INFO:root:stack: [0.001941747572815534]
+INFO:root:stack: [900, 0.001941747572815534]
+INFO:root:stack: [1, 900, 0.001941747572815534]
+ERROR:root:invalid literal for int() with base 10: '/'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '/'
+INFO:root:stack: [0, 0.001941747572815534]
+ERROR:root:invalid literal for int() with base 10: '-'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '-'
+INFO:root:stack: [-0.001941747572815534]
+INFO:root:stack: [700, -0.001941747572815534]
+ERROR:root:invalid literal for int() with base 10: '*'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '*'
+INFO:root:stack: [-1.3592233009708736]
+INFO:root:stack: [0.45]
+INFO:root:stack: [700, 0.45]
+ERROR:root:invalid literal for int() with base 10: '*'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '*'
+INFO:root:stack: [315.0]
+INFO:root:stack: [200, 315.0]
+ERROR:root:invalid literal for int() with base 10: '+'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '+'
+INFO:root:stack: [515.0]
+INFO:root:stack: [1, 515.0]
+ERROR:root:invalid literal for int() with base 10: '/'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '/'
+INFO:root:stack: [0.001941747572815534]
+INFO:root:stack: [900, 0.001941747572815534]
+INFO:root:stack: [1, 900, 0.001941747572815534]
+ERROR:root:invalid literal for int() with base 10: '/'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '/'
+INFO:root:stack: [0, 0.001941747572815534]
+ERROR:root:invalid literal for int() with base 10: '-'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '-'
+INFO:root:stack: [-0.001941747572815534]
+INFO:root:stack: [700, -0.001941747572815534]
+ERROR:root:invalid literal for int() with base 10: '*'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '*'
+INFO:root:stack: [-1.3592233009708736]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [0.45]
+ERROR:root:invalid literal for int() with base 10: '700.'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '700.'
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.45]
+INFO:root:stack: [700.0, 0.45]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [315.0]
+INFO:root:stack: [200.0, 315.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [515.0]
+INFO:root:stack: [1.0, 515.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.001941747572815534]
+INFO:root:stack: [900.0, 0.001941747572815534]
+INFO:root:stack: [1.0, 900.0, 0.001941747572815534]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.001941747572815534]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [-0.0008306364617044228]
+INFO:root:stack: [700.0, -0.0008306364617044228]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [-0.581445523193096]
+INFO:root:stack: [0.45]
+INFO:root:stack: [700.0, 0.45]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [315.0]
+INFO:root:stack: [200.0, 315.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [515.0]
+INFO:root:stack: [1.0, 515.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.001941747572815534]
+INFO:root:stack: [900.0, 0.001941747572815534]
+INFO:root:stack: [1.0, 900.0, 0.001941747572815534]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.001941747572815534]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [-0.0008306364617044228]
+INFO:root:stack: [700.0, -0.0008306364617044228]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [-0.581445523193096]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.45]
+INFO:root:stack: [700.0, 0.45]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [315.0]
+INFO:root:stack: [200.0, 315.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [515.0]
+INFO:root:stack: [1.0, 515.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.001941747572815534]
+INFO:root:stack: [900.0, 0.001941747572815534]
+INFO:root:stack: [1.0, 900.0, 0.001941747572815534]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.001941747572815534]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.001941747572815534, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0008306364617044228]
+INFO:root:stack: [700.0, 0.0008306364617044228]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.581445523193096]
+INFO:root:stack: [0.45]
+INFO:root:stack: [700.0, 0.45]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [315.0]
+INFO:root:stack: [200.0, 315.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [515.0]
+INFO:root:stack: [1.0, 515.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.001941747572815534]
+INFO:root:stack: [900.0, 0.001941747572815534]
+INFO:root:stack: [1.0, 900.0, 0.001941747572815534]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.001941747572815534]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.001941747572815534, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0008306364617044228]
+INFO:root:stack: [700.0, 0.0008306364617044228]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.581445523193096]

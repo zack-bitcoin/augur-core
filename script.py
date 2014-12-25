@@ -11,7 +11,7 @@ def apply_script(f, stack):#this function is a tiny forth-like language.
         tools.log('stack: ' +str(stack))
         if len(f)==0: return stack
         try:
-            f[0]=int(f[0])
+            f[0]=float(f[0])
             return helper(f[1:], [f[0]]+stack)
         except Exception as exc:
             tools.log(exc)
@@ -39,6 +39,6 @@ print(share_value(example_pm, 'a'))
 print(share_value(example_pm, 'b'))
 print(share_value(example_pm, 'c'))
 print(share_value(example_pm, 'd'))
-example_pm={'results':[0.45], 'predictions':['price of BTC in USD within $100-$900'], 'functions':['1 -'], 'output states':['stable-coin', 'vol-coin'], 'algorithm':[0, ['stable-coin']]}
+example_pm={'results':[0.45], 'predictions':['price of BTC in USD within 200-900'], 'functions':['700 * 200 + 1 / 900 1 / swap - 700 *'], 'output states':['stable-coin', 'vol-coin'], 'algorithm':[0, ['stable-coin']]}
 print(share_value(example_pm, 'vol-coin'))
 print(share_value(example_pm, 'stable-coin'))
