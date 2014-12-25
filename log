@@ -1,0 +1,96 @@
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'swap'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'swap'
+INFO:root:stack: [0, 1]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:invalid literal for int() with base 10: 'drop'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: 'drop'
+INFO:root:stack: [0]
+INFO:root:stack: [0.45]
+INFO:root:stack: [1, 0.45]
+ERROR:root:invalid literal for int() with base 10: '-'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '-'
+INFO:root:stack: [0.55]
+INFO:root:stack: [0.45]
+INFO:root:stack: [1, 0.45]
+ERROR:root:invalid literal for int() with base 10: '-'
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=int(f[0])
+ValueError: invalid literal for int() with base 10: '-'
+INFO:root:stack: [0.55]
