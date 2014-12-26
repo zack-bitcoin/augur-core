@@ -1,12 +1,12 @@
 import copy
 import tools
+do={'swap':(lambda l: [l[1]]+[l[0]]+l[2:]), 
+    'drop':(lambda l: l[1:]),
+    '*':(lambda l: [l[0]*l[1]]+l[2:]),
+    '/':(lambda l: [l[0]/l[1]]+l[2:]),
+    '-':(lambda l: [l[0]-l[1]]+l[2:]),
+    '+':(lambda l: [l[0]+l[1]]+l[2:])}
 def forth(f, stack): 
-    do={'swap':(lambda l: [l[1]]+[l[0]]+l[2:]), 
-        'drop':(lambda l: l[1:]),
-        '*':(lambda l: [l[0]*l[1]]+l[2:]),
-        '/':(lambda l: [l[0]/l[1]]+l[2:]),
-        '-':(lambda l: [l[0]-l[1]]+l[2:]),
-        '+':(lambda l: [l[0]+l[1]]+l[2:])}
     if len(f)==0: return stack
     try:
         f[0]=float(f[0])
