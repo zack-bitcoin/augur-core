@@ -34,12 +34,16 @@ def share_value(pm, state):
             n=3
         return s*helper(stack, algorithm[n])
     return helper(pm['results'], pm['algorithm'])
-example_pm={'results':[1,0], 'predictions':['obama wins election', 'pinto beans above 80 cents'], 'functions':['swap drop', 'drop'], 'output states':['a', 'b', 'c', 'd'], 'algorithm':[0, ['a', 'b'], [1, ['a']], [1, ['c']]]}
-print(share_value(example_pm, 'a'))
-print(share_value(example_pm, 'b'))
-print(share_value(example_pm, 'c'))
-print(share_value(example_pm, 'd'))
-example_pm={'results':[0.5], 'predictions':['price of BTC in USD within 200-900'], 'functions':['700 * 200 + 1 / 900 1 / swap - 200 *'], 'output states':['stable-coin', 'vol-coin'], 'algorithm':[0, ['stable-coin']]}
-print(share_value(example_pm, 'vol-coin'))
-print(share_value(example_pm, 'stable-coin'))
-#because the margins are so wide, there has to be a lot more vol-coins than stable coins.
+def test():
+    example_pm={'results':[1,0], 'predictions':['obama wins election', 'pinto beans above 80 cents'], 'functions':['swap drop', 'drop'], 'output states':['a', 'b', 'c', 'd'], 'algorithm':[0, ['a', 'b'], [1, ['a']], [1, ['c']]]}
+    print(share_value(example_pm, 'a'))
+    print(share_value(example_pm, 'b'))
+    print(share_value(example_pm, 'c'))
+    print(share_value(example_pm, 'd'))
+    for p in [0.2, 0.5, 0.8]:
+        example_pm={'results':[p], 'predictions':['price of BTC in USD within 200-900'], 'functions':['700 * 200 + 1 / 200 *'], 'output states':['stable-coin', 'vol-coin'], 'algorithm':[0, ['stable-coin']]}
+        print(share_value(example_pm, 'vol-coin'))
+        print(share_value(example_pm, 'stable-coin'))
+        print('value in USD' +str(share_value(example_pm, 'stable-coin')*(p*700+200)))
+if __name__=='__main__': #for windows
+    test()

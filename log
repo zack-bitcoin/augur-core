@@ -2388,3 +2388,3371 @@ Traceback (most recent call last):
     f[0]=float(f[0])
 ValueError: could not convert string to float: *
 INFO:root:stack: [0.1414141414141414]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [900.0, 0.0018181818181818182]
+INFO:root:stack: [1.0, 900.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0018181818181818182]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0018181818181818182, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0007070707070707071]
+INFO:root:stack: [200.0, 0.0007070707070707071]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.1414141414141414]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [900.0, 0.0018181818181818182]
+INFO:root:stack: [1.0, 900.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0018181818181818182]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0018181818181818182, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0007070707070707071]
+INFO:root:stack: [200.0, 0.0007070707070707071]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.1414141414141414]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.9]
+INFO:root:stack: [700.0, 0.9]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [630.0]
+INFO:root:stack: [200.0, 630.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [830.0]
+INFO:root:stack: [1.0, 830.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0012048192771084338]
+INFO:root:stack: [900.0, 0.0012048192771084338]
+INFO:root:stack: [1.0, 900.0, 0.0012048192771084338]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0012048192771084338]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0012048192771084338, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [9.370816599732273e-05]
+INFO:root:stack: [200.0, 9.370816599732273e-05]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.018741633199464546]
+INFO:root:stack: [0.9]
+INFO:root:stack: [700.0, 0.9]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [630.0]
+INFO:root:stack: [200.0, 630.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [830.0]
+INFO:root:stack: [1.0, 830.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0012048192771084338]
+INFO:root:stack: [900.0, 0.0012048192771084338]
+INFO:root:stack: [1.0, 900.0, 0.0012048192771084338]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0012048192771084338]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0012048192771084338, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [9.370816599732273e-05]
+INFO:root:stack: [200.0, 9.370816599732273e-05]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.018741633199464546]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.1]
+INFO:root:stack: [700.0, 0.1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [70.0]
+INFO:root:stack: [200.0, 70.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [270.0]
+INFO:root:stack: [1.0, 270.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.003703703703703704]
+INFO:root:stack: [900.0, 0.003703703703703704]
+INFO:root:stack: [1.0, 900.0, 0.003703703703703704]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.003703703703703704]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.003703703703703704, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0025925925925925925]
+INFO:root:stack: [200.0, 0.0025925925925925925]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5185185185185185]
+INFO:root:stack: [0.1]
+INFO:root:stack: [700.0, 0.1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [70.0]
+INFO:root:stack: [200.0, 70.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [270.0]
+INFO:root:stack: [1.0, 270.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.003703703703703704]
+INFO:root:stack: [900.0, 0.003703703703703704]
+INFO:root:stack: [1.0, 900.0, 0.003703703703703704]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.003703703703703704]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.003703703703703704, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0025925925925925925]
+INFO:root:stack: [200.0, 0.0025925925925925925]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5185185185185185]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.05]
+INFO:root:stack: [700.0, 0.05]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [35.0]
+INFO:root:stack: [200.0, 35.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [235.0]
+INFO:root:stack: [1.0, 235.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.00425531914893617]
+INFO:root:stack: [900.0, 0.00425531914893617]
+INFO:root:stack: [1.0, 900.0, 0.00425531914893617]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.00425531914893617]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.00425531914893617, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.003144208037825059]
+INFO:root:stack: [200.0, 0.003144208037825059]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.6288416075650118]
+INFO:root:stack: [0.05]
+INFO:root:stack: [700.0, 0.05]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [35.0]
+INFO:root:stack: [200.0, 35.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [235.0]
+INFO:root:stack: [1.0, 235.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.00425531914893617]
+INFO:root:stack: [900.0, 0.00425531914893617]
+INFO:root:stack: [1.0, 900.0, 0.00425531914893617]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.00425531914893617]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.00425531914893617, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.003144208037825059]
+INFO:root:stack: [200.0, 0.003144208037825059]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.6288416075650118]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.05]
+ERROR:root:could not convert string to float: 
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: 
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.05]
+ERROR:root:could not convert string to float: 
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: 
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.05]
+INFO:root:stack: [1.0, 0.05]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0.05]
+INFO:root:stack: [0.05]
+INFO:root:stack: [1.0, 0.05]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0.05]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.05]
+INFO:root:stack: [700.0, 0.05]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [35.0]
+INFO:root:stack: [200.0, 35.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [235.0]
+INFO:root:stack: [1.0, 235.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.00425531914893617]
+INFO:root:stack: [900.0, 0.00425531914893617]
+INFO:root:stack: [1.0, 900.0, 0.00425531914893617]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.00425531914893617]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.00425531914893617, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.003144208037825059]
+INFO:root:stack: [200.0, 0.003144208037825059]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.6288416075650118]
+INFO:root:stack: [0.05]
+INFO:root:stack: [700.0, 0.05]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [35.0]
+INFO:root:stack: [200.0, 35.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [235.0]
+INFO:root:stack: [1.0, 235.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.00425531914893617]
+INFO:root:stack: [900.0, 0.00425531914893617]
+INFO:root:stack: [1.0, 900.0, 0.00425531914893617]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.00425531914893617]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.00425531914893617, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.003144208037825059]
+INFO:root:stack: [200.0, 0.003144208037825059]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.6288416075650118]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [900.0, 0.0018181818181818182]
+INFO:root:stack: [1.0, 900.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0018181818181818182]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0018181818181818182, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0007070707070707071]
+INFO:root:stack: [200.0, 0.0007070707070707071]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.1414141414141414]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [900.0, 0.0018181818181818182]
+INFO:root:stack: [1.0, 900.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0018181818181818182]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0018181818181818182, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0007070707070707071]
+INFO:root:stack: [200.0, 0.0007070707070707071]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.1414141414141414]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.9]
+INFO:root:stack: [700.0, 0.9]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [630.0]
+INFO:root:stack: [200.0, 630.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [830.0]
+INFO:root:stack: [1.0, 830.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0012048192771084338]
+INFO:root:stack: [900.0, 0.0012048192771084338]
+INFO:root:stack: [1.0, 900.0, 0.0012048192771084338]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0012048192771084338]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0012048192771084338, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [9.370816599732273e-05]
+INFO:root:stack: [200.0, 9.370816599732273e-05]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.018741633199464546]
+INFO:root:stack: [0.9]
+INFO:root:stack: [700.0, 0.9]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [630.0]
+INFO:root:stack: [200.0, 630.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [830.0]
+INFO:root:stack: [1.0, 830.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0012048192771084338]
+INFO:root:stack: [900.0, 0.0012048192771084338]
+INFO:root:stack: [1.0, 900.0, 0.0012048192771084338]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0012048192771084338]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0012048192771084338, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [9.370816599732273e-05]
+INFO:root:stack: [200.0, 9.370816599732273e-05]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.018741633199464546]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1]
+INFO:root:stack: [700.0, 1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [700.0]
+INFO:root:stack: [200.0, 700.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [900.0]
+INFO:root:stack: [1.0, 900.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111]
+INFO:root:stack: [900.0, 0.0011111111111111111]
+INFO:root:stack: [1.0, 900.0, 0.0011111111111111111]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0011111111111111111]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0011111111111111111, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0]
+INFO:root:stack: [200.0, 0.0]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.0]
+INFO:root:stack: [1]
+INFO:root:stack: [700.0, 1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [700.0]
+INFO:root:stack: [200.0, 700.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [900.0]
+INFO:root:stack: [1.0, 900.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111]
+INFO:root:stack: [900.0, 0.0011111111111111111]
+INFO:root:stack: [1.0, 900.0, 0.0011111111111111111]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0011111111111111111, 0.0011111111111111111]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0.0011111111111111111, 0.0011111111111111111]
+ERROR:root:could not convert string to float: -
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: -
+INFO:root:stack: [0.0]
+INFO:root:stack: [200.0, 0.0]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.1]
+INFO:root:stack: [700.0, 0.1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [70.0]
+INFO:root:stack: [200.0, 70.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [270.0]
+INFO:root:stack: [1.0, 270.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.003703703703703704]
+INFO:root:stack: [0.1]
+INFO:root:stack: [700.0, 0.1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [70.0]
+INFO:root:stack: [200.0, 70.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [270.0]
+INFO:root:stack: [1.0, 270.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.003703703703703704]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.1]
+INFO:root:stack: [700.0, 0.1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [70.0]
+INFO:root:stack: [200.0, 70.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [270.0]
+INFO:root:stack: [1.0, 270.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.003703703703703704]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+ERROR:root:list index out of range
+Traceback (most recent call last):
+  File "script.py", line 15, in helper
+    return helper(f[1:], [f[0]]+stack)
+  File "script.py", line 18, in helper
+    return helper(f[1:], do[f[0]](stack))
+  File "script.py", line 18, in helper
+    return helper(f[1:], do[f[0]](stack))
+  File "script.py", line 6, in <lambda>
+    '*':(lambda l: [l[0]*l[1]]+l[2:]),
+IndexError: list index out of range
+ERROR:root:1.0
+Traceback (most recent call last):
+  File "script.py", line 15, in helper
+    return helper(f[1:], [f[0]]+stack)
+  File "script.py", line 18, in helper
+    return helper(f[1:], do[f[0]](stack))
+  File "script.py", line 18, in helper
+    return helper(f[1:], do[f[0]](stack))
+KeyError: 1.0
+ERROR:root:200.0
+Traceback (most recent call last):
+  File "script.py", line 15, in helper
+    return helper(f[1:], [f[0]]+stack)
+  File "script.py", line 18, in helper
+    return helper(f[1:], do[f[0]](stack))
+  File "script.py", line 18, in helper
+    return helper(f[1:], do[f[0]](stack))
+KeyError: 200.0
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.1]
+INFO:root:stack: [700.0, 0.1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [70.0]
+INFO:root:stack: [200.0, 70.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [270.0]
+INFO:root:stack: [1.0, 270.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.003703703703703704]
+INFO:root:stack: [200.0, 0.003703703703703704]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.7407407407407408]
+INFO:root:stack: [0.1]
+INFO:root:stack: [700.0, 0.1]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [70.0]
+INFO:root:stack: [200.0, 70.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [270.0]
+INFO:root:stack: [1.0, 270.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.003703703703703704]
+INFO:root:stack: [200.0, 0.003703703703703704]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.7407407407407408]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.8]
+INFO:root:stack: [700.0, 0.8]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [560.0]
+INFO:root:stack: [200.0, 560.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [760.0]
+INFO:root:stack: [1.0, 760.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0013157894736842105]
+INFO:root:stack: [200.0, 0.0013157894736842105]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.2631578947368421]
+INFO:root:stack: [0.8]
+INFO:root:stack: [700.0, 0.8]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [560.0]
+INFO:root:stack: [200.0, 560.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [760.0]
+INFO:root:stack: [1.0, 760.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0013157894736842105]
+INFO:root:stack: [200.0, 0.0013157894736842105]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.2631578947368421]
+INFO:root:stack: [0.8]
+INFO:root:stack: [700.0, 0.8]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [560.0]
+INFO:root:stack: [200.0, 560.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [760.0]
+INFO:root:stack: [1.0, 760.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0013157894736842105]
+INFO:root:stack: [200.0, 0.0013157894736842105]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.2631578947368421]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: swap
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: swap
+INFO:root:stack: [0, 1]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [1]
+INFO:root:stack: [1, 0]
+ERROR:root:could not convert string to float: drop
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: drop
+INFO:root:stack: [0]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [0.2]
+INFO:root:stack: [700.0, 0.2]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [140.0]
+INFO:root:stack: [200.0, 140.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [340.0]
+INFO:root:stack: [1.0, 340.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0029411764705882353]
+INFO:root:stack: [200.0, 0.0029411764705882353]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.5882352941176471]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.5]
+INFO:root:stack: [700.0, 0.5]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [350.0]
+INFO:root:stack: [200.0, 350.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [550.0]
+INFO:root:stack: [1.0, 550.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0018181818181818182]
+INFO:root:stack: [200.0, 0.0018181818181818182]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.36363636363636365]
+INFO:root:stack: [0.8]
+INFO:root:stack: [700.0, 0.8]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [560.0]
+INFO:root:stack: [200.0, 560.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [760.0]
+INFO:root:stack: [1.0, 760.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0013157894736842105]
+INFO:root:stack: [200.0, 0.0013157894736842105]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.2631578947368421]
+INFO:root:stack: [0.8]
+INFO:root:stack: [700.0, 0.8]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [560.0]
+INFO:root:stack: [200.0, 560.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [760.0]
+INFO:root:stack: [1.0, 760.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0013157894736842105]
+INFO:root:stack: [200.0, 0.0013157894736842105]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.2631578947368421]
+INFO:root:stack: [0.8]
+INFO:root:stack: [700.0, 0.8]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [560.0]
+INFO:root:stack: [200.0, 560.0]
+ERROR:root:could not convert string to float: +
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: +
+INFO:root:stack: [760.0]
+INFO:root:stack: [1.0, 760.0]
+ERROR:root:could not convert string to float: /
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: /
+INFO:root:stack: [0.0013157894736842105]
+INFO:root:stack: [200.0, 0.0013157894736842105]
+ERROR:root:could not convert string to float: *
+Traceback (most recent call last):
+  File "script.py", line 14, in helper
+    f[0]=float(f[0])
+ValueError: could not convert string to float: *
+INFO:root:stack: [0.2631578947368421]
