@@ -252,7 +252,7 @@ def f(blocks_queue, txs_queue):
         try:
             v=map(lambda x: x['prevHash'], v)
         except:
-            tools.log('v: ' +str(v))
+            #tools.log('v: ' +str(v))
             return
         if tools.db_get('stop'):
             tools.dump_out(blocks_queue)
