@@ -35,7 +35,7 @@ def recvall(client, data=''):
     try:
         data+=client.recv(MAX_MESSAGE_SIZE)
     except:
-        time.sleep(0.0001)
+        time.sleep(0.0004)
         tools.log('not ready')
         recvall(client, data)        
     if not data:
