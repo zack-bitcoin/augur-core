@@ -1,3 +1,18 @@
+P+E, E attacks:
+suppose there is a game where you can vote 0 or 1
+if you vote with the majority you get P, else you get 0
+let's say for this round 1 is supposed to be the "correct" answer
+attacker makes a contract
+says:
+if you vote 0, then if the majority votes 1 you get P + ϵ, if the majority votes 0 you get ϵ
+if you vote 1, then get nothing from the contract
+hence, it's now a dominant strategy to vote 0
+because your reward is higher either way
+hence everyone votes 0
+hence attacker only pays ϵ
+so attacker takes over the contract for free
+there's also a fairly obvious variant for double-spending PoW 
+
 P+E, E attacks can only work against truthcoin if the attacker has the ability to give money to the jury. If they jury has no public keys, then there is no way to give money to them.
 
 Cryptocurrency does not depend on public/private key crypto. We can do it with hash functions alone. 
