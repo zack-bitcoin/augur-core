@@ -1,3 +1,5 @@
+This blockchain is no longer maintained. It was a rough draft for Flying Fox. https://github.com/BumblebeeBat/FlyingFox
+
 Truthcoin-POW
 =============
 
