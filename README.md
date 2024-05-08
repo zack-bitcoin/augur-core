@@ -6,7 +6,6 @@ Truthcoin-POW
 If you are not a programmer, then you are lost, and should click this link: http://www.augur.net/prototype/
 
 adding abilities from the truthcoin project to basiccoin. https://github.com/psztorc/Truthcoin
-A podcast interview where I describe this project: http://economicsdetective.com/2014/10/truthcoin-prediction-markets-and-anarchy-with-zack-hess/
 
 Donations: 1GbpRPE83Vjg73KFvTVZ4EnS2qNkiLY5TT
 
